@@ -10,24 +10,28 @@ import java.util.*;
  */
 
 /*
-    Methods useful for creating a vector model from each tweet in an input set, to include
-    all features relevant to the scope of the project
+    Methods useful for creating a vector model from each tweet in an input set, representing all of the features
+    used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
     /*
-        Pre-defined word classes.
+        Pre-defined word classes. Some entries contain special cases, rules specifying that the string to be matched to it
+        is not a single word.
 
 
-        Notes:
-         - "[2-9]" symbols denote multi-word features. Extraction algorithm should search multiple words accordingly
-         - "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
+        Special cases (checked for in the listed order, cannot be combined):
+         1. A single digit between 2-9 before words denotes multi-word features. The number indicates the number of words to search for.
+            Note: If there is a feature for an individual word or set of words in a multi-word feature, the detection
+            of a multi-word feature will not prevent detection of the sub-feature. Example: The string "the flu" will
+            trigger will count as an instance of "the", an instance of "flu", and an instance of "the flu"
+         2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
            word being scanned, and not the word itself
      */
     private static String[][] wordClasses = {
             {"Infection",
                 "getting", "got", "recovered", "have", "having", "had", "has", "catching", "catch", "cured", "infected"},
             {"Possession",
-                "bird", "2the flu", "sick", "epidemic"},
+                "bird", "2the flu", "flu", "sick", "epidemic"},
             {"Concern",
                 "afraid", "worried", "scared", "fear", "worry", "nervous", "dread", "dreaded", "terrified"},
             {"Vaccination",
@@ -35,7 +39,7 @@ public class readTweetsGetFeatures {
             {"Past Tense",
                 "was", "did", "had", "got", "were", "V-ed"},
             {"Present Tense",
-                "is", "am", "are", "have", "has", "V-ing"},
+                "is", "am", "are", "have", "has", "V-ing"}, //"is" should perhaps take "'s", as in 'it's'
             {"Self",
                 "I", "I've", "I'd", "I'm", "im", "my"},
             {"Others",
@@ -44,6 +48,10 @@ public class readTweetsGetFeatures {
                 "son", "daughter"}
     };
 
+    /*
+        From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
+        tweet
+     */
     public static TweetVector[] getVectorModelsFromTweets(String[] tweets) {
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
@@ -58,6 +66,10 @@ public class readTweetsGetFeatures {
         return tweetVectors;
     }
 
+    /*
+        Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
+        then collect phrases
+     */
     public static TweetVector getVectorModelFromTweet(String tweet, StanfordCoreNLP pipeline) {
         TweetVector tweetVector = new TweetVector("test ID");
         CoreLabel[][] phrases = new CoreLabel[1][];
@@ -126,43 +138,97 @@ public class readTweetsGetFeatures {
         return tweetVector;
     }
 
+    /*
+        Obtain all features for the tweet vector
+     */
     public static void collectFeatures (TweetVector tweetVector, CoreLabel[][] phrases) {
-        //initialize features that are updated for multiple phrases
-         //word class features
-        StringFeatureValuePair[] wordClassFeatures = new StringFeatureValuePair[8];
-        wordClassFeatures[0] = new StringFeatureValuePair("Word Classes-Infection", 0);
-        wordClassFeatures[1] = new StringFeatureValuePair("Word Classes-Possession", 0);
-        wordClassFeatures[2] = new StringFeatureValuePair("Word Classes-Concern", 0);
-        wordClassFeatures[3] = new StringFeatureValuePair("Word Classes-Vaccination", 0);
-        wordClassFeatures[4] = new StringFeatureValuePair("Word Classes-Past Tense", 0);
-        wordClassFeatures[5] = new StringFeatureValuePair("Word Classes-Present Tense", 0);
-        wordClassFeatures[6] = new StringFeatureValuePair("Word Classes-Self", 0);
-        wordClassFeatures[7] = new StringFeatureValuePair("Word Classes-Others", 0);
 
+        //the number of words/strings in each of the given word classes
+        StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
+        for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature);
+        //test getting the features out...issues with typecasting
+
+
+        //other features
+    }
+
+    /*
+        Count the number of words/strings in each of the given word classes. Create features accordingly, one for
+        each word class
+     */
+    public static StringFeatureValuePair[] getWordClassFeatures(CoreLabel[][] phrases) {
+        StringFeatureValuePair[] wordClassFeatures = new StringFeatureValuePair[8];
+        for (int i = 0; i < wordClasses.length; i++) {
+            wordClassFeatures[i] = new StringFeatureValuePair("Word Classes-"+wordClasses[i][0], 0);
+        }
         //get features for each phrase
         for (CoreLabel[] phrase: phrases) {
             //go through each word in the phrase
             for (int i = 0; i < phrase.length; i++) {
                 CoreLabel token = phrase[i];
-                String text = token.get(TextAnnotation.class);
-                String pos = token.get(PartOfSpeechAnnotation.class);
+                String stringInPhrase = token.get(TextAnnotation.class);
+                System.out.println(stringInPhrase);
+                String stringInPhrasePOS = token.get(PartOfSpeechAnnotation.class);
 
-                //word class features (make sure to use equalsIgnoreCase)
-                //go through all the word classes and their entries, compare with the token at hand
+                //go through each of the word classes, add to the count of the class the word is in, if applicable
                 for (int j = 0; j < wordClasses.length; j++) {
+                    String stringInPhraseCopy = stringInPhrase; //use this when referring to the input token
                     StringFeatureValuePair relevantWordFeature = wordClassFeatures[j];
+                    String[] relevantWordClass = wordClasses[j];
+                    //get words to match
+                    for (int k = 1; k < relevantWordClass.length; k++) {
+                        String stringToMatch = relevantWordClass[k];
+                        //Alter the string to match and the copy of the input token if this is a special case
 
+                        //Special case 1: Multiple words are to be scanned
+                        int possibleNum = (int)stringToMatch.charAt(0) - '0';
+                        if (possibleNum > 1 && possibleNum < 10) {
+                            stringToMatch = stringToMatch.substring(1);
+                            StringBuilder buildMatch = new StringBuilder(stringInPhraseCopy);
+                            int parallelCount = i;
+                            //peek at the next words in the phrase, add them to the string to match
+                            while (possibleNum > 1) {
+                                parallelCount++;
+                                if (parallelCount == phrase.length) break;
+                                buildMatch.append(" ");
+                                buildMatch.append(phrase[parallelCount].get(TextAnnotation.class));
+                                possibleNum--;
+                            }
+                            stringInPhraseCopy = buildMatch.toString();
+                        }
+                        //Special case 2: The string to be matched is a verb ending, so just compare endings
+                        else if (stringToMatch.length() > 1 && stringToMatch.substring(0, 2).equalsIgnoreCase("V-") && stringInPhrasePOS.charAt(0) == 'V') {
+                            stringToMatch = stringToMatch.substring(2);
+                            int startIndex = stringInPhrase.length() - stringToMatch.length();
+                            if (startIndex > 0) {
+                                stringInPhraseCopy = stringInPhraseCopy.substring(stringInPhrase.length() - stringToMatch.length());
+                            }
+                        }
 
+                        //match
+                        if (stringToMatch.equalsIgnoreCase(stringInPhraseCopy)) {
+                            System.out.println("Matched string \""+stringInPhraseCopy+"\" to string \""+stringToMatch+"\" in class "+relevantWordClass[0]);
+                            relevantWordFeature.incrementValue(1);
+                            break;
+                        }
+                    }
                 }
-
-                //x feature
             }
         }
+
+        //for testing purposes
+        /*
+        System.out.println("PRINTING WORD CLASS FEATURES:");
+        for (StringFeatureValuePair pair: wordClassFeatures) {
+            System.out.println(pair.getFeature()+": "+pair.getValue());
+        }
+        */
+        return wordClassFeatures;
     }
 
     public static void main (String[] args) {
-        String exampleTweet1 = "We can neither confirm nor deny that this is our first tweet; that is all.";
-        String exampleTweet2 = "He said, \"I will sell you that car for $20\".";
+        String exampleTweet1 = "oh I have the flu. It's a majorepidemic. I'm going to Norway. I'm scared";
+        String exampleTweet2 = "Over there, in the parking garage. What thing? The detested thing? Mr. Burling?";
         String[] tweets = {exampleTweet1, exampleTweet2};
         TweetVector[] tweetsInVectorForm = getVectorModelsFromTweets(tweets);
     }

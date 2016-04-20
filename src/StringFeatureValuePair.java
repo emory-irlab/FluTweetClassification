@@ -18,4 +18,6 @@ public class StringFeatureValuePair extends FeatureValuePair {
         super(val, type);
         feature = feat;
     }
+
+    public String getFeature() { return feature; }
 }

@@ -13,7 +13,7 @@ public class TweetVector {
 
     public TweetVector(String id) {
         tweetID = id;
-        features = new FeatureValuePair[0];
+        features = new FeatureValuePair[1];
         featureCounter = 0;
     }
     public TweetVector(String id, FeatureValuePair[] feats) {
@@ -33,6 +33,7 @@ public class TweetVector {
 
     public void addFeature(FeatureValuePair feat) {
         //double if necessary
+        features[featureCounter++] = feat;
         if (featureCounter == features.length) {
             FeatureValuePair[] newFeatures = new FeatureValuePair[featureCounter * 2];
             for (int i = 0; i < featureCounter; i++) {
@@ -40,7 +41,6 @@ public class TweetVector {
             }
             features = newFeatures;
         }
-        features[featureCounter++] = feat;
     }
 
 }

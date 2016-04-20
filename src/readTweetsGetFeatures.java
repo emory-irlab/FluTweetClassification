@@ -147,6 +147,11 @@ public class readTweetsGetFeatures {
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
         for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature);
         //test getting the features out...issues with typecasting
+        for (FeatureValuePair feat : tweetVector.getFeatures()) {
+            if (feat instanceof StringFeatureValuePair) {
+                StringFeatureValuePair featStr = (StringFeatureValuePair) feat;
+            }
+        }
 
 
         //other features
@@ -167,7 +172,6 @@ public class readTweetsGetFeatures {
             for (int i = 0; i < phrase.length; i++) {
                 CoreLabel token = phrase[i];
                 String stringInPhrase = token.get(TextAnnotation.class);
-                System.out.println(stringInPhrase);
                 String stringInPhrasePOS = token.get(PartOfSpeechAnnotation.class);
 
                 //go through each of the word classes, add to the count of the class the word is in, if applicable
@@ -207,7 +211,6 @@ public class readTweetsGetFeatures {
 
                         //match
                         if (stringToMatch.equalsIgnoreCase(stringInPhraseCopy)) {
-                            System.out.println("Matched string \""+stringInPhraseCopy+"\" to string \""+stringToMatch+"\" in class "+relevantWordClass[0]);
                             relevantWordFeature.incrementValue(1);
                             break;
                         }

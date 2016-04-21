@@ -1,5 +1,5 @@
 /**
- * Created by tehredwun on 4/19/16.
+ * Created by Alec Wolyniec on 4/19/16.
  */
 public class StringFeatureValuePair extends FeatureValuePair {
     private String feature;

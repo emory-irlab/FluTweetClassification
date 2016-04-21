@@ -134,28 +134,59 @@ public class readTweetsGetFeatures {
             noNullPhrases[i] = phrases[i];
         }
         //collect features
-        collectFeatures(tweetVector, noNullPhrases);
+        collectFeaturesForTweet(tweetVector, noNullPhrases);
         return tweetVector;
     }
 
     /*
         Obtain all features for the tweet vector
      */
-    public static void collectFeatures (TweetVector tweetVector, CoreLabel[][] phrases) {
+    public static void collectFeaturesForTweet (TweetVector tweetVector, CoreLabel[][] phrases) {
 
         //the number of words/strings in each of the given word classes
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
-        for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature);
-        //test getting the features out...issues with typecasting
+        for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature); //remove null entries
+
         for (FeatureValuePair feat : tweetVector.getFeatures()) {
             if (feat instanceof StringFeatureValuePair) {
                 StringFeatureValuePair featStr = (StringFeatureValuePair) feat;
+                System.out.println(featStr.getFeature() + ": " + featStr.getValue());
             }
         }
 
+        //phrase-based features
+        for (CoreLabel[] phrase: phrases) {
+            ArrayList<StringFeatureValuePair> featuresForPhrase = collectFeaturesForPhrase(phrase);
+            for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i)); //remove null entries?
+        }
 
         //other features
+
     }
+
+    /*
+        Obtain all features for an individual phrase
+     */
+    public static ArrayList<StringFeatureValuePair> collectFeaturesForPhrase(CoreLabel[] phrase) {
+        ArrayList<StringFeatureValuePair> featuresForPhrase = new ArrayList<StringFeatureValuePair>();
+
+        //get features based on part-of-speech templates
+        ArrayList<StringFeatureValuePair> posTemplateFeatures = collectFeaturesForPhraseTemplate(phrase);
+        for (int i = 0; i < posTemplateFeatures.size(); i++) featuresForPhrase.add(posTemplateFeatures.get(i));
+
+        return featuresForPhrase;
+    }
+
+    /*
+        Obtain all template-based features for a phrase
+     */
+    public static ArrayList<StringFeatureValuePair> collectFeaturesForPhraseTemplate(CoreLabel[] phrase) {
+        ArrayList<StringFeatureValuePair> featuresForTemplate = new ArrayList<StringFeatureValuePair>();
+        //get template
+
+        return featuresForTemplate;
+    }
+
 
     /*
         Count the number of words/strings in each of the given word classes. Create features accordingly, one for
@@ -173,14 +204,15 @@ public class readTweetsGetFeatures {
                 CoreLabel token = phrase[i];
                 String stringInPhrase = token.get(TextAnnotation.class);
                 String stringInPhrasePOS = token.get(PartOfSpeechAnnotation.class);
+                //System.out.println(stringInPhrase);
 
                 //go through each of the word classes, add to the count of the class the word is in, if applicable
                 for (int j = 0; j < wordClasses.length; j++) {
-                    String stringInPhraseCopy = stringInPhrase; //use this when referring to the input token
                     StringFeatureValuePair relevantWordFeature = wordClassFeatures[j];
                     String[] relevantWordClass = wordClasses[j];
                     //get words to match
                     for (int k = 1; k < relevantWordClass.length; k++) {
+                        String stringInPhraseCopy = stringInPhrase; //use this when referring to the input token
                         String stringToMatch = relevantWordClass[k];
                         //Alter the string to match and the copy of the input token if this is a special case
 
@@ -212,7 +244,7 @@ public class readTweetsGetFeatures {
                         //match
                         if (stringToMatch.equalsIgnoreCase(stringInPhraseCopy)) {
                             relevantWordFeature.incrementValue(1);
-                            break;
+                            //System.out.println("Matched string "+stringInPhraseCopy+" from base string "+stringInPhrase+" to string "+stringToMatch+" in word class "+relevantWordClass[0]);
                         }
                     }
                 }

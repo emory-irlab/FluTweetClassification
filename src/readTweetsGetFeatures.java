@@ -171,7 +171,7 @@ public class readTweetsGetFeatures {
         ArrayList<StringFeatureValuePair> featuresForPhrase = new ArrayList<StringFeatureValuePair>();
 
         //get features based on part-of-speech templates
-        ArrayList<StringFeatureValuePair> posTemplateFeatures = collectFeaturesForPhraseTemplate(phrase);
+        ArrayList<StringFeatureValuePair> posTemplateFeatures = collectFeaturesForPhraseTemplates(phrase);
         for (int i = 0; i < posTemplateFeatures.size(); i++) featuresForPhrase.add(posTemplateFeatures.get(i));
 
         return featuresForPhrase;
@@ -180,11 +180,23 @@ public class readTweetsGetFeatures {
     /*
         Obtain all template-based features for a phrase
      */
-    public static ArrayList<StringFeatureValuePair> collectFeaturesForPhraseTemplate(CoreLabel[] phrase) {
+    public static ArrayList<StringFeatureValuePair> collectFeaturesForPhraseTemplates(CoreLabel[] phrase) {
         ArrayList<StringFeatureValuePair> featuresForTemplate = new ArrayList<StringFeatureValuePair>();
-        //get template
+        //get templates
+        String[] templates = getPOSTemplates(phrase);
 
         return featuresForTemplate;
+    }
+
+    /*
+        Get specified part-of-speech templates for a single phrase
+        Templates: (subject, verb, object), (subject, verb), (subject, object), (verb, object)
+        Subject: First noun/pronoun in the phrase
+        Verb: First verb after the subject
+        Object: Any noun/pronoun after the verb
+     */
+    public static String[] getPOSTemplates(CoreLabel[] phrase) {
+
     }
 
 

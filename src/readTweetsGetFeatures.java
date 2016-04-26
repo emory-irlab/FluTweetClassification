@@ -80,7 +80,7 @@ public class readTweetsGetFeatures {
         //annotate with ARK POS tagger (remove emoticons and other twitter stylometry; Stanford CoreNLP separates emoticons)
 
         //annotate with Stanford CoreNLP
-        Annotation document = new Annotation(tweet[1]);
+        Annotation document = new Annotation(tweet[2]);
         pipeline.annotate(document);
 
         //collect phrases. When a phrase has been completed, collect features from it
@@ -148,20 +148,21 @@ public class readTweetsGetFeatures {
 
         //the number of words/strings in each of the given word classes
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
-        for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature); //remove null entries
-
-        for (StringFeatureValuePair feat : tweetVector.getFeatures()) {
-            System.out.println(feat.getFeature() + ": " + feat.getValue());
-        }
+        //for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature); //remove null entries
 
         //phrase-based features
         for (CoreLabel[] phrase: phrases) {
             ArrayList<StringFeatureValuePair> featuresForPhrase = collectFeaturesForPhrase(phrase);
-            for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i)); //remove null entries?
+            //for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i)); //remove null entries?
         }
 
         //other features
 
+        //test - print features
+        Enumeration<String> features = tweetVector.getFeatures().keys();
+        while (features.hasMoreElements()) {
+            System.out.println(features.nextElement());
+        }
     }
 
     /*

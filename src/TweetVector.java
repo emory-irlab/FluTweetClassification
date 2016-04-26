@@ -1,6 +1,7 @@
 /**
  * Created by Alec Wolyniec on 4/14/16.
  */
+import java.util.*;
 
 //only one feature of each type!!
 /*
@@ -9,44 +10,33 @@
 public class TweetVector {
     private String label;
     private String name;
-    private StringFeatureValuePair[] features;
-    private int featureCounter;
+    private Hashtable<String, Integer> features;
 
     public TweetVector(String lab, String na) {
         label = lab;
         name = na;
-        features = new StringFeatureValuePair[1];
-        featureCounter = 0;
+        features = new Hashtable<String, Integer>();
     }
-    public TweetVector(String lab, String na, StringFeatureValuePair[] feats) {
+    public TweetVector(String lab, String na, Hashtable feats) {
         label = lab;
         name = na;
         features = feats;
-        featureCounter = feats.length;
     }
     public TweetVector(String lab, String na, int featNum) {
         label = lab;
         name = na;
-        features = new StringFeatureValuePair[featNum];
-        featureCounter = 0;
+        features = new Hashtable<String, Integer>(featNum);
     }
 
     public String getLabel() { return label; }
 
     public String getName() { return name; }
 
-    public StringFeatureValuePair[] getFeatures() { return features; } //enables modification
+    public Hashtable<String, Integer> getFeatures() { return features; } //enables modification
 
-    public void addFeature(StringFeatureValuePair feat) {
+    public void addFeature(StringFeatureValuePair feat) { //need to purge null entries
         //double if necessary
-        features[featureCounter++] = feat;
-        if (featureCounter == features.length) {
-            StringFeatureValuePair[] newFeatures = new StringFeatureValuePair[featureCounter * 2];
-            for (int i = 0; i < featureCounter; i++) {
-                newFeatures[i] = features[i];
-            }
-            features = newFeatures;
-        }
+        features.put(feat.getFeature(), feat.getValue());
     }
 
 }

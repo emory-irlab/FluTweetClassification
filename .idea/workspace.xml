@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SelfVsOtherClassifier.java" afterPath="$PROJECT_DIR$/src/SelfVsOtherClassifier.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TweetParser.java" afterPath="$PROJECT_DIR$/src/TweetParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TweetVector.java" afterPath="$PROJECT_DIR$/src/TweetVector.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/readTweetsGetFeatures.java" />
     </list>
     <ignored path="FluTweetsFeatureExtraction.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -46,7 +43,7 @@
       <file leaf-file-name="TweetParser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TweetParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7772277">
+            <state vertical-scroll-proportion="0.92574257">
               <caret line="153" column="1" selection-start-line="153" selection-start-column="1" selection-end-line="153" selection-end-column="1" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -1048,7 +1045,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TweetParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7772277">
+        <state vertical-scroll-proportion="0.92574257">
           <caret line="153" column="1" selection-start-line="153" selection-start-column="1" selection-end-line="153" selection-end-column="1" />
           <folding>
             <element signature="imports" expanded="true" />

@@ -52,7 +52,7 @@ public class readTweetsGetFeatures {
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
         tweet
      */
-    public static TweetVector[] getVectorModelsFromTweets(String[] tweets) {
+    public static TweetVector[] getVectorModelsFromTextOfTweets(String[][] tweets) {
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
@@ -69,15 +69,18 @@ public class readTweetsGetFeatures {
     /*
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
+
+        Input tweet is formatted as follows:
+        {label, name, text}
      */
-    public static TweetVector getVectorModelFromTweet(String tweet, StanfordCoreNLP pipeline) {
-        TweetVector tweetVector = new TweetVector("test ID");
+    public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline) {
+        TweetVector tweetVector = new TweetVector(tweet[0], tweet[1]);
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
         //annotate with ARK POS tagger (remove emoticons and other twitter stylometry; Stanford CoreNLP separates emoticons)
 
         //annotate with Stanford CoreNLP
-        Annotation document = new Annotation(tweet);
+        Annotation document = new Annotation(tweet[1]);
         pipeline.annotate(document);
 
         //collect phrases. When a phrase has been completed, collect features from it
@@ -147,11 +150,8 @@ public class readTweetsGetFeatures {
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
         for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature); //remove null entries
 
-        for (FeatureValuePair feat : tweetVector.getFeatures()) {
-            if (feat instanceof StringFeatureValuePair) {
-                StringFeatureValuePair featStr = (StringFeatureValuePair) feat;
-                System.out.println(featStr.getFeature() + ": " + featStr.getValue());
-            }
+        for (StringFeatureValuePair feat : tweetVector.getFeatures()) {
+            System.out.println(feat.getFeature() + ": " + feat.getValue());
         }
 
         //phrase-based features
@@ -276,7 +276,7 @@ public class readTweetsGetFeatures {
     public static void main (String[] args) {
         String exampleTweet1 = "oh I have the flu. It's a majorepidemic. I'm going to Norway. I'm scared";
         String exampleTweet2 = "Over there, in the parking garage. What thing? The detested thing? Mr. Burling?";
-        String[] tweets = {exampleTweet1, exampleTweet2};
-        TweetVector[] tweetsInVectorForm = getVectorModelsFromTweets(tweets);
+        String[][] tweets = {{"test label1", "test name1", exampleTweet1}, {"test label2", "test name2", exampleTweet2}};
+        TweetVector[] tweetsInVectorForm = getVectorModelsFromTextOfTweets(tweets);
     }
 }

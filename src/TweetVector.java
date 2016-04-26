@@ -7,35 +7,41 @@
     A representation of a tweet as a vector of feature-value pairs and a unique identifier
 */
 public class TweetVector {
-    private String tweetID;
-    private FeatureValuePair[] features;
+    private String label;
+    private String name;
+    private StringFeatureValuePair[] features;
     private int featureCounter;
 
-    public TweetVector(String id) {
-        tweetID = id;
-        features = new FeatureValuePair[1];
+    public TweetVector(String lab, String na) {
+        label = lab;
+        name = na;
+        features = new StringFeatureValuePair[1];
         featureCounter = 0;
     }
-    public TweetVector(String id, FeatureValuePair[] feats) {
-        tweetID = id;
+    public TweetVector(String lab, String na, StringFeatureValuePair[] feats) {
+        label = lab;
+        name = na;
         features = feats;
         featureCounter = feats.length;
     }
-    public TweetVector(String id, int featNum) {
-        tweetID = id;
-        features = new FeatureValuePair[featNum];
+    public TweetVector(String lab, String na, int featNum) {
+        label = lab;
+        name = na;
+        features = new StringFeatureValuePair[featNum];
         featureCounter = 0;
     }
 
-    public String getTweetID() { return tweetID; }
+    public String getLabel() { return label; }
 
-    public FeatureValuePair[] getFeatures() { return features; } //enables modification
+    public String getName() { return name; }
 
-    public void addFeature(FeatureValuePair feat) {
+    public StringFeatureValuePair[] getFeatures() { return features; } //enables modification
+
+    public void addFeature(StringFeatureValuePair feat) {
         //double if necessary
         features[featureCounter++] = feat;
         if (featureCounter == features.length) {
-            FeatureValuePair[] newFeatures = new FeatureValuePair[featureCounter * 2];
+            StringFeatureValuePair[] newFeatures = new StringFeatureValuePair[featureCounter * 2];
             for (int i = 0; i < featureCounter; i++) {
                 newFeatures[i] = features[i];
             }

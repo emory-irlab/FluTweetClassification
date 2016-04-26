@@ -196,7 +196,7 @@ public class readTweetsGetFeatures {
         Object: Any noun/pronoun after the verb
      */
     public static String[] getPOSTemplates(CoreLabel[] phrase) {
-
+        return new String[0];
     }
 
 

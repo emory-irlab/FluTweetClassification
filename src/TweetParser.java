@@ -39,7 +39,6 @@ public class TweetParser {
         String inFile = args[0];
 
         BufferedReader reader = null;
-        String[] ids = null;
 
         try {
             String currentLine;
@@ -55,7 +54,7 @@ public class TweetParser {
 
             reader = new BufferedReader(new FileReader(inFile));
 
-            int count = 1;
+            int count = 0;
             while ((currentLine = reader.readLine()) != null && count < 10) {
 
                 String[] splitLine = currentLine.split("\\t");
@@ -66,11 +65,9 @@ public class TweetParser {
 
                 //Write UTF-8 encoded tweet text to file
                 //This will be replaced as writing the data to the file.
-                int instanceCount = 1;
                 if (!tweet.equals("")) {
-                    tweetToFile.write("[instance " + instanceCount + "]\0 " + id + " \0" + label + " \0" + tweet + "\0");
+                    tweetToFile.write(id + "\0 " + label + "\0 " + tweet);
                     tweetToFile.newLine();
-                    instanceCount++;
                 }
 
                 Pattern hashtagPattern = Pattern.compile("#(\\w+)");

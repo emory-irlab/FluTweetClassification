@@ -2,7 +2,13 @@ import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.*;
+
+import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.*;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 
 /**
@@ -49,19 +55,32 @@ public class readTweetsGetFeatures {
     };
 
     /*
+        Get tweets from a path to a file
+    */
+    public static ArrayList<String[]> getTweets(String pathToTweetFile) throws FileNotFoundException, IOException {
+        ArrayList<String[]> tweets = new ArrayList<String[]>();
+        BufferedReader reader = new BufferedReader(new FileReader(pathToTweetFile));
+        String currentLine;
+        while ((currentLine = reader.readLine()) != null) {
+            tweets.add(currentLine.split("   ")); //change to null character; it's spaces for test purposes only
+        }
+        return tweets;
+    }
+
+    /*
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
         tweet
      */
-    public static TweetVector[] getVectorModelsFromTextOfTweets(String[][] tweets) {
+    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets) {
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         //get tweet vector model
-        TweetVector[] tweetVectors = new TweetVector[tweets.length];
-        for (int i = 0; i < tweets.length; i++) {
-            tweetVectors[i] = getVectorModelFromTweet(tweets[i], pipeline);
+        TweetVector[] tweetVectors = new TweetVector[tweets.size()];
+        for (int i = 0; i < tweets.size(); i++) {
+            tweetVectors[i] = getVectorModelFromTweet(tweets.get(i), pipeline);
         }
         return tweetVectors;
     }
@@ -278,6 +297,6 @@ public class readTweetsGetFeatures {
         String exampleTweet1 = "oh I have the flu. It's a majorepidemic. I'm going to Norway. I'm scared";
         String exampleTweet2 = "Over there, in the parking garage. What thing? The detested thing? Mr. Burling?";
         String[][] tweets = {{"test label1", "test name1", exampleTweet1}, {"test label2", "test name2", exampleTweet2}};
-        TweetVector[] tweetsInVectorForm = getVectorModelsFromTextOfTweets(tweets);
+        //TweetVector[] tweetsInVectorForm = getVectorModelsFromTweets(tweets);
     }
 }

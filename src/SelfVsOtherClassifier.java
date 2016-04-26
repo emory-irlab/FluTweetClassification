@@ -1,4 +1,4 @@
-/*
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,7 +27,7 @@ public class SelfVsOtherClassifier {
 
 
     //Mutable instancelist that caps at 10 instances.
-    private InstanceList selfVsOther = null;
+    public InstanceList selfVsOther = null;
     //public static Alphabet featureList = null;
 
     private Classifier maxEnt;
@@ -40,7 +40,7 @@ public class SelfVsOtherClassifier {
 		 * Its instance list caps at 10
 		 *
 		 * We'll want to load this classifier upon its construction
-		 *
+		 */
 
         File classifierFile = new File(pathToClassifier);
 
@@ -53,7 +53,7 @@ public class SelfVsOtherClassifier {
     /*
      * This method takes in a Hashtable, name, and label then adds
      * it to the InstanceList
-     *
+     */
     public void addToInstanceList(Hashtable table, String name, String label) {
 
         //Keep the cap of the InstanceList at 10 for computation's sake
@@ -230,6 +230,6 @@ public class SelfVsOtherClassifier {
         return new Trial(classifier, instanceLists[TESTING]);
     }
 }
-*/
+
 
 

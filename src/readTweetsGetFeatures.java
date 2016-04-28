@@ -62,7 +62,13 @@ public class readTweetsGetFeatures {
         BufferedReader reader = new BufferedReader(new FileReader(pathToTweetFile));
         String currentLine;
         while ((currentLine = reader.readLine()) != null) {
-            tweets.add(currentLine.split("   ")); //change to null character; it's spaces for test purposes only
+            String[] split = currentLine.split("  ");
+            String text = "";
+            for (int i = 2; i < split.length; i++) {
+                text += split[i];
+            }
+            String[] tweet = {split[0], split[1], text};
+            tweets.add(tweet);
         }
         return tweets;
     }
@@ -167,21 +173,26 @@ public class readTweetsGetFeatures {
 
         //the number of words/strings in each of the given word classes
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
-        //for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature); //remove null entries
+        for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature);
 
         //phrase-based features
         for (CoreLabel[] phrase: phrases) {
             ArrayList<StringFeatureValuePair> featuresForPhrase = collectFeaturesForPhrase(phrase);
-            //for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i)); //remove null entries?
+            for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i));
         }
 
         //other features
 
         //test - print features
-        Enumeration<String> features = tweetVector.getFeatures().keys();
+        System.out.println("TWEET FEATURES");
+        Hashtable<String, Integer> featureValPairs = tweetVector.getFeatures();
+        Enumeration<String> features = featureValPairs.keys();
         while (features.hasMoreElements()) {
-            System.out.println(features.nextElement());
+            String feature = features.nextElement();
+            int value = featureValPairs.get(feature);
+            System.out.println(feature+": "+value);
         }
+        System.out.println();
     }
 
     /*
@@ -263,6 +274,8 @@ public class readTweetsGetFeatures {
                                 possibleNum--;
                             }
                             stringInPhraseCopy = buildMatch.toString();
+                            //if the multi-word phrase is found, make sure the words inside it are not scanned
+                            if (stringToMatch.equals(stringInPhraseCopy)) i = parallelCount;
                         }
                         //Special case 2: The string to be matched is a verb ending, so just compare endings
                         else if (stringToMatch.length() > 1 && stringToMatch.substring(0, 2).equalsIgnoreCase("V-") && stringInPhrasePOS.charAt(0) == 'V') {
@@ -291,12 +304,5 @@ public class readTweetsGetFeatures {
         }
         */
         return wordClassFeatures;
-    }
-
-    public static void main (String[] args) {
-        String exampleTweet1 = "oh I have the flu. It's a majorepidemic. I'm going to Norway. I'm scared";
-        String exampleTweet2 = "Over there, in the parking garage. What thing? The detested thing? Mr. Burling?";
-        String[][] tweets = {{"test label1", "test name1", exampleTweet1}, {"test label2", "test name2", exampleTweet2}};
-        //TweetVector[] tweetsInVectorForm = getVectorModelsFromTweets(tweets);
     }
 }

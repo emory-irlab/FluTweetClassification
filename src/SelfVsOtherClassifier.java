@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -29,14 +30,15 @@ public class SelfVsOtherClassifier {
     //Instancelist that caps at 10 instances.
     public InstanceList instances = null;
     private Classifier classifier;
+    public File classifierFile = null;
 
     public SelfVsOtherClassifier(String pathToClassifier) throws IOException, ClassNotFoundException {
-		
+
 		/* Its instance list caps at 10
 		 * We'll want to load this classifier upon its construction
 		 */
 
-        File classifierFile = new File(pathToClassifier);
+        this.classifierFile = new File(pathToClassifier);
 
         if (!classifierFile.exists()) {
             classifierFile.createNewFile();
@@ -44,6 +46,7 @@ public class SelfVsOtherClassifier {
             this.classifier = loadClassifier(classifierFile);
         }
     }
+
     /*
      * This method takes in a Hashtable, name, and label then adds
      * it to the InstanceList
@@ -75,7 +78,7 @@ public class SelfVsOtherClassifier {
     }
 
 
-    public static Classifier trainClassifier(InstanceList trainingInstances) {
+    public Classifier trainClassifier(InstanceList trainingInstances) {
 
         // Here we use a maximum entropy (ie polytomous logistic regression)
         //  classifier. Mallet includes a wide variety of classification
@@ -95,7 +98,7 @@ public class SelfVsOtherClassifier {
         Classifier classifier;
 
         ObjectInputStream ois =
-                new ObjectInputStream (new FileInputStream (serializedFile));
+                new ObjectInputStream(new FileInputStream(serializedFile));
         classifier = (Classifier) ois.readObject();
         ois.close();
 
@@ -110,42 +113,19 @@ public class SelfVsOtherClassifier {
         //  write the classifier object to the specified file.
 
         ObjectOutputStream oos =
-                new ObjectOutputStream(new FileOutputStream (serializedFile));
-        oos.writeObject (classifier);
+                new ObjectOutputStream(new FileOutputStream(serializedFile));
+        oos.writeObject(classifier);
         oos.close();
     }
 
-    public void printLabelings(Classifier classifier, File file) throws IOException {
+    public void printLabelings(Classifier classifier, InstanceList testInstances) throws IOException {
 
-        // Create a new iterator that will read raw instance data from                                     
-        //  the lines of a file.                                                                           
-        // Lines should be formatted as:                                                                   
-        //                                                                                                 
-        //   [name] [label] [data ... ]                                                                    
-        //                                                                                                 
-        //  in this case, "label" is ignored.                                                              
+        for (int i = 0; i < testInstances.size(); i++) {
+            //Given an InstanceList, get the label for each instance that's been classified
+            Labeling labeling = classifier.classify(testInstances.get(i)).getLabeling();
 
-        CsvIterator reader =
-                new CsvIterator(new FileReader(file),
-                        "/0",
-                        3, 2, 1);  // (data, label, name) field indices
-
-        // Create an iterator that will pass each instance through                                         
-        //  the same pipe that was used to create the training data                                        
-        //  for the classifier.                                                                            
-        Iterator instances =
-                classifier.getInstancePipe().newIteratorFrom(reader);
-
-        // Classifier.classify() returns a Classification object                                           
-        //  that includes the instance, the classifier, and the                                            
-        //  classification results (the labeling). Here we only                                            
-        //  care about the Labeling.                                                                       
-        while (instances.hasNext()) {
-            Labeling labeling = classifier.classify(instances.next()).getLabeling();
-
-            // print the labels with their weights in descending order (ie best first)                     
-
-            for (int rank = 0; rank < labeling.numLocations(); rank++){
+            // print the labels with their weights in descending order (ie best first)
+            for (int rank = 0; rank < labeling.numLocations(); rank++) {
                 System.out.print(labeling.getLabelAtRank(rank) + ":" +
                         labeling.getValueAtRank(rank) + " ");
             }
@@ -154,41 +134,22 @@ public class SelfVsOtherClassifier {
         }
     }
 
-    public void evaluate(Classifier classifier, File file) throws IOException {
+    public void evaluate(Classifier classifier, InstanceList testInstances) throws IOException {
 
-        // Create an InstanceList that will contain the test data.                                         
-        // In order to ensure compatibility, process instances                                             
-        //  with the pipe used to process the original training                                            
-        //  instances.                                                                                     
-
-        InstanceList testInstances = new InstanceList((classifier).getInstancePipe());
-
-        // Create a new iterator that will read raw instance data from                                     
-        //  the lines of a file.                                                                           
-        // Lines should be formatted as:                                                                   
-        //                                                                                                 
-        //   [name] [label] [data ... ]                                                                    
-
-        CsvIterator reader =
-                new CsvIterator(new FileReader(file),
-                        "/0",
-                        3, 2, 1);  // (data, label, name) field indices
-
-        // Add all instances loaded by the iterator to                                                     
-        //  our instance list, passing the raw input data                                                  
-        //  through the classifier's original input pipe.                                                  
-
-        testInstances.addThruPipe(reader);
+        // Create an InstanceList that will contain the test data.
+        // In order to ensure compatibility, process instances
+        //  with the pipe used to process the original training
+        //  instances.
 
         Trial trial = new Trial(classifier, testInstances);
 
-        // The Trial class implements many standard evaluation                                             
-        //  metrics. See the JavaDoc API for more details.                                                 
+        // The Trial class implements many standard evaluation
+        //  metrics. See the JavaDoc API for more details.
 
         System.out.println("Accuracy: " + trial.getAccuracy());
 
         // precision, recall, and F1 are calculated for a specific
-        //  class, which can be identified by an object (usually                                           
+        //  class, which can be identified by an object (usually
         //  a String) or the integer ID of the class
 
         System.out.println("F1 for class 'good': " + trial.getF1("good"));
@@ -204,24 +165,23 @@ public class SelfVsOtherClassifier {
         int TESTING = 1;
         int VALIDATION = 2;
 
-        // Split the input list into training (90%) and testing (10%) lists.                               
         // The division takes place by creating a copy of the list,
         //  randomly shuffling the copy, and then allocating
         //  instances to each sub-list based on the provided proportions.
 
         InstanceList[] instanceLists =
                 instances.split(new Randoms(),
-                        new double[] {0.9, 0.1, 0.0});
+                        new double[]{0.8, 0.2, 0.0});
 
-        // The third position is for the "validation" set,
-        //  which is a set of instances not used directly                                                  
-        //  for training, but available for determining                                                    
-        //  when to stop training and for estimating optimal                                               
+        //  The third position is for the "validation" set,
+        //  which is a set of instances not used directly
+        //  for training, but available for determining
+        //  when to stop training and for estimating optimal
         //  settings of nuisance parameters.
-        // Most Mallet ClassifierTrainers can not currently take advantage
-        //  of validation sets.                                                                            
+        //  Most Mallet ClassifierTrainers can not currently take advantage
+        //  of validation sets.
 
-        Classifier classifier = trainClassifier( instanceLists[TRAINING] );
+        Classifier classifier = trainClassifier(instanceLists[TRAINING]);
         return new Trial(classifier, instanceLists[TESTING]);
     }
 }

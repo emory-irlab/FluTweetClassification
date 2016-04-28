@@ -19,6 +19,7 @@ public class runClassifierOnTweets {
         ArrayList<String[]> tweets = readTweetsGetFeatures.getTweets(args[0]);
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(tweets);
 
+        /*
         //make the classifier
         SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(args[1]);
         //train the classifier 10 tweets at a time
@@ -30,10 +31,10 @@ public class runClassifierOnTweets {
             tweetCounter++;
             if (tweetCounter == 10) {
                 tweetCounter = 0;
-                classifier.trainClassifier(classifier.selfVsOther);
+                classifier.trainClassifier(classifier.instances);
             }
         }
-
+        */
         //get the tweets to be classified
         //train
     }

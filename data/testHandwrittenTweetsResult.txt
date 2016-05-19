@@ -6,7 +6,7 @@ Word Classes-Others: 1
 Word Classes-Concern: 1
 Word Classes-Past Tense: 0
 Word Classes-Self: 3
-Word Classes-Possession: 1
+Word Classes-Possession: 2
 Word Classes-Infection: 1
 Word Classes-Present Tense: 2
 

@@ -63,6 +63,7 @@ public class readTweetsGetFeatures {
         String currentLine;
         while ((currentLine = reader.readLine()) != null) {
             String[] split = currentLine.split("  ");
+            if (split.length < 3) break;
             String text = "";
             for (int i = 2; i < split.length; i++) {
                 text += split[i];
@@ -96,7 +97,7 @@ public class readTweetsGetFeatures {
         then collect phrases
 
         Input tweet is formatted as follows:
-        {label, name, text}
+        {name, label, text}
      */
     public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline) {
         TweetVector tweetVector = new TweetVector(tweet[0], tweet[1]);
@@ -131,7 +132,7 @@ public class readTweetsGetFeatures {
                 phrase = newPhrase;
             }
 
-            //start new phrase if the phrase is completed, or if there are no more tokens to collect
+            //start next phrase if the phrase is completed, or if there are no more tokens to collect
             for (String delimiter: delimiters) {
                 if (text.equals(delimiter) || i == tokens.size() - 1) {
                     CoreLabel[] noNullPhrase = new CoreLabel[phraseCounter];
@@ -183,6 +184,7 @@ public class readTweetsGetFeatures {
 
         //other features
 
+        /*
         //test - print features
         System.out.println("TWEET FEATURES");
         Hashtable<String, Integer> featureValPairs = tweetVector.getFeatures();
@@ -193,6 +195,7 @@ public class readTweetsGetFeatures {
             System.out.println(feature+": "+value);
         }
         System.out.println();
+        */
     }
 
     /*

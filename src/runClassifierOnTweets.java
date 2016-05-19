@@ -10,32 +10,28 @@ public class runClassifierOnTweets {
         construct and train a classifier, then use it to classify any given tweet data
 
         Args:
-        0 - path to a file containing training tweets, one in each line (with its id, label, and text separated by null characters)
+        0 - path to a file containing training tweets, one in each line (with its id, label, and text separated by double spaces)
         1 - path to a file where the classifier will be stored
-        2 - path to a file containing tweets to be classified, with the same format as the tweets in args[0]
+        2 - path to a file containing test tweets, with the same format as the tweets in args[0]
      */
     public static void main (String[] args) throws IOException, ClassNotFoundException {
         //get the training tweets
-        ArrayList<String[]> tweets = readTweetsGetFeatures.getTweets(args[0]);
-        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(tweets);
+        ArrayList<String[]> trainingTweets = readTweetsGetFeatures.getTweets(args[0]);
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets);
 
-        /*
         //make the classifier
+
         SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(args[1]);
-        //train the classifier 10 tweets at a time
-        int tweetCounter = 0;
+        //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet
             TweetVector currentTweet = tweetVectors[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
-            tweetCounter++;
-            if (tweetCounter == 10) {
-                tweetCounter = 0;
-                classifier.trainClassifier(classifier.instances);
-            }
         }
-        */
-        //get the tweets to be classified
-        //train
+        classifier.trainClassifier(classifier.instances);
+        System.out.println(classifier.instances.getAlphabet().toString());
+
+        //get the test tweets
+
     }
 }

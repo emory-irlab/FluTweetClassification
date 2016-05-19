@@ -12,17 +12,17 @@ public class TweetVector {
     private String name;
     private Hashtable<String, Integer> features;
 
-    public TweetVector(String lab, String na) {
+    public TweetVector(String na, String lab) {
         label = lab;
         name = na;
         features = new Hashtable<String, Integer>();
     }
-    public TweetVector(String lab, String na, Hashtable feats) {
+    public TweetVector(String na, String lab, Hashtable feats) {
         label = lab;
         name = na;
         features = feats;
     }
-    public TweetVector(String lab, String na, int featNum) {
+    public TweetVector(String na, String lab, int featNum) {
         label = lab;
         name = na;
         features = new Hashtable<String, Integer>(featNum);

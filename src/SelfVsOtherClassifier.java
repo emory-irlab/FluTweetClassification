@@ -116,7 +116,6 @@ public class SelfVsOtherClassifier {
     }
 
     public void printLabelings(InstanceList testInstances) throws IOException {
-
         for (int i = 0; i < testInstances.size(); i++) {
             //Given an InstanceList, get the label for each instance that's been classified
             Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
@@ -131,7 +130,6 @@ public class SelfVsOtherClassifier {
     }
 
     public void evaluate(InstanceList testInstances) throws IOException {
-
         // Create an InstanceList that will contain the test data.
         // In order to ensure compatibility, process instances
         // with the pipe used to process the original training

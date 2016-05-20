@@ -13,7 +13,7 @@ public class runClassifierOnTweets {
         0 - path to a file containing training tweets, one in each line (with its id, label, and text separated by double spaces)
         1 - path to a file where the classifier will be stored
         2 - path to a file containing test tweets, with the same format as the tweets in args[0]
-     */
+    */
     public static void main (String[] args) throws IOException, ClassNotFoundException {
         //get the training tweets
         ArrayList<String[]> trainingTweets = readTweetsGetFeatures.getTweets(args[0]);
@@ -28,10 +28,11 @@ public class runClassifierOnTweets {
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
         classifier.trainClassifier(classifier.instances);
-
         classifier.saveClassifier(classifier.classifierFile);
-        classifier.printLabelings(classifier.instances);
         classifier.instances.clear();
+
+        //for testing purposes
+        //classifier.printLabelings(classifier.instances);
 
         //get the test tweets
         ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[2]);

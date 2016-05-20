@@ -1,0 +1,30 @@
+Done?   Feature name/type
+Yes     Word classes
+No      *Retweet
+No      *Hashtag
+No      *Mentions of other users
+No      *Emoticons
+No      *Positive emoticons
+No      *Negative emoticons
+No      *URL
+No      Word in phrase template matches word in one or more of the word classes
+No      Phrase template - (subject, verb, object)
+No      Phrase template - (subject, verb)
+No      Phrase template - (subject, object)
+No      Phrase template - (verb, object)
+No      First pronoun and last noun of phrase
+No      Phrase begins with verb?
+No      Numerical references (i.e. "so many", "everyone")
+No      Numerical references followed by word with the lemma "died"
+No      First pronoun/noun and last verb of phrase
+No      First noun/pronoun of phrase in "self" or "other" word classes?
+No      Last verb in phrase in "possessive" word class?
+No      "Flu" appears as a noun before the first verb in the phrase?
+No      Verb and the noun directly following it
+No      Past tense verb (said to have "multiple features" associated with it)
+No      Flu-related word as a noun or an adjective
+No      Proper noun followed by a possessive verb
+No      Verb following a proper noun
+No      Past tense verb following a proper noun
+No      Noun with question mark following it
+No      Phrase ends with exclamation point

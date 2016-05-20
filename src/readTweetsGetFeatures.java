@@ -184,7 +184,6 @@ public class readTweetsGetFeatures {
 
         //other features
 
-        /*
         //test - print features
         System.out.println("TWEET FEATURES");
         Hashtable<String, Integer> featureValPairs = tweetVector.getFeatures();
@@ -195,7 +194,6 @@ public class readTweetsGetFeatures {
             System.out.println(feature+": "+value);
         }
         System.out.println();
-        */
     }
 
     /*

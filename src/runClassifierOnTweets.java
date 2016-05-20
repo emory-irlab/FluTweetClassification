@@ -30,7 +30,8 @@ public class runClassifierOnTweets {
         classifier.trainClassifier(classifier.instances);
 
         classifier.saveClassifier(classifier.classifierFile);
-        //classifier.instances.clear();
+        classifier.printLabelings(classifier.instances);
+        classifier.instances.clear();
 
         //get the test tweets
         ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[2]);

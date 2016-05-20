@@ -68,7 +68,7 @@ public class SelfVsOtherClassifier {
 
             featureValues[dataAlphabet.lookupIndex(featureName, true)] = (double) ((Integer) table.get(featureName)).intValue();
         }
-        Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), name, label, null);
+        Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
 
         instances.add(new Target2Label(this.targetAlphabet).pipe(instance));
     }

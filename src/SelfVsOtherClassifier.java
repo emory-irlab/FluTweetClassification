@@ -1,10 +1,18 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
+import cc.mallet.classify.MaxEnt;
 import cc.mallet.classify.MaxEntTrainer;
 import cc.mallet.classify.Trial;
 import cc.mallet.pipe.Array2FeatureVector;
@@ -24,28 +32,25 @@ public class SelfVsOtherClassifier {
 
     //Alphabet of features that StanCore extracted from the data
     Alphabet dataAlphabet = new Alphabet(8);
-
-    //The labels we want to label tweets with
-    //String[] strSelfOther = {"Self", "Other"};
+    //Target Labels pertinent to this classifier
     LabelAlphabet targetAlphabet = new LabelAlphabet();
     public InstanceList instances;
     public Classifier maxEntClassifier;
     public File classifierFile;
 
     public SelfVsOtherClassifier(String pathToClassifier) throws IOException, ClassNotFoundException {
-		/* Its instance list caps at 10
-		 * We'll want to load this classifier upon its construction
-		 */
+
         classifierFile = new File(pathToClassifier);
 
         if (!classifierFile.exists()) {
             classifierFile.createNewFile();
-            maxEntClassifier = loadClassifier(classifierFile); //<????>?>??<?
         } else {
             maxEntClassifier = loadClassifier(classifierFile);
         }
-        targetAlphabet.lookupIndex("Self", true);
-        targetAlphabet.lookupIndex("Other", true);
+        //Self
+        targetAlphabet.lookupIndex("0", true);
+        //Other
+        targetAlphabet.lookupIndex("1", true);
         instances = new InstanceList(dataAlphabet, targetAlphabet);
     }
 
@@ -89,14 +94,15 @@ public class SelfVsOtherClassifier {
 
         Classifier classifier;
 
-        ObjectInputStream ois = new ObjectInputStream (new FileInputStream (serializedFile));
+        ObjectInputStream ois =
+                new ObjectInputStream (new FileInputStream (serializedFile));
         classifier = (Classifier) ois.readObject();
         ois.close();
 
         return classifier;
     }
 
-    public void saveClassifier(Classifier classifier, File serializedFile)
+    public void saveClassifier(File serializedFile)
             throws IOException {
 
         // The standard method for saving classifiers in
@@ -105,15 +111,15 @@ public class SelfVsOtherClassifier {
 
         ObjectOutputStream oos =
                 new ObjectOutputStream(new FileOutputStream (serializedFile));
-        oos.writeObject (classifier);
+        oos.writeObject (maxEntClassifier);
         oos.close();
     }
 
-    public void printLabelings(Classifier classifier, InstanceList testInstances) throws IOException {
+    public void printLabelings(InstanceList testInstances) throws IOException {
 
         for (int i = 0; i < testInstances.size(); i++) {
             //Given an InstanceList, get the label for each instance that's been classified
-            Labeling labeling = classifier.classify(testInstances.get(i)).getLabeling();
+            Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
 
             // print the labels with their weights in descending order (ie best first)
             for (int rank = 0; rank < labeling.numLocations(); rank++){
@@ -124,20 +130,29 @@ public class SelfVsOtherClassifier {
         }
     }
 
-    public void evaluate(Classifier classifier, InstanceList testInstances) throws IOException {
+    public void evaluate(InstanceList testInstances) throws IOException {
 
         // Create an InstanceList that will contain the test data.
         // In order to ensure compatibility, process instances
-        //  with the pipe used to process the original training
-        //  instances.
+        // with the pipe used to process the original training
+        // instances.
 
-        Trial trial = new Trial(classifier, testInstances);
+        Trial trial = new Trial(maxEntClassifier, testInstances);
+
+        /*System.out.println("------------");
+
+        PrintWriter p = new PrintWriter(System.out);
+
+        ((MaxEnt)maxEntClassifier).printRank(p);
+        p.close();
+
+        System.out.println("------------");*/
+
+        //printLabelings(maxEntClassifier, testInstances);
 
         System.out.println("Accuracy: " + trial.getAccuracy());
         System.out.println("F1 for class 'Self': " + trial.getF1(0));
-        System.out.println("F1 for class 'Other': " + trial.getF1(1));
-        System.out.println("Precision for class 'Other': " + trial.getPrecision(0));
-        System.out.println("Precision for class 'Other': " + trial.getPrecision(1));
+        System.out.println("Precision for class 'Self': " + trial.getPrecision(0));
     }
 
     public Trial testTrainSplit(InstanceList instances) {
@@ -166,3 +181,4 @@ public class SelfVsOtherClassifier {
         return new Trial(classifier, instanceLists[TESTING]);
     }
 }
+

@@ -20,7 +20,6 @@ public class runClassifierOnTweets {
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets);
 
         //make the classifier
-
         SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(args[1]);
         //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
@@ -29,9 +28,17 @@ public class runClassifierOnTweets {
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
         classifier.trainClassifier(classifier.instances);
-        System.out.println(classifier.instances.getAlphabet().toString());
+
+        classifier.saveClassifier(classifier.classifierFile);
+        //classifier.instances.clear();
 
         //get the test tweets
-
+        ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[2]);
+        TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets);
+        for (int i = 0; i < tweetVectors.length; i++) {
+            TweetVector currentTweet = testingInstances[i];
+            classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
+        }
+        classifier.evaluate(classifier.instances);
     }
 }

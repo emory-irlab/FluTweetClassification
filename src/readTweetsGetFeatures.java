@@ -103,7 +103,7 @@ public class readTweetsGetFeatures {
         TweetVector tweetVector = new TweetVector(tweet[0], tweet[1]);
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
-        //annotate with ARK POS tagger (remove emoticons and other twitter stylometry; Stanford CoreNLP separates emoticons)
+        //annotate with ARK POS tagger (remove emoticons and other twitter stylometry)
 
         //annotate with Stanford CoreNLP
         Annotation document = new Annotation(tweet[2]);

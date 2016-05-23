@@ -47,9 +47,9 @@ public class SelfVsOtherClassifier {
             maxEntClassifier = loadClassifier(classifierFile);
         }
 
-        //Self
-        targetAlphabet.lookupIndex("0", true);
         //Other
+        targetAlphabet.lookupIndex("0", true);
+        //Self
         targetAlphabet.lookupIndex("1", true);
         instances = new InstanceList(dataAlphabet, targetAlphabet);
     }

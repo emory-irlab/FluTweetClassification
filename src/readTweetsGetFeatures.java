@@ -184,15 +184,11 @@ public class readTweetsGetFeatures {
 
         //other features
 
-        //test - print features
-        System.out.println("TWEET FEATURES");
+        //test - print tweet
         Hashtable<String, Integer> featureValPairs = tweetVector.getFeatures();
-        Enumeration<String> features = featureValPairs.keys();
-        while (features.hasMoreElements()) {
-            String feature = features.nextElement();
-            int value = featureValPairs.get(feature);
-            System.out.println(feature+": "+value);
-        }
+        util.printStringFeaturesIntValuesFromHashtable(featureValPairs);
+        System.out.println("Tweet name: "+tweetVector.getName());
+        System.out.println("Tweet label: "+tweetVector.getLabel());
         System.out.println();
     }
 

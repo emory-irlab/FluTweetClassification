@@ -29,7 +29,6 @@ import cc.mallet.util.Randoms;
 
 public class SelfVsOtherClassifier {
 
-
     //Alphabet of features that StanCore extracted from the data
     Alphabet dataAlphabet = new Alphabet(8);
     //Target Labels pertinent to this classifier
@@ -47,6 +46,7 @@ public class SelfVsOtherClassifier {
         } else {
             maxEntClassifier = loadClassifier(classifierFile);
         }
+
         //Self
         targetAlphabet.lookupIndex("0", true);
         //Other
@@ -65,14 +65,12 @@ public class SelfVsOtherClassifier {
 
         while (features.hasMoreElements()) {
             String featureName = features.nextElement();
-
             featureValues[dataAlphabet.lookupIndex(featureName, true)] = (double) ((Integer) table.get(featureName)).intValue();
         }
-        Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
 
+        Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
         instances.add(new Target2Label(this.targetAlphabet).pipe(instance));
     }
-
 
     public Classifier trainClassifier(InstanceList trainingInstances) {
 
@@ -116,6 +114,7 @@ public class SelfVsOtherClassifier {
     }
 
     public void printLabelings(InstanceList testInstances) throws IOException {
+
         for (int i = 0; i < testInstances.size(); i++) {
             //Given an InstanceList, get the label for each instance that's been classified
             Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
@@ -126,31 +125,34 @@ public class SelfVsOtherClassifier {
                         labeling.getValueAtRank(rank) + " ");
             }
             System.out.println();
+            System.out.println("----------");
         }
     }
 
     public void evaluate(InstanceList testInstances) throws IOException {
+
         // Create an InstanceList that will contain the test data.
         // In order to ensure compatibility, process instances
         // with the pipe used to process the original training
         // instances.
 
+
         Trial trial = new Trial(maxEntClassifier, testInstances);
 
-        /*System.out.println("------------");
-
+        System.out.println("-----------");
         PrintWriter p = new PrintWriter(System.out);
-
+        ((MaxEnt)maxEntClassifier).print(p);
+        System.out.println("-----------");
         ((MaxEnt)maxEntClassifier).printRank(p);
-        p.close();
+        System.out.println("-----------");
 
-        System.out.println("------------");*/
-
-        //printLabelings(maxEntClassifier, testInstances);
+        printLabelings(testInstances);
 
         System.out.println("Accuracy: " + trial.getAccuracy());
-        System.out.println("F1 for class 'Self': " + trial.getF1(0));
-        System.out.println("Precision for class 'Self': " + trial.getPrecision(0));
+        System.out.println("F1 for class 'Self': " + trial.getF1(1));
+        System.out.println("F1 for class 'Other': " + trial.getF1(0));
+        System.out.println("Precision for class 'Self': " + trial.getPrecision(1));
+        System.out.println("Precision for class 'Other': " + trial.getPrecision(0));
     }
 
     public Trial testTrainSplit(InstanceList instances) {
@@ -179,4 +181,3 @@ public class SelfVsOtherClassifier {
         return new Trial(classifier, instanceLists[TESTING]);
     }
 }
-

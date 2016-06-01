@@ -9,19 +9,11 @@ import cc.mallet.types.InstanceList;
 public class runClassifierOnTweets {
 
     /*
-        Trains a human vs. non-human classifier on the given training data, then tests on the given training data.
+        Trains a classifier of the specified type on the given training data, then tests on the given training data.
         Saves the classifier to the file at the given path
     */
-    public static void runHumanVsNonHumanClassifier (ArrayList<String[]> trainingTweets, ArrayList<String[]> testTweets, String path) {
-
-    }
-
-    /*
-        Trains a self vs. other classifier on the given training data, then tests on the given training data.
-        Saves the classifier to the file at the given path
-    */
-    public static void runSelfVsOtherClassifier (ArrayList<String[]> trainingTweets, ArrayList<String[]> testTweets, String path) throws IOException, ClassNotFoundException {
-        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, "SelfVsOther");
+    public static void runClassifier (ArrayList<String[]> trainingTweets, ArrayList<String[]> testTweets, String path, String classifierType) throws IOException, ClassNotFoundException {
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
         SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(path);
@@ -57,7 +49,7 @@ public class runClassifierOnTweets {
         classifier.instances.clear();
 
         //get the test tweets
-        TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets);
+        TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets, classifierType);
         for (int i = 0; i < tweetVectors.length; i++) {
             TweetVector currentTweet = testingInstances[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
@@ -81,8 +73,9 @@ public class runClassifierOnTweets {
         ArrayList<String[]> trainingTweets = readTweetsGetFeatures.getTweets(args[0]);
         ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[1]);
 
-        runHumanVsNonHumanClassifier(trainingTweets, testTweets, args[2]);
-
+        runClassifier(trainingTweets, testTweets, args[2], "HumanVsNonHuman");
+        runClassifier(trainingTweets, testTweets, args[3], "EventVsNonEvent");
+        runClassifier(trainingTweets, testTweets, args[4], "SelfVsOther");
 
     }
 }

@@ -165,7 +165,7 @@ public class readTweetsGetFeatures {
         //collect features
         switch (classifierType) {
             case "HumanVsNonHuman": collectFeaturesHumanVsNonHuman(tweetVector, noNullPhrases); break;
-            case "EventVsNotEvent": collectFeaturesEventVsNotEvent(tweetVector, noNullPhrases); break;
+            case "EventVsNonEvent": collectFeaturesEventVsNotEvent(tweetVector, noNullPhrases); break;
             case "SelfVsOther": collectFeaturesSelfVsOther(tweetVector, noNullPhrases); break;
         }
         return tweetVector;
@@ -182,7 +182,7 @@ public class readTweetsGetFeatures {
         Obtain all features for the life event vs. not life event classifier
      */
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases) {
-        
+
     }
 
     /*

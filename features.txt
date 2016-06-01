@@ -14,7 +14,7 @@ No      Phrase template - (subject, object)
 No      Phrase template - (verb, object)
 No      First pronoun and last noun of phrase
 No      Phrase begins with verb?
-No      Numerical references (i.e. "so many", "everyone")
+No      Numerical references (have "CD" tag in Stan, "$" tag in ARK)
 No      Numerical references followed by word with the lemma "died"
 No      First pronoun/noun and last verb of phrase
 No      First noun/pronoun of phrase in "self" or "other" word classes?

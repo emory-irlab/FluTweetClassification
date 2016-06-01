@@ -62,7 +62,7 @@ public class readTweetsGetFeatures {
         BufferedReader reader = new BufferedReader(new FileReader(pathToTweetFile));
         String currentLine;
         while ((currentLine = reader.readLine()) != null) {
-            String[] split = currentLine.split("  ");
+            String[] split = currentLine.split("\t");
             if (split.length < 3) break;
             String text = "";
             for (int i = 2; i < split.length; i++) {
@@ -171,7 +171,6 @@ public class readTweetsGetFeatures {
         Obtain all features for the tweet vector
      */
     public static void collectFeaturesForTweet (TweetVector tweetVector, CoreLabel[][] phrases) {
-
         //the number of words/strings in each of the given word classes
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
         for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature);

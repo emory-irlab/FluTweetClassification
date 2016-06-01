@@ -1,12 +1,12 @@
 Done?   Feature name/type
 Yes     Word classes
-No      *Retweet
+Yes      *Retweet
 No      *Hashtag
 No      *Mentions of other users
-No      *Emoticons
-No      *Positive emoticons
-No      *Negative emoticons
-No      *URL
+Yes      *Emoticons
+Yes      *Positive emoticons
+Yes      *Negative emoticons
+Yes      *URL
 No      Word in phrase template matches word in one or more of the word classes
 No      Phrase template - (subject, verb, object)
 No      Phrase template - (subject, verb)

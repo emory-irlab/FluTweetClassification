@@ -76,9 +76,9 @@ public class readTweetsGetFeatures {
 
     /*
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
-        tweet
+        tweet using the features for the relevant type of classifier
      */
-    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets) {
+    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) {
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
@@ -87,7 +87,7 @@ public class readTweetsGetFeatures {
         //get tweet vector model
         TweetVector[] tweetVectors = new TweetVector[tweets.size()];
         for (int i = 0; i < tweets.size(); i++) {
-            tweetVectors[i] = getVectorModelFromTweet(tweets.get(i), pipeline);
+            tweetVectors[i] = getVectorModelFromTweet(tweets.get(i), pipeline, classifierType);
         }
         return tweetVectors;
     }
@@ -99,7 +99,7 @@ public class readTweetsGetFeatures {
         Input tweet is formatted as follows:
         {name, label, text}
      */
-    public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline) {
+    public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline, String classifierType) {
         TweetVector tweetVector = new TweetVector(tweet[0], tweet[1]);
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
@@ -163,14 +163,32 @@ public class readTweetsGetFeatures {
             noNullPhrases[i] = phrases[i];
         }
         //collect features
-        collectFeaturesForTweet(tweetVector, noNullPhrases);
+        switch (classifierType) {
+            case "HumanVsNonHuman": collectFeaturesHumanVsNonHuman(tweetVector, noNullPhrases); break;
+            case "EventVsNotEvent": collectFeaturesEventVsNotEvent(tweetVector, noNullPhrases); break;
+            case "SelfVsOther": collectFeaturesSelfVsOther(tweetVector, noNullPhrases); break;
+        }
         return tweetVector;
     }
 
     /*
-        Obtain all features for the tweet vector
+        Obtain all features for the human vs. non-human classifier
      */
-    public static void collectFeaturesForTweet (TweetVector tweetVector, CoreLabel[][] phrases) {
+    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] phrases) {
+
+    }
+
+    /*
+        Obtain all features for the life event vs. not life event classifier
+     */
+    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases) {
+        
+    }
+
+    /*
+        Obtain all features for the self vs. other classifier
+     */
+    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
         //the number of words/strings in each of the given word classes
         StringFeatureValuePair[] wordClassFeatures = getWordClassFeatures(phrases);
         for (StringFeatureValuePair feature: wordClassFeatures) tweetVector.addFeature(feature);
@@ -190,6 +208,8 @@ public class readTweetsGetFeatures {
         System.out.println("Tweet label: "+tweetVector.getLabel());
         System.out.println();
     }
+
+
 
     /*
         Obtain all features for an individual phrase

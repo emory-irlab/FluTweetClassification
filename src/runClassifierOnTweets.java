@@ -7,22 +7,24 @@ import cc.mallet.types.InstanceList;
  * Created by Alec Wolyniec on 4/26/16.
  */
 public class runClassifierOnTweets {
-    /*
-        From a path to a file containing tweet ids, tweet labels, and tweet texts separated by null characters,
-        construct and train a classifier, then use it to classify any given tweet data
 
-        Args:
-        0 - path to a file containing training tweets, one in each line (with its id, label, and text separated by double spaces)
-        1 - path to a file where the classifier will be stored
-        2 - path to a file containing test tweets, with the same format as the tweets in args[0]
+    /*
+        Trains a human vs. non-human classifier on the given training data, then tests on the given training data.
+        Saves the classifier to the file at the given path
     */
-    public static void main (String[] args) throws IOException, ClassNotFoundException {
-        //get the training tweets
-        ArrayList<String[]> trainingTweets = readTweetsGetFeatures.getTweets(args[0]);
-        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets);
+    public static void runHumanVsNonHumanClassifier (ArrayList<String[]> trainingTweets, ArrayList<String[]> testTweets, String path) {
+
+    }
+
+    /*
+        Trains a self vs. other classifier on the given training data, then tests on the given training data.
+        Saves the classifier to the file at the given path
+    */
+    public static void runSelfVsOtherClassifier (ArrayList<String[]> trainingTweets, ArrayList<String[]> testTweets, String path) throws IOException, ClassNotFoundException {
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, "SelfVsOther");
 
         //make the classifier
-        SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(args[1]);
+        SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(path);
         //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet
@@ -55,12 +57,32 @@ public class runClassifierOnTweets {
         classifier.instances.clear();
 
         //get the test tweets
-        ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[2]);
         TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets);
         for (int i = 0; i < tweetVectors.length; i++) {
             TweetVector currentTweet = testingInstances[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
         classifier.evaluate(classifier.instances);
+    }
+
+    /*
+        From a path to a file containing tweet ids, tweet labels, and tweet texts separated by null characters,
+        construct and train a classifier, then use it to classify any given tweet data
+
+        Args:
+        0 - path to a file containing training tweets, one in each line (with its id, label, and text separated by double spaces)
+        1 - path to a file containing test tweets, with the same format as the tweets in args[0]
+        2 - path to a file where the human vs. non-human classifier will be stored
+        3 - path to a file where the <relevant life event> vs. <non-relevant life event> classifier will be stored
+        4 - path to a file where the self vs. other classifier will be stored
+    */
+    public static void main (String[] args) throws IOException, ClassNotFoundException {
+        //get the training tweets
+        ArrayList<String[]> trainingTweets = readTweetsGetFeatures.getTweets(args[0]);
+        ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[1]);
+
+        runHumanVsNonHumanClassifier(trainingTweets, testTweets, args[2]);
+
+
     }
 }

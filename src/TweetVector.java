@@ -34,9 +34,9 @@ public class TweetVector {
 
     public Hashtable<String, Integer> getFeatures() { return features; } //enables modification
 
-    public void addFeature(StringFeatureValuePair feat) { //need to purge null entries
+    public void addFeature(String feature, int value) { //need to purge null entries
         //double if necessary
-        features.put(feat.getFeature(), feat.getValue());
+        features.put(feature, value);
     }
 
 }

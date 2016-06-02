@@ -3,6 +3,7 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.*;
 
+import javax.xml.soap.Text;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -80,7 +81,7 @@ public class readTweetsGetFeatures {
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
         tweet using the features for the relevant type of classifier
      */
-    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) {
+    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException{
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
@@ -101,21 +102,18 @@ public class readTweetsGetFeatures {
         Input tweet is formatted as follows:
         {name, label, text}
      */
-    public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline, String classifierType) {
+    public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline, String classifierType) throws IOException {
         TweetVector tweetVector = new TweetVector(tweet[0], tweet[1]);
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
         //annotate with ARK POS tagger (remove emoticons and other twitter stylometry)
+        ARKFeatures.loadModelStatically();
 
         //annotate with Stanford CoreNLP
         Annotation document = new Annotation(tweet[2]);
         pipeline.annotate(document);
 
         //collect phrases. When a phrase has been completed, collect features from it
-        /*
-            Delimit phrases by any of the following punctuation marks: . , " ' ( ) [ ] ! ? ;
-         */
-        String[] delimiters = {".", ",", "\"", "\'", "-LRB-", "-RRB-", "-LSB-", "-RSB-", "!", "?", ";", "``", "`", "''", "'", "-LCB-", "-RCB-"};
         List<CoreLabel> tokens = document.get(TokensAnnotation.class);
         CoreLabel[] phrase = new CoreLabel[1];
         int phraseCounter = 0;
@@ -135,28 +133,25 @@ public class readTweetsGetFeatures {
             }
 
             //start next phrase if the phrase is completed, or if there are no more tokens to collect
-            for (String delimiter: delimiters) {
-                if (text.equals(delimiter) || i == tokens.size() - 1) {
-                    CoreLabel[] noNullPhrase = new CoreLabel[phraseCounter];
-                    //remove null entries from phrase
-                    for (int j = 0; j < phraseCounter; j++) {
-                        noNullPhrase[j] = phrase[j];
-                    }
-                    //add phrase to phrase array
-                    phrases[numPhrases++] = noNullPhrase;
-                    //double phrase array if needed
-                    if (numPhrases == phrases.length) {
-                        CoreLabel[][] newPhrases = new CoreLabel[phrases.length * 2][];
-                        for (int j = 0; j < phrases.length; j++) {
-                            newPhrases[j] = phrases[j];
-                        }
-                        phrases = newPhrases;
-                    }
-                    //new phrase
-                    phrase = new CoreLabel[1];
-                    phraseCounter = 0;
-                    break;
+            if ((isPunctuation(token.originalText())) || i == tokens.size() - 1) {
+                CoreLabel[] noNullPhrase = new CoreLabel[phraseCounter];
+                //remove null entries from phrase
+                for (int j = 0; j < phraseCounter; j++) {
+                    noNullPhrase[j] = phrase[j];
                 }
+                //add phrase to phrase array
+                phrases[numPhrases++] = noNullPhrase;
+                //double phrase array if needed
+                if (numPhrases == phrases.length) {
+                    CoreLabel[][] newPhrases = new CoreLabel[phrases.length * 2][];
+                    for (int j = 0; j < phrases.length; j++) {
+                        newPhrases[j] = phrases[j];
+                    }
+                    phrases = newPhrases;
+                }
+                //new phrase
+                phrase = new CoreLabel[1];
+                phraseCounter = 0;
             }
         }
         //remove null entries from phrases
@@ -175,24 +170,25 @@ public class readTweetsGetFeatures {
 
     /*
         Obtain all features for the human vs. non-human classifier
-     */
+    */
     public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] phrases, String tweetText) {
-        //self and others word classes
-        tweetVector.addFeature(getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature(getFeatureForWordClass(phrases, "Others"));
-
-        //number of phrases ending in exclamation points
-        tweetVector.addFeature(getFeatureForNumberOfExclamations(tweetText));
-        //multiple exclamation points, multiple question marks?
-        tweetVector.addFeature(getFeatureForMultipleExclamationsQuestions(tweetText));
-
+        tweetVector.addFeature("Word classes-Self", getFeatureForWordClass(phrases, "Self"));
+        tweetVector.addFeature("Word classes-Others", getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Number of phrases ending in exclamations", getFeatureForNumberOfExclamations(tweetText));
+        tweetVector.addFeature("Multiple exclamations, multiple question marks", getFeatureForMultipleExclamationsQuestions(tweetText));
+        tweetVector.addFeature("Check x out string", TextFeatures.checkOutFeature(tweetText));
+        tweetVector.addFeature("Mentions of users", TextFeatures.containsAt(tweetText));
+        tweetVector.addFeature("The word 'deal'", TextFeatures.containsDeal(tweetText));
+        tweetVector.addFeature("The word 'link'", TextFeatures.containsLink(tweetText));
+        //tweetVector.addFeature("URL links", TextFeatures.containsURL(tweetText));
+        //tweetVector.addFeature("Tweet is a question", TextFeatures.isQuestionTweet(tweetText));
+        tweetVector.addFeature("Personal plural pronouns", TextFeatures.numPluralPersonalPronouns(tweetText));
     }
 
     /*
         Obtain all features for the life event vs. not life event classifier
      */
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, String tweetText) {
-        //StringFeatureValuePair
 
     }
 
@@ -202,13 +198,13 @@ public class readTweetsGetFeatures {
     public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases, String tweetText) {
         //the number of words/strings in each of the given word classes
         for (String[] aClass: wordClasses) {
-            tweetVector.addFeature(getFeatureForWordClass(phrases, aClass[0]));
+            tweetVector.addFeature("Word classes-"+aClass[0], getFeatureForWordClass(phrases, aClass[0]));
         }
 
         //phrase-based features
         for (CoreLabel[] phrase: phrases) {
-            ArrayList<StringFeatureValuePair> featuresForPhrase = collectFeaturesForPhrase(phrase);
-            for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i));
+            //ArrayList<StringFeatureValuePair> featuresForPhrase = collectFeaturesForPhrase(phrase);
+            //for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i));
         }
 
         //other features
@@ -226,6 +222,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for an individual phrase
      */
+    /*
     public static ArrayList<StringFeatureValuePair> collectFeaturesForPhrase(CoreLabel[] phrase) {
         ArrayList<StringFeatureValuePair> featuresForPhrase = new ArrayList<StringFeatureValuePair>();
 
@@ -235,10 +232,12 @@ public class readTweetsGetFeatures {
 
         return featuresForPhrase;
     }
+    */
 
     /*
         Obtain all template-based features for a phrase
      */
+    /*
     public static ArrayList<StringFeatureValuePair> collectFeaturesForPhraseTemplates(CoreLabel[] phrase) {
         ArrayList<StringFeatureValuePair> featuresForTemplate = new ArrayList<StringFeatureValuePair>();
         //get templates
@@ -246,6 +245,7 @@ public class readTweetsGetFeatures {
 
         return featuresForTemplate;
     }
+    */
 
     /*
         Get specified part-of-speech templates for a single phrase
@@ -258,13 +258,27 @@ public class readTweetsGetFeatures {
         return new String[0];
     }
 
+    public static boolean isPunctuation(String input) {
+        char[] punctuation = {'.', ',', '"', '\'', '(', ')', '[', ']', '!', '?', ';', '`', '{', '}'};
+        for (int i = 0; i < input.length(); i++) {
+            boolean thisChar = false;
+            for (char mark: punctuation) {
+                if (input.charAt(i) == mark) {
+                    thisChar = true;
+                    break;
+                }
+            }
+            if (!thisChar) return false;
+        }
+        return true;
+    }
+
     /*
-        Count the number of words/strings in each of the given word classes. Create features accordingly, one for
-        each word class
+        Count the number of words/strings in the given word class
      */
-    public static StringFeatureValuePair getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) {
+    public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) {
         //initialize
-        StringFeatureValuePair wordClassFeature = new StringFeatureValuePair("Word classes-"+relevantClassName);
+        int counter = 0;
         String[] relevantWordClass = new String[1];
         for (String[] aClass: wordClasses) {
             if (aClass[0].equals(relevantClassName)) {
@@ -276,7 +290,6 @@ public class readTweetsGetFeatures {
             System.err.println("ERROR: Word class requested,"+relevantClassName+", does not exist.");
             System.exit(1);
         }
-
         //go over each phrase
         for (CoreLabel[] phrase: phrases) {
             //go through each word in the phrase
@@ -320,46 +333,39 @@ public class readTweetsGetFeatures {
                     }
                     //match
                     if (stringToMatch.equalsIgnoreCase(stringInPhraseCopy)) {
-                        wordClassFeature.incrementValue(1);
+                        counter++;
                         //System.out.println("Matched string "+stringInPhraseCopy+" from base string "+stringInPhrase+" to string "+stringToMatch+" in word class "+relevantWordClass[0]);
                     }
                 }
             }
         }
-        //for testing purposes
-        /*
-        System.out.println("PRINTING WORD CLASS FEATURES:");
-        for (StringFeatureValuePair pair: wordClassFeatures) {
-            System.out.println(pair.getFeature()+": "+pair.getValue());
-        }
-        */
-        return wordClassFeature;
+        return counter;
     }
 
     /*
         Counts the number of phrases ending in a single or multiple exclamation points
      */
-    public static StringFeatureValuePair getFeatureForNumberOfExclamations(String tweet) {
-        StringFeatureValuePair feature = new StringFeatureValuePair("Number of phrases ending in exclamations");
+    public static int getFeatureForNumberOfExclamations(String tweet) {
+        int count = 0;
         Pattern pattern = Pattern.compile("!+");
         Matcher matcher = pattern.matcher(tweet);
         while (matcher.find()) {
-            feature.incrementValue(1);
+            count++;
         }
-        return feature;
+        return count;
     }
 
     /*
         Checks to see how many times the tweet contains strings of multiple exclamation points together and strings of
         multiple question marks together
      */
-    public static StringFeatureValuePair getFeatureForMultipleExclamationsQuestions(String tweet) {
-        StringFeatureValuePair feature = new StringFeatureValuePair("Multiple exclamations, multiple question marks");
+    public static int getFeatureForMultipleExclamationsQuestions(String tweet) {
+        int count = 0;
         Pattern pattern = Pattern.compile("(!{2,})|(\\?{2,})");
         Matcher matcher = pattern.matcher(tweet);
         while (matcher.find()) {
-            feature.incrementValue(1);
+            count++;
         }
-        return feature;
+        return count;
     }
 }

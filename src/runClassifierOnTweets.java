@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import edu.berkeley.nlp.classify.MaximumEntropyClassifier;
 
 /**
  * Created by Alec Wolyniec on 4/26/16.
@@ -16,7 +17,7 @@ public class runClassifierOnTweets {
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
-        SelfVsOtherClassifier classifier = new SelfVsOtherClassifier(path);
+        MaxEntClassification classifier = new MaxEntClassification(path);
         //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet
@@ -50,9 +51,8 @@ public class runClassifierOnTweets {
 
         //get the test tweets
         TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets, classifierType);
-        for (int i = 0; i < tweetVectors.length; i++) {
-            TweetVector currentTweet = testingInstances[i];
-            classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
+        for (TweetVector tweet: testingInstances) {
+            classifier.addToInstanceList(tweet.getFeatures(), tweet.getName(), tweet.getLabel());
         }
         classifier.evaluate(classifier.instances);
     }

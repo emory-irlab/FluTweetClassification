@@ -66,7 +66,7 @@ public class TweetParser {
                 //Write UTF-8 encoded tweet text to file
                 //This will be replaced as writing the data to the file.
                 if (!tweet.equals("")) {
-                    tweetToFile.write(id + "  " + label + "  " + tweet);
+                    tweetToFile.write(id + "\t" + label + "\t" + tweet);
                     tweetToFile.newLine();
                 }
 

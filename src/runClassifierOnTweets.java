@@ -46,7 +46,7 @@ public class runClassifierOnTweets {
         }
         */
 
-        classifier.instances.clear();
+        classifier.clearInstances();
 
         //get the test tweets
         TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets, classifierType);
@@ -74,8 +74,8 @@ public class runClassifierOnTweets {
         ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[1]);
 
         runClassifier(trainingTweets, testTweets, args[2], "HumanVsNonHuman");
-        runClassifier(trainingTweets, testTweets, args[3], "EventVsNonEvent");
-        runClassifier(trainingTweets, testTweets, args[4], "SelfVsOther");
+        //runClassifier(trainingTweets, testTweets, args[3], "EventVsNonEvent");
+        //runClassifier(trainingTweets, testTweets, args[4], "SelfVsOther");
 
     }
 }

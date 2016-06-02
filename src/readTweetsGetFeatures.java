@@ -36,7 +36,7 @@ public class readTweetsGetFeatures {
          2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
            word being scanned, and not the word itself
      */
-    private static String[][] wordClasses = {
+    private static String[][] wordClasses = { //need to refine for split words (namely those involving apostrophes)
             {"Infection",
                 "getting", "got", "recovered", "have", "having", "had", "has", "catching", "catch", "cured", "infected"},
             {"Possession",
@@ -52,7 +52,7 @@ public class readTweetsGetFeatures {
             {"Self",
                 "I", "I've", "I'd", "I'm", "im", "my", "me"},
             {"Others",
-                "your", "everyone", "you", "it", "its", "u", "her", "he", "she", "he's", "she's", "they", "you're",
+                "your", "everyone", "you", "it", "its", "u", "her", "he", "she", "he's", "she's", "they", "'re"/* as in "you're"*/,
                 "she'll", "he'll", "husband", "wife", "brother", "sister", "people", "kid", "kids", "children",
                 "son", "daughter"}
     };
@@ -174,7 +174,7 @@ public class readTweetsGetFeatures {
     public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] phrases, String tweetText) {
         tweetVector.addFeature("Word classes-Self", getFeatureForWordClass(phrases, "Self"));
         tweetVector.addFeature("Word classes-Others", getFeatureForWordClass(phrases, "Others"));
-        tweetVector.addFeature("Number of phrases ending in exclamations", getFeatureForNumberOfExclamations(tweetText));
+        tweetVector.addFeature("Number of phrases ending in exclamations", getFeatureForNumberOfExclamationPhrases(tweetText));
         tweetVector.addFeature("Multiple exclamations, multiple question marks", getFeatureForMultipleExclamationsQuestions(tweetText));
         tweetVector.addFeature("Check x out string", TextFeatures.checkOutFeature(tweetText));
         tweetVector.addFeature("Mentions of users", TextFeatures.containsAt(tweetText));
@@ -182,7 +182,7 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("The word 'link'", TextFeatures.containsLink(tweetText));
         //tweetVector.addFeature("URL links", TextFeatures.containsURL(tweetText));
         //tweetVector.addFeature("Tweet is a question", TextFeatures.isQuestionTweet(tweetText));
-        tweetVector.addFeature("Personal plural pronouns", TextFeatures.numPluralPersonalPronouns(tweetText));
+        //tweetVector.addFeature("Personal plural pronouns", TextFeatures.numPluralPersonalPronouns(tweetText));
     }
 
     /*
@@ -345,7 +345,7 @@ public class readTweetsGetFeatures {
     /*
         Counts the number of phrases ending in a single or multiple exclamation points
      */
-    public static int getFeatureForNumberOfExclamations(String tweet) {
+    public static int getFeatureForNumberOfExclamationPhrases(String tweet) {
         int count = 0;
         Pattern pattern = Pattern.compile("!+");
         Matcher matcher = pattern.matcher(tweet);

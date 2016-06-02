@@ -13,16 +13,37 @@ public class TextFeatures {
 
     public static String[] verbsWithLink = {"follow", "check", "go"};
 
+    /*
+       Binary feature to see if the string contains "check out" (or some form of "check" along with "out),
+       with at least a non-word character separating the two
+    */
     public static int checkOutFeature(String tweet) {
+        tweet = tweet.toLowerCase();
+        Pattern pattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
+        Matcher matcher = pattern.matcher(tweet);
+        //if a "check x out" group has been found
+        while (matcher.find()) {
+            String spaceBetween = matcher.group(7);
+            Pattern pattern2 = Pattern.compile("\\s");
+            Matcher matcher2 = pattern2.matcher(spaceBetween);
+            int counter = 0;
+            //count the number of spaces between "check" and "out"
+            while (matcher2.find()) counter++;
+            if (counter < 4) return 1;
+        }
 
+        /*
         //find either the word check or out first, determine number of words
         //between them using white space
+        if (tweet.contains("check"))
+
 
         if (tweet.indexOf("check") != -1 && tweet.indexOf("out") != -1) {
             if (tweet.indexOf("check") < tweet.indexOf("out")) {
                 return 1;
             }
         }
+        */
         return 0;
     }
 
@@ -107,7 +128,7 @@ public class TextFeatures {
     }
 	
 	/*
-	 * TODO: Method needs refining
+	 * TODO: Method needs refining, finds character sequences and not necessarily words
 	 * 
 	 * Counts number of personal plural pronouns
 	 * */

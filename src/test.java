@@ -5,25 +5,29 @@ import java.util.regex.Pattern;
  * Created by Alec Wolyniec on 4/17/16.
  */
 public class test {
-    public static int containsMention(String tweet) {
-        int in = tweet.indexOf('@');
-        while (in != -1) {
-            String after = tweet.substring(Math.min(in+1, tweet.length()), Math.min(in+10, tweet.length()));
-            Pattern pattern = Pattern.compile(" ?https?://");
-            Matcher matcher = pattern.matcher(after);
-            //if there is no http(s):// right after the "@", count as user mention
-            if (!matcher.find() || matcher.start() > 0) return 1;
+    public static int containsURL(String tweet) {
+		/*
+		 * NOTICE: More sophisticated pattern, however was unable to pass simple test.
+		 * Could be on my part.
+		 * */
+        //Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
+		/*Pattern locateURL = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+		Matcher URLFinder = locateURL.matcher(tweet);*/
 
-            in = tweet.indexOf('@', in+1);
+        Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+        //Pattern detectURL = Pattern.compile("(http)|(https)|(.com)|(.gov)|(.org)");
+        Matcher URLdetector = detectURL.matcher(tweet);
+
+        if (URLdetector.find()) {
+            return 1;
         }
         return 0;
     }
 
     public static void main (String[] args) {
-        System.out.println(containsMention(" baba booey @ducknado777"));
-        System.out.println(containsMention(" eyy ey oo @  dsji @https://co.mpa.com"));
-        System.out.println(containsMention("@a http://"));
-        System.out.println(containsMention("@ManUtd Supporters Club | http://"));
-        System.out.println(containsMention(""));
+        System.out.println(containsURL("I am a little teapot short and stout, this is my http://www.dankmemes.org"));
+        System.out.println(containsURL("httpr://mybluestud.com"));
+        System.out.println(containsURL("Visit us at http://instagr.am/dougiefresh"));
+        System.out.println(containsURL("@ http://t.co/cTvyaQFaj5"));
     }
 }

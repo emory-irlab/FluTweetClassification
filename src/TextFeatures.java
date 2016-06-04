@@ -53,7 +53,7 @@ public class TextFeatures {
         return 0;
     }
 
-    //accuracy for containsMention is a bit lower than for containsAt
+    //accuracy for containsMention is a bit lower than for containsAt, when URLs are not already taken
     public static int containsMention(String tweet) {
         int in = tweet.indexOf('@');
         while (in != -1) {
@@ -94,15 +94,12 @@ public class TextFeatures {
 
 
     public static int containsURL(String tweet) {
-		/*
-		 * NOTICE: More sophisticated pattern, however was unable to pass simple test.
-		 * Could be on my part.
-		 * */
         //Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-		/*Pattern locateURL = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+		/*Pattern locateURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
 		Matcher URLFinder = locateURL.matcher(tweet);*/
 
-        Pattern detectURL = Pattern.compile("(http)|(https)|(.com)|(.gov)|(.org)");
+        Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+        //Pattern detectURL = Pattern.compile("(http)|(https)|(.com)|(.gov)|(.org)");
         Matcher URLdetector = detectURL.matcher(tweet);
 
         if (URLdetector.find()) {

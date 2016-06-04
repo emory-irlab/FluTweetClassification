@@ -13,7 +13,7 @@ public class runClassifierOnTweets {
         Trains a classifier of the specified type on the given training data, then tests on the given training data.
         Saves the classifier to the file at the given path
     */
-    public static void runClassifier (ArrayList<String[]> trainingTweets, ArrayList<String[]> testTweets, String path, String classifierType) throws IOException, ClassNotFoundException {
+    public static void runClassifier (ArrayList<String[]> trainingTweets, String path, String classifierType) throws IOException, ClassNotFoundException {
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
@@ -24,9 +24,9 @@ public class runClassifierOnTweets {
             TweetVector currentTweet = tweetVectors[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
+        InstanceList testInstances = classifier.split(classifier.instances);
         classifier.trainClassifier(classifier.instances);
         classifier.saveClassifier(classifier.classifierFile);
-
         //for testing purposes
         /*
          //observe all data in the InstanceList
@@ -46,15 +46,8 @@ public class runClassifierOnTweets {
             System.out.println();
         }
         */
-
         classifier.clearInstances();
-
-        //get the test tweets
-        TweetVector[] testingInstances = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets, classifierType);
-        for (TweetVector tweet: testingInstances) {
-            classifier.addToInstanceList(tweet.getFeatures(), tweet.getName(), tweet.getLabel());
-        }
-        classifier.evaluate(classifier.instances);
+        classifier.evaluate(testInstances);
     }
 
     /*
@@ -62,20 +55,21 @@ public class runClassifierOnTweets {
         construct and train a classifier, then use it to classify any given tweet data
 
         Args:
-        0 - path to a file containing training tweets, one in each line (with its id, label, and text separated by double spaces)
-        1 - path to a file containing test tweets, with the same format as the tweets in args[0]
-        2 - path to a file where the human vs. non-human classifier will be stored
+        0 - path to a file containing HvN tweets, one in each line (with its id, label, and text separated by double spaces)
+        1 - path to a file where the human vs. non-human classifier will be stored
+        2 - path to a file containing EvNE tweets
         3 - path to a file where the <relevant life event> vs. <non-relevant life event> classifier will be stored
-        4 - path to a file where the self vs. other classifier will be stored
+        4 - path to a file containing SvO tweets
+        5 - path to a file where the self vs. other classifier will be stored
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException {
         //get the training tweets
-        ArrayList<String[]> trainingTweets = readTweetsGetFeatures.getTweets(args[0]);
-        ArrayList<String[]> testTweets = readTweetsGetFeatures.getTweets(args[1]);
-
-        runClassifier(trainingTweets, testTweets, args[2], "HumanVsNonHuman");
-        //runClassifier(trainingTweets, testTweets, args[3], "EventVsNonEvent");
-        //runClassifier(trainingTweets, testTweets, args[4], "SelfVsOther");
+        ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
+        runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
+        //ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(args[2]);
+        //runClassifier(trainingTweets, args[3], "EventVsNonEvent");
+        //ArrayList<String[]> SvOTweets = readTweetsGetFeatures.getTweets(args[4]);
+        //runClassifier(trainingTweets, args[5], "SelfVsOther");
 
     }
 }

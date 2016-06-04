@@ -61,5 +61,8 @@
     <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
     <orderEntry type="library" name="Maven: org.jdom:jdom:1.1" level="project" />
     <orderEntry type="library" name="ark-tweet-nlp-0.3.2" level="project" />
+    <orderEntry type="library" name="java" level="project" />
+    <orderEntry type="library" name="commons-csv-1.4" level="project" />
+    <orderEntry type="library" name="commons-csv-1.4-sources" level="project" />
   </component>
 </module>

@@ -18,13 +18,21 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
-
+/*
+    From a file containing a tweet ID and a tweet label in every line, separated by tabs, produces a CSV file of tweets
+ */
 public class TweetParser {
 	/*
 	 * First arg is path to file with IDs
 	 * Second arg is path where tweetFile should be saved
 	 * 
 	 * */
+
+    /*
+        Tweet format (csv):
+        profile pic, handle, name, description, tweet, HvN label, EvN label, SvO label
+        -data containing commas
+     */
 
     static final String CONSUMER_KEY = "Yn2MuM201XbTBeX1lx8DiEYvA";
     static final String CONSUMER_SECRET = "1dIRD2WmDjlQB7ehT1SQ0VNM8kuo1DhFLRYg9JYCXw598wYIQJ";

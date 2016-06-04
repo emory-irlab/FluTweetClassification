@@ -48,8 +48,22 @@ public class TextFeatures {
     }
 
     public static int containsAt(String tweet) {
-        if (tweet.contains("@")){
-            return 1;
+        if (tweet.contains("@")) return 1;
+
+        return 0;
+    }
+
+    //accuracy for containsMention is a bit lower than for containsAt
+    public static int containsMention(String tweet) {
+        int in = tweet.indexOf('@');
+        while (in != -1) {
+            String after = tweet.substring(Math.min(in+1, tweet.length()), Math.min(in+10, tweet.length()));
+            Pattern pattern = Pattern.compile(" ?https?://");
+            Matcher matcher = pattern.matcher(after);
+            //if there is no http(s):// right after the "@", count as user mention
+            if (!matcher.find() || matcher.start() > 0) return 1;
+
+            in = tweet.indexOf('@', in+1);
         }
         return 0;
     }

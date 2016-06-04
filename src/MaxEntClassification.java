@@ -165,8 +165,9 @@ public class MaxEntClassification {
         System.out.println();
         p.close();
     }
-    
-    public Trial testTrainSplit(InstanceList instances) {
+
+
+    public InstanceList split(InstanceList instances) {
 
         int TRAINING = 0;
         int TESTING = 1;
@@ -186,10 +187,9 @@ public class MaxEntClassification {
         //  when to stop training and for estimating optimal                                               
         //  settings of nuisance parameters.                                                               
         //  Most Mallet ClassifierTrainers can not currently take advantage                                 
-        //  of validation sets.                                                                            
-
-        Classifier classifier = trainClassifier(instanceLists[TRAINING]);
-        return new Trial(classifier, instanceLists[TESTING]);
+        //  of validation sets.
+        this.instances = instanceLists[TRAINING];
+        return instanceLists[TESTING];
     }
 }
 

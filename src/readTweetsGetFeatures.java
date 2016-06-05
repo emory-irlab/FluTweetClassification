@@ -211,8 +211,8 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("The word 'deal'", TextFeatures.containsDeal(text));
         tweetVector.addFeature("The word 'link'", TextFeatures.containsLink(text));
         tweetVector.addFeature("URL links", TextFeatures.containsURL(text));
-
         //tweetVector.addFeature("Tweet is a question", TextFeatures.isQuestionTweet(text));
+
         //tweetVector.addFeature("Personal plural pronouns", TextFeatures.numPluralPersonalPronouns(text));
     }
 

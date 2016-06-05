@@ -1,24 +1,33 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TextFeatures {
 	
 	/*
-	 * TODO: Use of plural personal programs insinuates individuals,
-	 * not a single person. 
-	 * 
 	 * TODO: containsTimes/containsDates
-	 * 
+	 *       Names dictionary lookup method
 	 * */
+	
+	public static String[] verbsWithLink = {"follow", "check", "go"};
+	public static HashSet<String> firstNames = new HashSet<String>();
+	
+	//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
+	public static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+	public static Matcher URLdetector;
 
-    public static String[] verbsWithLink = {"follow", "check", "go"};
-
-    /*
-       Binary feature to see if the string contains "check out" (or some form of "check" along with "out),
-       with at least a non-word character separating the two
-    */
-    public static int checkOutFeature(String tweet) {
-        tweet = tweet.toLowerCase();
+	public static int checkOutFeature(String tweet) {
+		
+		//find either the word check or out first, determine number of words
+		//between them using white space
+		
+		tweet = tweet.toLowerCase();
         Pattern pattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
         Matcher matcher = pattern.matcher(tweet);
         //if a "check x out" group has been found
@@ -31,58 +40,52 @@ public class TextFeatures {
             while (matcher2.find()) counter++;
             if (counter < 4) return 1;
         }
-
-        /*
-        //find either the word check or out first, determine number of words
-        //between them using white space
-        if (tweet.contains("check"))
-
-
-        if (tweet.indexOf("check") != -1 && tweet.indexOf("out") != -1) {
-            if (tweet.indexOf("check") < tweet.indexOf("out")) {
-                return 1;
-            }
-        }
-        */
-        return 0;
-    }
-
-    public static int containsAt(String tweet) {
-        if (tweet.contains("@")) return 1;
-
-        return 0;
-    }
-
-    //accuracy for containsMention is a bit lower than for containsAt, when URLs are not already taken
-    public static int containsMention(String tweet) {
-        int in = tweet.indexOf('@');
-        while (in != -1) {
-            String after = tweet.substring(Math.min(in+1, tweet.length()), Math.min(in+10, tweet.length()));
-            Pattern pattern = Pattern.compile(" ?https?://");
-            Matcher matcher = pattern.matcher(after);
-            //if there is no http(s):// right after the "@", count as user mention
-            if (!matcher.find() || matcher.start() > 0) return 1;
-
-            in = tweet.indexOf('@', in+1);
-        }
-        return 0;
-    }
-
-    public static int containsDeal(String tweet) {
-
-        if (tweet.toLowerCase().contains("deal")) {
-            return 1;
-        }
-        return 0;
-    }
-
-    public static int containsLink(String tweet) {
-
-        if (tweet.toLowerCase().contains("link")) {
-            return 1;
-        }
-        return 0;
-    }
+		return 0;
+	}
+	
+	public static int containsAt(String tweet) {
+		if (tweet.contains("@")){
+			return 1;
+		}
+		return 0;
+	}
+	
+	public static int containsDeal(String tweet) {
+		
+		if (tweet.toLowerCase().contains("deal")) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	/*
+	 * Checks if the first name of the user
+	 * appears in a large list of human first names.
+	 * 
+	 * TODO: Test method and make sure it retains the loaded namelist
+	 * throughout method calls.
+	 * 
+	 * */
+	
+	public static int containsHumanName(String name) {
+		
+		if (firstNames.isEmpty()) {
+			initializeFirstNames();
+		}
+		
+		if (firstNames.contains(name)) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	public static int containsLink(String tweet) {
+		
+		if (tweet.toLowerCase().contains("link")) {
+			return 1;
+		}
+		return 0;
+	}
 	
 	/*
 	 * Fairly primitive method for detecting URLs in a tweet.
@@ -91,102 +94,158 @@ public class TextFeatures {
 	 * Reasoning: Corporations or government organizations etc. almost
 	 * always put URLs in their Tweets.
 	 * */
-
-
-    public static int containsURL(String tweet) {
-        //Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-		/*Pattern locateURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
-		Matcher URLFinder = locateURL.matcher(tweet);*/
-
-        Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
-        //Pattern detectURL = Pattern.compile("(http)|(https)|(.com)|(.gov)|(.org)");
-        Matcher URLdetector = detectURL.matcher(tweet);
-
-        if (URLdetector.find()) {
-            return 1;
-        }
-        return 0;
-    }
-
-    //needs to be fixed
-    public static int isQuestionTweet(String tweet) {
-
-        int sentenceCount = 0;
-        int questionCount = 0;
-        int URLCount = 0;
-
-        if (containsURL(tweet) == 1) {
-            tweet = tweet.substring(0, tweet.indexOf("http")); //the URL isn't always at the end
-            URLCount++;
-        }
-
-        Pattern p = Pattern.compile("[.?!]");
-        Matcher endOfSentence = p.matcher(tweet);
-
-        while (endOfSentence.find()) {
-
-            sentenceCount++;
-
-            if (endOfSentence.group().equals("?")) {
-                questionCount++;
-            }
-        }
-
-        if(sentenceCount == 1 && questionCount == 1 && URLCount == 1) {
-            return 1;
-        }
-        return 0;
-    }
+	
+	public static int containsURL(String tweet) {
+		
+		URLdetector = detectURL.matcher(tweet);
+		
+		if (URLdetector.find()) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	public static int getURLIndex(String tweet) {
+		
+		URLdetector = detectURL.matcher(tweet);
+				
+		if (URLdetector.find()) {
+			return URLdetector.start();
+		}
+		return -1;
+	}
+	
+	public static void initializeFirstNames() {
+		/*
+		 * TODO: Adjust file so it can be run on any computer.
+		 * 
+		 * */
+		File names = new File("..\\src\\FirstNames.txt");
+		BufferedReader b;
+		
+		try {
+			b = new BufferedReader(new FileReader(names));
+			String currentName = "";
+			while ((currentName = b.readLine()) != null) {
+				firstNames.add(currentName);
+			}
+			
+		}
+		catch(FileNotFoundException f) {
+			System.out.println("ERROR: " + f.getMessage());
+		}
+		catch(IOException e) {
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
 	
 	/*
-	 * TODO: Method needs refining, finds character sequences and not necessarily words
+	 * A "Question Tweet" is one of the following format:
+	 * From EMC^2 twitterfeed:
+	 * "What should be your first step to modernize your data center?
+	 * @guychurchward explains http://emc.im/6010BSrfE"
+	 * */
+	
+	public static int isQuestionTweet(String tweet) {
+		
+		int sentenceCount = 0;
+		int questionCount = 0;
+		int URLCount = 0;
+		
+		if (containsURL(tweet) == 1) {
+			tweet = removeURL(tweet);
+			URLCount++;
+		}
+		
+		Pattern p = Pattern.compile("[.?!]");
+		Matcher endOfSentence = p.matcher(tweet);
+		
+		while (endOfSentence.find()) {
+			
+			sentenceCount++;
+			
+			if (endOfSentence.group().equals("?")) {
+				questionCount++;
+			}
+		}
+		
+		if(sentenceCount == 1 && questionCount == 1 && URLCount == 1) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	/*
+	 * Checks to see if all text in a tweet is uppercase
+	 * */
+	
+	public static int isAllUpperCase(String tweet) {
+		
+		tweet = removeURL(tweet);
+		
+		for (int i = 0; i < tweet.length(); i++) {
+			if (!Character.isUpperCase(tweet.charAt(i))) {
+				return 0;
+			}
+		}
+		return 1;
+	}
+	
+	public static ArrayList<String> getHashtags(String tweet) {
+		
+		Pattern hashtagPattern = Pattern.compile("#(\\w+)");
+		Matcher matcher = hashtagPattern.matcher(tweet);
+		ArrayList<String> hashtags = new ArrayList<String>();
+		
+		while (matcher.find()) {
+		    hashtags.add(matcher.group(1));
+		}
+		return hashtags;
+	}
+	
+	
+	/*
+	 * TODO: Method needs refining
 	 * 
 	 * Counts number of personal plural pronouns
 	 * */
-
-    public static int numPluralPersonalPronouns(String tweet) {
-
-        Pattern pluralPersonalPronounsLocator = Pattern.compile("(we)|(us)|(ourselves)|(our)");
-        Matcher m = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
-        int count = 0;
-
-        while (m.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    /*
-     * TODO: Find way to determine start of URL
-     * 		 DO NOT USE METHOD OTHERWISE
-     * */
-    public static String removeURL(String tweet) {
-		/*
-		//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-		Pattern locateURL = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
-		Matcher URLFinder = locateURL.matcher(tweet);*/
-        Pattern detectURL = Pattern.compile("((http)|(https)|(.com)|(.gov)|(.org))");
-        Matcher URLFinder = detectURL.matcher(tweet);
-
-        if (URLFinder.find()) {
-            tweet = tweet.substring(0, URLFinder.start());
-        }
-
-        return tweet;
-    }
+	
+	public static int numPluralPersonalPronouns(String tweet) {
+		
+		Pattern pluralPersonalPronounsLocator = Pattern.compile("(we)|(us)|(ourselves)|(our)");
+		Matcher m = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
+		int count = 0;
+		
+		while (m.find()) {
+			count++;
+		}
+		return count;
+	}
+	
+	public static String removeURL(String tweet) {
+		
+		URLdetector = detectURL.matcher(tweet);
+//		Pattern detectURL = Pattern.compile("((http)|(https)|(.com)|(.gov)|(.org))");
+//		Matcher URLFinder = detectURL.matcher(tweet);
+		
+		if (URLdetector.find()) {
+			tweet = tweet.substring(0, URLdetector.start());
+		}
+		return tweet;
+	}
 	
 	/*
 	 * One may already have the index of the URL and would like it removed.
 	 * This just skips a few steps of the alternate version.
 	 * */
-
-    public static String removeURL(String tweet, int index) {
-        return tweet.substring(0, index);
-    }
-
-    /**
-     * TODO: Rewrite method to find verb in same sentence with link
-     * */
+	
+	public static String removeURL(String tweet, int index) {
+		return tweet.substring(0, index);
+	}
+	
+	/**
+	 * TODO: Rewrite method to find verb in same sentence with link
+	 * */
 	
 	/*public static int verbAndLink(String tweet) {
 		
@@ -199,5 +258,5 @@ public class TextFeatures {
 		}
 		return 0;
 	}*/
-
+	
 }

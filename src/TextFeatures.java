@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Iterator;
 
 public class TextFeatures {
 	
@@ -50,7 +51,7 @@ public class TextFeatures {
 		return 0;
 	}
 
-    //accuracy for containsMention is a bit lower than for containsAt, when URLs are not already taken
+    //accuracy for containsMention is a bit lower than for containsAt
     public static int containsMention(String tweet) {
         int in = tweet.indexOf('@');
         while (in != -1) {
@@ -82,15 +83,21 @@ public class TextFeatures {
 	 * 
 	 * */
 	
-	public static int containsHumanName(String name) {
+	public static int containsCommonFirstName(String name) { //need to normalize to lowercase, possibly take out some chars
+        Pattern pattern = Pattern.compile("(^([a-zA-Z]+)( |$))");
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) name = matcher.group(2).toLowerCase();
 		
 		if (firstNames.isEmpty()) {
 			initializeFirstNames();
 		}
-		
-		if (firstNames.contains(name)) {
-			return 1;
-		}
+		Iterator<String> names = firstNames.iterator();
+        while (names.hasNext()) {
+            String nam = names.next().toLowerCase();
+            //System.out.println(nam+", "+name);
+            if (nam.equals(name)) return 1;
+        }
+
 		return 0;
 	}
 	
@@ -135,7 +142,7 @@ public class TextFeatures {
 		 * TODO: Adjust file so it can be run on any computer.
 		 * 
 		 * */
-		File names = new File("..\\src\\FirstNames.txt");
+		File names = new File("src/FirstNames.csv");
 		BufferedReader b;
 		
 		try {
@@ -161,7 +168,7 @@ public class TextFeatures {
 	 * @guychurchward explains http://emc.im/6010BSrfE"
 	 * */
 	
-	public static int isQuestionTweet(String tweet) {
+	public static int isSingleQuestionURLTweet(String tweet) {
 		
 		int sentenceCount = 0;
 		int questionCount = 0;
@@ -178,8 +185,8 @@ public class TextFeatures {
 		while (endOfSentence.find()) {
 			
 			sentenceCount++;
-			
-			if (endOfSentence.group().equals("?")) {
+
+			if (endOfSentence.group(0).equals("?")) {
 				questionCount++;
 			}
 		}
@@ -220,14 +227,14 @@ public class TextFeatures {
 	
 	
 	/*
-	 * TODO: Method needs refining
-	 * 
+	 * Not to be implemented (will likely be incorporated as a word class feature)
+	 *
 	 * Counts number of personal plural pronouns
 	 * */
 	
 	public static int numPluralPersonalPronouns(String tweet) {
 		
-		Pattern pluralPersonalPronounsLocator = Pattern.compile("(we)|(us)|(ourselves)|(our)");
+		Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
 		Matcher m = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
 		int count = 0;
 		

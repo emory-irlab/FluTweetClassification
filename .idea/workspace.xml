@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/testing.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/MaxEntClassification.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TextFeatures.java" afterPath="$PROJECT_DIR$/src/TextFeatures.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/readTweetsGetFeatures.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test.java" afterPath="$PROJECT_DIR$/src/test.java" />
     </list>
     <ignored path="FluTweetsFeatureExtraction.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,50 +29,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.58897245">
-              <caret line="210" column="69" selection-start-line="210" selection-start-column="69" selection-end-line="210" selection-end-column="69" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#3255#3265#0" expanded="true" />
+                <element signature="e#13831#13832#0" expanded="true" />
+                <element signature="e#13867#13868#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TextFeatures.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TextFeatures.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TextFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="98.333336">
-              <caret line="65" column="5" selection-start-line="65" selection-start-column="5" selection-end-line="65" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.44987774">
+              <caret line="88" column="50" selection-start-line="88" selection-start-column="50" selection-end-line="88" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#508#516#0" expanded="true" />
-                <element signature="e#5420#5428#0" expanded="true" />
-                <element signature="e#6466#6467#0" expanded="true" />
-                <element signature="e#6505#6506#0" expanded="true" />
+                <element signature="e#535#543#0" expanded="true" />
+                <element signature="e#5853#5861#0" expanded="true" />
+                <element signature="e#6975#6976#0" expanded="true" />
+                <element signature="e#7014#7015#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="68" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tweet_person_vs_organization.csv" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/tweet_person_vs_organization.csv">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="4391" column="234" selection-start-line="4391" selection-start-column="230" selection-end-line="4391" selection-end-column="234" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -129,10 +115,11 @@
         <option value="$PROJECT_DIR$/data/EXAMPLEHandwrittenTweetsText.txt" />
         <option value="$PROJECT_DIR$/data/EXAMPLEHandwrittenTweetsText.csv" />
         <option value="$PROJECT_DIR$/data/tweet_person_vs_organization.csv" />
-        <option value="$PROJECT_DIR$/src/MaxEntClassification.java" />
         <option value="$PROJECT_DIR$/src/runClassifierOnTweets.java" />
-        <option value="$PROJECT_DIR$/src/test.java" />
+        <option value="$PROJECT_DIR$/src/MaxEntClassification.java" />
+        <option value="$PROJECT_DIR$/data/s.txt" />
         <option value="$PROJECT_DIR$/src/readTweetsGetFeatures.java" />
+        <option value="$PROJECT_DIR$/src/test.java" />
         <option value="$PROJECT_DIR$/src/TextFeatures.java" />
       </list>
     </option>
@@ -155,7 +142,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="35" />
+    <option name="x" value="7" />
+    <option name="y" value="37" />
     <option name="width" value="1280" />
     <option name="height" value="728" />
   </component>
@@ -827,11 +815,17 @@
       <option name="project" value="LOCAL" />
       <updated>1465144774589</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="git test done">
+      <created>1465145504937</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1465145504937</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="35" width="1280" height="728" extended-state="0" />
+    <frame x="7" y="37" width="1280" height="728" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -840,8 +834,8 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286385" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32861635" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3128931" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861635" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3128931" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25605816" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -849,7 +843,7 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4122257" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4119497" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -875,14 +869,15 @@
     <MESSAGE value="Designated defective features, fixed checkOutFeature" />
     <MESSAGE value="version runs with 78% accuracy on dataset of almost 10k tweets" />
     <MESSAGE value="weird git things were fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="weird git things were fixed" />
+    <MESSAGE value="git test done" />
+    <option name="LAST_COMMIT_MESSAGE" value="git test done" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/readTweetsGetFeatures.java</url>
-          <line>196</line>
+          <line>197</line>
           <properties />
           <option name="timeStamp" value="3" />
         </line-breakpoint>
@@ -899,14 +894,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="68" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/tweet_person_vs_organization.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -956,6 +943,9 @@
           <caret line="214" column="53" selection-start-line="214" selection-start-column="53" selection-end-line="214" selection-end-column="53" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -993,6 +983,9 @@
           <caret line="198" column="0" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1023,6 +1016,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1043,6 +1039,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1070,6 +1069,9 @@
           <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="87" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1104,6 +1106,9 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1211,6 +1216,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.049099836">
           <caret line="2" column="22" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1235,16 +1241,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TweetVector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="54" column="53" selection-start-line="54" selection-start-column="53" selection-end-line="54" selection-end-column="53" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/Documents/School/IRLab Research/commons-csv-1.4/commons-csv-1.4.jar!/org/apache/commons/csv/CSVRecord.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.359375">
@@ -1256,6 +1252,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="4.8540144">
           <caret line="151" column="24" selection-start-line="151" selection-start-column="24" selection-end-line="151" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1263,14 +1260,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0729927">
           <caret line="2" column="76" selection-start-line="2" selection-start-column="76" selection-end-line="2" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/MaxEntClassification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="189" column="31" selection-start-line="189" selection-start-column="31" selection-end-line="189" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1282,50 +1271,69 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/tweet_person_vs_organization.csv">
+    <entry file="file://$PROJECT_DIR$/src/MaxEntClassification.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+          <caret line="181" column="101" selection-start-line="181" selection-start-column="101" selection-end-line="181" selection-end-column="101" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/tweet_person_vs_organization.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="5.222513">
           <caret line="4391" column="234" selection-start-line="4391" selection-start-column="230" selection-end-line="4391" selection-end-column="234" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TweetVector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5599022">
+          <caret line="54" column="53" selection-start-line="54" selection-start-column="53" selection-end-line="54" selection-end-column="53" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="68" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
+        <state vertical-scroll-proportion="0.40342298">
+          <caret line="12" column="82" selection-start-line="12" selection-start-column="82" selection-end-line="12" selection-end-column="82" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TextFeatures.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="98.333336">
-          <caret line="65" column="5" selection-start-line="65" selection-start-column="5" selection-end-line="65" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#508#516#0" expanded="true" />
-            <element signature="e#5420#5428#0" expanded="true" />
-            <element signature="e#6466#6467#0" expanded="true" />
-            <element signature="e#6505#6506#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/FirstNames.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5599022">
+          <caret line="1817" column="8" selection-start-line="1817" selection-start-column="8" selection-end-line="1817" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/readTweetsGetFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.58897245">
-          <caret line="210" column="69" selection-start-line="210" selection-start-column="69" selection-end-line="210" selection-end-column="69" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#3255#3265#0" expanded="true" />
+            <element signature="e#13831#13832#0" expanded="true" />
+            <element signature="e#13867#13868#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TextFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.44987774">
+          <caret line="88" column="50" selection-start-line="88" selection-start-column="50" selection-end-line="88" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#535#543#0" expanded="true" />
+            <element signature="e#5853#5861#0" expanded="true" />
+            <element signature="e#6975#6976#0" expanded="true" />
+            <element signature="e#7014#7015#0" expanded="true" />
           </folding>
         </state>
       </provider>

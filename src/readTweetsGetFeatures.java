@@ -28,7 +28,6 @@ public class readTweetsGetFeatures {
         Pre-defined word classes. Some entries contain special cases, rules specifying that the string to be matched to it
         is not a single word.
 
-
         Special cases (checked for in the listed order, cannot be combined):
          1. A single digit between 2-9 before words denotes multi-word features. The number indicates the number of words to search for.
             Note: If there is a feature for an individual word or set of words in a multi-word feature, the detection
@@ -55,7 +54,9 @@ public class readTweetsGetFeatures {
             {"Others",
                 "your", "everyone", "you", "it", "its", "u", "her", "he", "she", "he's", "she's", "they", "'re"/* as in "you're"*/,
                 "she'll", "he'll", "husband", "wife", "brother", "sister", "people", "kid", "kids", "children",
-                "son", "daughter"}
+                "son", "daughter"},
+            {"Plural 1P pronouns",
+                "we", "our", "ourselves", "ours", "us"}
     };
 
     /*
@@ -201,9 +202,16 @@ public class readTweetsGetFeatures {
         Obtain all features for the human vs. non-human classifier
     */
     public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] phrases) {
+
+        //features based on the user's name
+        tweetVector.addFeature("Common first name", TextFeatures.containsCommonFirstName(tweetVector.getName()));
+
+        //features based on the tweet
         String text = tweetVector.getTweetText();
         tweetVector.addFeature("Word classes-Self", getFeatureForWordClass(phrases, "Self"));
         tweetVector.addFeature("Word classes-Others", getFeatureForWordClass(phrases, "Others"));
+        //including plural 1p pronouns may decrease accuracy somewhat
+        tweetVector.addFeature("Word classes-Plural 1P pronouns", getFeatureForWordClass(phrases, "Plural 1P pronouns"));
         tweetVector.addFeature("Number of phrases ending in exclamations", getFeatureForNumberOfExclamationPhrases(text));
         tweetVector.addFeature("Multiple exclamations, multiple question marks", getFeatureForMultipleExclamationsQuestions(text));
         tweetVector.addFeature("Check x out string", TextFeatures.checkOutFeature(text));
@@ -211,9 +219,7 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("The word 'deal'", TextFeatures.containsDeal(text));
         tweetVector.addFeature("The word 'link'", TextFeatures.containsLink(text));
         tweetVector.addFeature("URL links", TextFeatures.containsURL(text));
-        //tweetVector.addFeature("Tweet is a question", TextFeatures.isQuestionTweet(text));
-
-        //tweetVector.addFeature("Personal plural pronouns", TextFeatures.numPluralPersonalPronouns(text));
+        //tweetVector.addFeature("Tweet consists of a single question with a URL", TextFeatures.isSingleQuestionURLTweet(text));
     }
 
     /*
@@ -228,9 +234,14 @@ public class readTweetsGetFeatures {
      */
     public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
         //the number of words/strings in each of the given word classes
-        for (String[] aClass: wordClasses) {
-            tweetVector.addFeature("Word classes-"+aClass[0], getFeatureForWordClass(phrases, aClass[0]));
-        }
+        tweetVector.addFeature("Word classes-Infection", getFeatureForWordClass(phrases, "Infection"));
+        tweetVector.addFeature("Word classes-Possession", getFeatureForWordClass(phrases, "Possession"));
+        tweetVector.addFeature("Word classes-Concern", getFeatureForWordClass(phrases, "Concern"));
+        tweetVector.addFeature("Word classes-Vaccination", getFeatureForWordClass(phrases, "Vaccination"));
+        tweetVector.addFeature("Word classes-Past Tense", getFeatureForWordClass(phrases, "Past Tense"));
+        tweetVector.addFeature("Word classes-Present Tense", getFeatureForWordClass(phrases, "Present Tense"));
+        tweetVector.addFeature("Word classes-Self", getFeatureForWordClass(phrases, "Self"));
+        tweetVector.addFeature("Word classes-Others", getFeatureForWordClass(phrases, "Others"));
 
         //phrase-based features
         for (CoreLabel[] phrase: phrases) {
@@ -327,7 +338,7 @@ public class readTweetsGetFeatures {
             }
         }
         if (relevantWordClass.length == 1) {
-            System.err.println("ERROR: Word class requested,"+relevantClassName+", does not exist.");
+            System.err.println("ERROR: Word class requested, "+relevantClassName+", does not exist.");//change to exception
             System.exit(1);
         }
         //go over each phrase

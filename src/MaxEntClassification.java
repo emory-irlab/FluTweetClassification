@@ -179,7 +179,7 @@ public class MaxEntClassification {
 
         InstanceList[] instanceLists =
             instances.split(new Randoms(),
-	                    new double[] {0.8, 0.2, 0.0}); //always generates the same sequence of tweets
+	                    new double[] {0.8, 0.2, 0.0});
 
         //  The third position is for the "validation" set,                                                 
         //  which is a set of instances not used directly                                                  

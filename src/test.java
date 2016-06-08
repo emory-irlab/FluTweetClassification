@@ -7,9 +7,9 @@ import java.util.regex.Pattern;
 public class test {
 
     public static void main (String[] args) {
-        System.out.println(TextFeatures.containsCommonFirstName("Jerry Rosen"));
-        System.out.println(TextFeatures.containsCommonFirstName("Yobany Alonso Casas"));
-        System.out.println(TextFeatures.containsCommonFirstName("John Cena"));
-        System.out.println(TextFeatures.containsCommonFirstName("Frank Kudasik III"));
+        System.out.println(TextFeatures.isAllUpperCase("JOYW AVE "));
+        System.out.println(TextFeatures.isAllUpperCase("Shamalamadingdong"));
+        System.out.println(TextFeatures.isAllUpperCase("39plebian"));
     }
 }
+

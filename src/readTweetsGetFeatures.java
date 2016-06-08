@@ -25,41 +25,6 @@ import java.util.regex.Matcher;
  */
 public class readTweetsGetFeatures {
     /*
-        Pre-defined word classes. Some entries contain special cases, rules specifying that the string to be matched to it
-        is not a single word.
-
-        Special cases (checked for in the listed order, cannot be combined):
-         1. A single digit between 2-9 before words denotes multi-word features. The number indicates the number of words to search for.
-            Note: If there is a feature for an individual word or set of words in a multi-word feature, the detection
-            of a multi-word feature will not prevent detection of the sub-feature. Example: The string "the flu" will
-            trigger will count as an instance of "the", an instance of "flu", and an instance of "the flu"
-         2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
-           word being scanned, and not the word itself
-     */
-    private static String[][] wordClasses = { //need to refine for split words (namely those involving apostrophes)
-            {"Infection",
-                "getting", "got", "recovered", "have", "having", "had", "has", "catching", "catch", "cured", "infected"},
-            {"Possession",
-                "bird", "2the flu", "flu", "sick", "epidemic"},
-            {"Concern",
-                "afraid", "worried", "scared", "fear", "worry", "nervous", "dread", "dreaded", "terrified"},
-            {"Vaccination",
-                "vaccine", "vaccines", "shot", "shots", "mist", "tamiflu", "jab", "2nasal spray"},
-            {"Past Tense",
-                "was", "did", "had", "got", "were", "V-ed"},
-            {"Present Tense",
-                "is", "am", "are", "have", "has", "V-ing"}, //"is" should perhaps take "'s", as in 'it's'
-            {"Self",
-                "I", "I've", "I'd", "I'm", "im", "my", "me"},
-            {"Others",
-                "your", "everyone", "you", "it", "its", "u", "her", "he", "she", "he's", "she's", "they", "'re"/* as in "you're"*/,
-                "she'll", "he'll", "husband", "wife", "brother", "sister", "people", "kid", "kids", "children",
-                "son", "daughter"},
-            {"Plural 1P pronouns",
-                "we", "our", "ourselves", "ours", "us"}
-    };
-
-    /*
         Get csv-formatted tweets from a path to a file
 
         Fields should be as follows: profile picture, handle, name, description, tweet, label
@@ -157,7 +122,7 @@ public class readTweetsGetFeatures {
             }
 
             //start next phrase if the phrase is completed, or if there are no more tokens to collect
-            if ((isPunctuation(token.originalText())) || i == tokens.size() - 1) {
+            if ((TextFeatures.isPunctuation(token.originalText())) || i == tokens.size() - 1) {
                 CoreLabel[] noNullPhrase = new CoreLabel[phraseCounter];
                 //remove null entries from phrase
                 for (int j = 0; j < phraseCounter; j++) {
@@ -203,17 +168,32 @@ public class readTweetsGetFeatures {
     */
     public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] phrases) {
 
+        //features based on the user's profile pic
+
+        //features based on the user's username
+        String username = tweetVector.getUsername();
+        tweetVector.addFeature("Digits in username", TextFeatures.containsDigits(username));
+
         //features based on the user's name
-        tweetVector.addFeature("Common first name", TextFeatures.containsCommonFirstName(tweetVector.getName()));
+        String name = tweetVector.getName();
+        tweetVector.addFeature("Digits in name", TextFeatures.containsDigits(name));
+        tweetVector.addFeature("Common first name", TextFeatures.firstWordIsCommonFirstName(name));
+        tweetVector.addFeature("Common last name", TextFeatures.lastWordIsCommonLastName(name));
+        tweetVector.addFeature("Space groups-ceiling 3", Math.min(TextFeatures.countSpaceGroups(name), 3));
+        tweetVector.addFeature("Upper case sequence", TextFeatures.containsUpperCaseSequence(name));
+        tweetVector.addFeature("All upper case", TextFeatures.isAllUpperCase(name));
+
+
+        //features based on the user's profile description
 
         //features based on the tweet
         String text = tweetVector.getTweetText();
-        tweetVector.addFeature("Word classes-Self", getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Word classes-Self", TextFeatures.getFeatureForWordClass(phrases, "Self"));
+        tweetVector.addFeature("Word classes-Others", TextFeatures.getFeatureForWordClass(phrases, "Others"));
         //including plural 1p pronouns may decrease accuracy somewhat
-        tweetVector.addFeature("Word classes-Plural 1P pronouns", getFeatureForWordClass(phrases, "Plural 1P pronouns"));
-        tweetVector.addFeature("Number of phrases ending in exclamations", getFeatureForNumberOfExclamationPhrases(text));
-        tweetVector.addFeature("Multiple exclamations, multiple question marks", getFeatureForMultipleExclamationsQuestions(text));
+        tweetVector.addFeature("Word classes-Plural 1P pronouns", TextFeatures.getFeatureForWordClass(phrases, "Plural 1P pronouns"));
+        tweetVector.addFeature("Number of phrases ending in exclamations", TextFeatures.getFeatureForNumberOfExclamationPhrases(text));
+        tweetVector.addFeature("Multiple exclamations, multiple question marks", TextFeatures.getFeatureForMultipleExclamationsQuestions(text));
         tweetVector.addFeature("Check x out string", TextFeatures.checkOutFeature(text));
         tweetVector.addFeature("Mentions of users", TextFeatures.containsMention(text));
         tweetVector.addFeature("The word 'deal'", TextFeatures.containsDeal(text));
@@ -234,14 +214,14 @@ public class readTweetsGetFeatures {
      */
     public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
         //the number of words/strings in each of the given word classes
-        tweetVector.addFeature("Word classes-Infection", getFeatureForWordClass(phrases, "Infection"));
-        tweetVector.addFeature("Word classes-Possession", getFeatureForWordClass(phrases, "Possession"));
-        tweetVector.addFeature("Word classes-Concern", getFeatureForWordClass(phrases, "Concern"));
-        tweetVector.addFeature("Word classes-Vaccination", getFeatureForWordClass(phrases, "Vaccination"));
-        tweetVector.addFeature("Word classes-Past Tense", getFeatureForWordClass(phrases, "Past Tense"));
-        tweetVector.addFeature("Word classes-Present Tense", getFeatureForWordClass(phrases, "Present Tense"));
-        tweetVector.addFeature("Word classes-Self", getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Word classes-Infection", TextFeatures.getFeatureForWordClass(phrases, "Infection"));
+        tweetVector.addFeature("Word classes-Possession", TextFeatures.getFeatureForWordClass(phrases, "Possession"));
+        tweetVector.addFeature("Word classes-Concern", TextFeatures.getFeatureForWordClass(phrases, "Concern"));
+        tweetVector.addFeature("Word classes-Vaccination", TextFeatures.getFeatureForWordClass(phrases, "Vaccination"));
+        tweetVector.addFeature("Word classes-Past Tense", TextFeatures.getFeatureForWordClass(phrases, "Past Tense"));
+        tweetVector.addFeature("Word classes-Present Tense", TextFeatures.getFeatureForWordClass(phrases, "Present Tense"));
+        tweetVector.addFeature("Word classes-Self", TextFeatures.getFeatureForWordClass(phrases, "Self"));
+        tweetVector.addFeature("Word classes-Others", TextFeatures.getFeatureForWordClass(phrases, "Others"));
 
         //phrase-based features
         for (CoreLabel[] phrase: phrases) {
@@ -300,21 +280,6 @@ public class readTweetsGetFeatures {
         return new String[0];
     }
 
-    public static boolean isPunctuation(String input) {
-        char[] punctuation = {'.', ',', '"', '\'', '(', ')', '[', ']', '!', '?', ';', '`', '{', '}'};
-        for (int i = 0; i < input.length(); i++) {
-            boolean thisChar = false;
-            for (char mark: punctuation) {
-                if (input.charAt(i) == mark) {
-                    thisChar = true;
-                    break;
-                }
-            }
-            if (!thisChar) return false;
-        }
-        return true;
-    }
-
     public static String toBinaryLabels(String input, String classifierType) {
         switch (classifierType) {
             case "HumanVsNonHuman":
@@ -324,99 +289,4 @@ public class readTweetsGetFeatures {
         return "";
     }
 
-    /*
-        Count the number of words/strings in the given word class
-     */
-    public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) {
-        //initialize
-        int counter = 0;
-        String[] relevantWordClass = new String[1];
-        for (String[] aClass: wordClasses) {
-            if (aClass[0].equals(relevantClassName)) {
-                relevantWordClass = aClass;
-                break;
-            }
-        }
-        if (relevantWordClass.length == 1) {
-            System.err.println("ERROR: Word class requested, "+relevantClassName+", does not exist.");//change to exception
-            System.exit(1);
-        }
-        //go over each phrase
-        for (CoreLabel[] phrase: phrases) {
-            //go through each word in the phrase
-            for (int i = 0; i < phrase.length; i++) {
-                CoreLabel token = phrase[i];
-                String stringInPhrase = token.get(TextAnnotation.class);
-                String stringInPhrasePOS = token.get(PartOfSpeechAnnotation.class);
-                //System.out.println(stringInPhrase);
-
-                //get words to match
-                for (int k = 1; k < relevantWordClass.length; k++) {
-                    String stringInPhraseCopy = stringInPhrase; //use this when referring to the input token
-                    String stringToMatch = relevantWordClass[k];
-                    //Alter the string to match and the copy of the input token if this is a special case
-
-                    //Special case 1: Multiple words are to be scanned
-                    int possibleNum = (int)stringToMatch.charAt(0) - '0';
-                    if (possibleNum > 1 && possibleNum < 10) {
-                        stringToMatch = stringToMatch.substring(1);
-                        StringBuilder buildMatch = new StringBuilder(stringInPhraseCopy);
-                        int parallelCount = i;
-                        //peek at the next words in the phrase, add them to the string to match
-                        while (possibleNum > 1) {
-                            parallelCount++;
-                            if (parallelCount == phrase.length) break;
-                            buildMatch.append(" ");
-                            buildMatch.append(phrase[parallelCount].get(TextAnnotation.class));
-                            possibleNum--;
-                        }
-                        stringInPhraseCopy = buildMatch.toString();
-                        //if the multi-word phrase is found, make sure the words inside it are not scanned
-                        if (stringToMatch.equals(stringInPhraseCopy)) i = parallelCount;
-                    }
-                    //Special case 2: The string to be matched is a verb ending, so just compare endings
-                    else if (stringToMatch.length() > 1 && stringToMatch.substring(0, 2).equalsIgnoreCase("V-") && stringInPhrasePOS.charAt(0) == 'V') {
-                        stringToMatch = stringToMatch.substring(2);
-                        int startIndex = stringInPhrase.length() - stringToMatch.length();
-                        if (startIndex > 0) {
-                            stringInPhraseCopy = stringInPhraseCopy.substring(stringInPhrase.length() - stringToMatch.length());
-                        }
-                    }
-                    //match
-                    if (stringToMatch.equalsIgnoreCase(stringInPhraseCopy)) {
-                        counter++;
-                        //System.out.println("Matched string "+stringInPhraseCopy+" from base string "+stringInPhrase+" to string "+stringToMatch+" in word class "+relevantWordClass[0]);
-                    }
-                }
-            }
-        }
-        return counter;
-    }
-
-    /*
-        Counts the number of phrases ending in a single or multiple exclamation points
-     */
-    public static int getFeatureForNumberOfExclamationPhrases(String tweet) {
-        int count = 0;
-        Pattern pattern = Pattern.compile("!+");
-        Matcher matcher = pattern.matcher(tweet);
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    /*
-        Checks to see how many times the tweet contains strings of multiple exclamation points together and strings of
-        multiple question marks together
-     */
-    public static int getFeatureForMultipleExclamationsQuestions(String tweet) {
-        int count = 0;
-        Pattern pattern = Pattern.compile("(!{2,})|(\\?{2,})");
-        Matcher matcher = pattern.matcher(tweet);
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
 }

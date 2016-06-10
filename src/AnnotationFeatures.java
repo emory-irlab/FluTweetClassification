@@ -18,6 +18,8 @@ public class AnnotationFeatures {
      2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
        word being scanned, and not the word itself
     */
+
+    //Note: Multi-word words need to go before single-word words
     private static String[][] wordClasses = {
             {"Infection",
                     "getting", "got", "recovered", "have", "having", "had", "has", "catching", "catch", "cured", "infected"},
@@ -39,12 +41,16 @@ public class AnnotationFeatures {
                     "sister", "people", "kid", "kids", "children", "son", "daughter", "his", "hers", "him"},
             {"Plural 1P pronouns",
                     "we", "our", "ourselves", "ours", "us"},
+            {"2P pronouns",
+                    "you", "your", "yours", "y'all", "yall", "u"},
             {"Follow me",
                     "follow", "tweet", "visit"},
             {"Numerical references",
                     "2a couple", "2a lot", "many", "some", "all", "most", "lots", "none", "much", "few"},
             {"Org. account descriptions",
-                    "official", "twitter", "account", "follow", "tweet", "us"}
+                    "official", "twitter", "account", "follow", "tweet", "us"},
+            {"Person punctuation",
+                    ",", "|", "&"}
     };
 
     public static int phrasesBeginningWithVerb(CoreLabel[][] phrases) {
@@ -70,6 +76,14 @@ public class AnnotationFeatures {
             for (CoreLabel token : phrase) if (token.tag().equals("CD")) counter++;
         }
         counter += getFeatureForWordClass(phrases, "Numerical references");
+        return counter;
+    }
+
+    public static int verbsCount(CoreLabel[][] phrases) {
+        int counter = 0;
+        for (CoreLabel[] phrase: phrases) {
+            for (CoreLabel token: phrase) if (token.tag().charAt(0) == 'V') counter++;
+        }
         return counter;
     }
 

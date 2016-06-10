@@ -201,6 +201,11 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Org. account descriptions"));
         tweetVector.addFeature("Description-Check x out string", TextFeatures.checkOutFeature(description));
         tweetVector.addFeature("Description-Mentions social media", TextFeatures.mentionsSocialMedia(description));
+        tweetVector.addFeature("Description-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Self"));
+        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Plural 1P pronouns"));
+        tweetVector.addFeature("Description-Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "2P pronouns"));
+        tweetVector.addFeature("Description-Word classes-Person punctuation", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Person punctuation"));
+        tweetVector.addFeature("Description-Verb count", AnnotationFeatures.verbsCount(descriptionPhrases));
 
         //features based on the tweet
         String text = tweetVector.getTweetText();

@@ -1,11 +1,11 @@
 Done?   Feature name/type
 Yes     Word classes
-Yes      *Retweet
+No      *Retweet
 No      *Hashtag
-No      *Mentions of other users
-Yes      *Emoticons
-Yes      *Positive emoticons
-Yes      *Negative emoticons
+Yes      *Mentions of other users
+No      *Emoticons
+No      *Positive emoticons
+No      *Negative emoticons
 Yes      *URL
 No      Word in phrase template matches word in one or more of the word classes
 No      Phrase template - (subject, verb, object)
@@ -13,7 +13,8 @@ No      Phrase template - (subject, verb)
 No      Phrase template - (subject, object)
 No      Phrase template - (verb, object)
 No      First pronoun and last noun of phrase
-No      Phrase begins with verb?
+Yes     Phrases beginning with verb?
+Yes      Phrases beginning with past tense verb?
 No      Numerical references (have "CD" tag in Stan, "$" tag in ARK)
 No      Numerical references followed by word with the lemma "died"
 No      First pronoun/noun and last verb of phrase

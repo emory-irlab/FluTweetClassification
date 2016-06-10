@@ -93,16 +93,38 @@ public class readTweetsGetFeatures {
     public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline, String classifierType) throws IOException {
         String label = toBinaryLabels(tweet[5], classifierType);
         TweetVector tweetVector = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], label);
+
+        //annotate fields with Stanford CoreNLP
+
+        //description
+        Annotation descriptionDocument = new Annotation(tweet[3]);
+        pipeline.annotate(descriptionDocument);
+        CoreLabel[][] descriptionPhrases = getPhrases(descriptionDocument);
+
+        //tweet
+        Annotation tweetDocument = new Annotation(tweet[4]);
+        pipeline.annotate(tweetDocument);
+        CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
+
+        //collect features
+        switch (classifierType) {
+            case "HumanVsNonHuman":
+                collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
+                break;
+            case "EventVsNonEvent":
+                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases);
+                break;
+            case "SelfVsOther":
+                collectFeaturesSelfVsOther(tweetVector, tweetPhrases);
+                break;
+        }
+        return tweetVector;
+    }
+
+    public static CoreLabel[][] getPhrases(Annotation document) {
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
-        //annotate with ARK POS tagger (remove emoticons and other twitter stylometry)
-        //ARKFeatures.loadModelStatically();
 
-        //annotate with Stanford CoreNLP
-        Annotation document = new Annotation(tweet[4]);
-        pipeline.annotate(document);
-
-        //collect phrases. When a phrase has been completed, collect features from it
         List<CoreLabel> tokens = document.get(TokensAnnotation.class);
         CoreLabel[] phrase = new CoreLabel[1];
         int phraseCounter = 0;
@@ -148,58 +170,49 @@ public class readTweetsGetFeatures {
         for (int i = 0; i < numPhrases; i++) {
             noNullPhrases[i] = phrases[i];
         }
-        //collect features
-        switch (classifierType) {
-            case "HumanVsNonHuman":
-                collectFeaturesHumanVsNonHuman(tweetVector, noNullPhrases);
-                break;
-            case "EventVsNonEvent":
-                collectFeaturesEventVsNotEvent(tweetVector, noNullPhrases);
-                break;
-            case "SelfVsOther":
-                collectFeaturesSelfVsOther(tweetVector, noNullPhrases);
-                break;
-        }
-        return tweetVector;
+
+        return noNullPhrases;
     }
 
     /*
         Obtain all features for the human vs. non-human classifier
     */
-    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] phrases) {
+    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) {
 
         //features based on the user's profile pic
 
         //features based on the user's username
         String username = tweetVector.getUsername();
-        tweetVector.addFeature("Digits in username", TextFeatures.containsDigits(username));
+        tweetVector.addFeature("Username-Digits", TextFeatures.containsDigits(username));
 
         //features based on the user's name
         String name = tweetVector.getName();
-        tweetVector.addFeature("Digits in name", TextFeatures.containsDigits(name));
-        tweetVector.addFeature("Common first name", TextFeatures.firstWordIsCommonFirstName(name));
-        tweetVector.addFeature("Common last name", TextFeatures.lastWordIsCommonLastName(name));
-        tweetVector.addFeature("Space groups-ceiling 3", Math.min(TextFeatures.countSpaceGroups(name), 3));
-        tweetVector.addFeature("Upper case sequence", TextFeatures.containsUpperCaseSequence(name));
-        tweetVector.addFeature("All upper case", TextFeatures.isAllUpperCase(name));
-
+        tweetVector.addFeature("Name-Digits", TextFeatures.containsDigits(name));
+        tweetVector.addFeature("Name-Common first name", TextFeatures.firstWordIsCommonFirstName(name));
+        tweetVector.addFeature("Name-Common last name", TextFeatures.lastWordIsCommonLastName(name));
+        tweetVector.addFeature("Name-Space groups-ceiling 3", Math.min(TextFeatures.countSpaceGroups(name), 3));
+        tweetVector.addFeature("Name-Upper case sequence", TextFeatures.containsUpperCaseSequence(name));
+        tweetVector.addFeature("Name-All upper case", TextFeatures.isAllUpperCase(name));
 
         //features based on the user's profile description
+        String description = tweetVector.getDescription();
+        tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Org. account descriptions"));
+        tweetVector.addFeature("Description-Check x out string", TextFeatures.checkOutFeature(description));
+        tweetVector.addFeature("Description-Mentions social media", TextFeatures.mentionsSocialMedia(description));
 
         //features based on the tweet
         String text = tweetVector.getTweetText();
-        tweetVector.addFeature("Word classes-Self", TextFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", TextFeatures.getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Tweet-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Self"));
+        tweetVector.addFeature("Tweet-Word classes-Others", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Others"));
         //including plural 1p pronouns may decrease accuracy somewhat
-        tweetVector.addFeature("Word classes-Plural 1P pronouns", TextFeatures.getFeatureForWordClass(phrases, "Plural 1P pronouns"));
-        tweetVector.addFeature("Number of phrases ending in exclamations", TextFeatures.getFeatureForNumberOfExclamationPhrases(text));
-        tweetVector.addFeature("Multiple exclamations, multiple question marks", TextFeatures.getFeatureForMultipleExclamationsQuestions(text));
-        tweetVector.addFeature("Check x out string", TextFeatures.checkOutFeature(text));
-        tweetVector.addFeature("Mentions of users", TextFeatures.containsMention(text));
-        tweetVector.addFeature("The word 'deal'", TextFeatures.containsDeal(text));
-        tweetVector.addFeature("The word 'link'", TextFeatures.containsLink(text));
-        tweetVector.addFeature("URL links", TextFeatures.containsURL(text));
-        //tweetVector.addFeature("Tweet consists of a single question with a URL", TextFeatures.isSingleQuestionURLTweet(text));
+        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Plural 1P pronouns"));
+        tweetVector.addFeature("Tweet-Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
+        tweetVector.addFeature("Tweet-Multiple exclamations, multiple question marks", TextFeatures.containsMultipleExclamationsQuestions(text));
+        tweetVector.addFeature("Tweet-Check x out string", TextFeatures.checkOutFeature(text));
+        tweetVector.addFeature("Tweet-Other users mentioned?", TextFeatures.containsMention(text));
+        tweetVector.addFeature("Tweet-The word 'deal'", TextFeatures.containsDeal(text));
+        tweetVector.addFeature("Tweet-The word 'link'", TextFeatures.containsLink(text));
+        tweetVector.addFeature("Tweet-URL links", TextFeatures.containsURL(text));
     }
 
     /*
@@ -214,60 +227,41 @@ public class readTweetsGetFeatures {
      */
     public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
         //the number of words/strings in each of the given word classes
-        tweetVector.addFeature("Word classes-Infection", TextFeatures.getFeatureForWordClass(phrases, "Infection"));
-        tweetVector.addFeature("Word classes-Possession", TextFeatures.getFeatureForWordClass(phrases, "Possession"));
-        tweetVector.addFeature("Word classes-Concern", TextFeatures.getFeatureForWordClass(phrases, "Concern"));
-        tweetVector.addFeature("Word classes-Vaccination", TextFeatures.getFeatureForWordClass(phrases, "Vaccination"));
-        tweetVector.addFeature("Word classes-Past Tense", TextFeatures.getFeatureForWordClass(phrases, "Past Tense"));
-        tweetVector.addFeature("Word classes-Present Tense", TextFeatures.getFeatureForWordClass(phrases, "Present Tense"));
-        tweetVector.addFeature("Word classes-Self", TextFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", TextFeatures.getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Word classes-Infection", AnnotationFeatures.getFeatureForWordClass(phrases, "Infection"));
+        tweetVector.addFeature("Word classes-Possession", AnnotationFeatures.getFeatureForWordClass(phrases, "Possession"));
+        tweetVector.addFeature("Word classes-Concern", AnnotationFeatures.getFeatureForWordClass(phrases, "Concern"));
+        tweetVector.addFeature("Word classes-Vaccination", AnnotationFeatures.getFeatureForWordClass(phrases, "Vaccination"));
+        tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Past Tense"));
+        tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Present Tense"));
+        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
+        tweetVector.addFeature("Word classes-Others", AnnotationFeatures.getFeatureForWordClass(phrases, "Others"));
 
-        //phrase-based features
+        //non-word class features over the tweet
+        String tweet = tweetVector.getTweetText();
+        tweetVector.addFeature("Contains URL", TextFeatures.containsURL(tweet));
+        tweetVector.addFeature("Mentions of other users", TextFeatures.containsMention(tweet));
+        tweetVector.addFeature("Phrases beginning with verb", AnnotationFeatures.phrasesBeginningWithVerb(phrases));
+        tweetVector.addFeature("Phrases beginning with past tense verb", AnnotationFeatures.phrasesBeginningWithPastTenseVerb(phrases));
+
+        //features whose name is defined by the phrase it's in
         for (CoreLabel[] phrase: phrases) {
-            //ArrayList<StringFeatureValuePair> featuresForPhrase = collectFeaturesForPhrase(phrase);
+            collectPhraseDefinedFeatures(tweetVector, phrase);
             //for (int i = 0; i < featuresForPhrase.size(); i++) tweetVector.addFeature(featuresForPhrase.get(i));
         }
 
         //other features
 
-        //test - print tweet
-        Hashtable<String, Integer> featureValPairs = tweetVector.getFeatures();
-        util.printStringFeaturesIntValuesFromHashtable(featureValPairs);
-        //System.out.println("Tweet name: "+tweetVector.getName());
-        //System.out.println("Tweet label: "+tweetVector.getLabel());
-        //System.out.println();
     }
-
-
 
     /*
         Obtain all features for an individual phrase
      */
-    /*
-    public static ArrayList<StringFeatureValuePair> collectFeaturesForPhrase(CoreLabel[] phrase) {
-        ArrayList<StringFeatureValuePair> featuresForPhrase = new ArrayList<StringFeatureValuePair>();
-
+    public static void collectPhraseDefinedFeatures(TweetVector tweet, CoreLabel[] phrase) {
         //get features based on part-of-speech templates
-        ArrayList<StringFeatureValuePair> posTemplateFeatures = collectFeaturesForPhraseTemplates(phrase);
-        for (int i = 0; i < posTemplateFeatures.size(); i++) featuresForPhrase.add(posTemplateFeatures.get(i));
+        String[] POSTemplates = getPOSTemplates(phrase);
 
-        return featuresForPhrase;
+
     }
-    */
-
-    /*
-        Obtain all template-based features for a phrase
-     */
-    /*
-    public static ArrayList<StringFeatureValuePair> collectFeaturesForPhraseTemplates(CoreLabel[] phrase) {
-        ArrayList<StringFeatureValuePair> featuresForTemplate = new ArrayList<StringFeatureValuePair>();
-        //get templates
-        String[] templates = getPOSTemplates(phrase);
-
-        return featuresForTemplate;
-    }
-    */
 
     /*
         Get specified part-of-speech templates for a single phrase
@@ -284,9 +278,12 @@ public class readTweetsGetFeatures {
         switch (classifierType) {
             case "HumanVsNonHuman":
                 if (input.equals("person")) return "0";
-                if (input.equals("organization")) return "1"; break;
+                if (input.equals("organization")) return "1";
+            case "SelfVsOther":
+                if (input.equals("self")) return "1";
+                if (input.equals("other")) return "0";
         }
-        return "";
+        return input;
     }
 
 }

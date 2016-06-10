@@ -24,30 +24,13 @@ public class runClassifierOnTweets {
             TweetVector currentTweet = tweetVectors[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
+        //classifier.crossValidate(5);
         InstanceList testInstances = classifier.split(classifier.instances);
         classifier.trainClassifier(classifier.instances);
         classifier.saveClassifier(classifier.classifierFile);
-        //for testing purposes
-        /*
-         //observe all data in the InstanceList
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("BABABABABA");
-        for (Instance in: classifier.instances) {
-            Object data = in.getData();
-            //if (data instanceof Hashtable) {
-                //util.printStringFeaturesIntValuesFromHashtable((Hashtable<String, Integer>)data);
-            //}
-            Object label = in.getSource();
-            System.out.println("Tweet label: "+label); //listed as null here
-            Object name = in.getName();
-            System.out.println("Tweet name: "+name);
-            System.out.println();
-        }
-        */
         classifier.clearInstances();
         classifier.evaluate(testInstances);
+
     }
 
     /*
@@ -67,9 +50,9 @@ public class runClassifierOnTweets {
         ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
         runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
         //ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(args[2]);
-        //runClassifier(trainingTweets, args[3], "EventVsNonEvent");
+        //runClassifier(EvNETweets, args[3], "EventVsNonEvent");
         //ArrayList<String[]> SvOTweets = readTweetsGetFeatures.getTweets(args[4]);
-        //runClassifier(trainingTweets, args[5], "SelfVsOther");
+        //runClassifier(SvOTweets, args[5], "SelfVsOther");
 
     }
 }

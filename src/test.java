@@ -7,9 +7,6 @@ import java.util.regex.Pattern;
 public class test {
 
     public static void main (String[] args) {
-        System.out.println(TextFeatures.isAllUpperCase("JOYW AVE "));
-        System.out.println(TextFeatures.isAllUpperCase("Shamalamadingdong"));
-        System.out.println(TextFeatures.isAllUpperCase("39plebian"));
     }
 }
 

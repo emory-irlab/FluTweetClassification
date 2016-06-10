@@ -22,6 +22,7 @@ import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.CrossValidationIterator;
 import cc.mallet.types.Label;
 import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.Labeling;
@@ -93,7 +94,7 @@ public class MaxEntClassification {
 	    //  classifier. Mallet includes a wide variety of classification                                   
 	    //  algorithms, see the JavaDoc API for details.                                                   
 		
-	    ClassifierTrainer trainer = new MaxEntTrainer();
+	    ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer();
 	    maxEntClassifier = trainer.train(trainingInstances);
 	    return maxEntClassifier;
 	}
@@ -133,6 +134,8 @@ public class MaxEntClassification {
         for (int i = 0; i < testInstances.size(); i++) {
         	//Given an InstanceList, get the label for each instance that's been classified
             Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
+            //System.out.print("Number "+i+": ");
+            //System.out.print(testInstances.get(i).getTarget().toString()+" ");
 
             // print the labels with their weights in descending order (ie best first)                     
             for (int rank = 0; rank < labeling.numLocations(); rank++){
@@ -155,7 +158,19 @@ public class MaxEntClassification {
         System.out.println();
         PrintWriter p = new PrintWriter(System.out);
     	((MaxEnt) maxEntClassifier).print(p);
-        System.out.println("ACCURACY: " + trial.getAccuracy());                                                  
+        /*
+        java.io.FileWriter results = new java.io.FileWriter("data/testresults.txt");
+        results.write("ACCURACY: " + trial.getAccuracy()+"\n");
+        results.write("F1 for class '1': " + trial.getF1(1)+"\n");
+        results.write("F1 for class '0': " + trial.getF1(0)+"\n");
+        results.write("Precision for class '1': " + trial.getPrecision(1)+"\n");
+        results.write("Precision for class '0': " + trial.getPrecision(0)+"\n");
+        results.write("Recall for class '1': " + trial.getRecall(1)+"\n");
+        results.write("Recall for class '0': " + trial.getRecall(0)+"\n");
+        results.write("\n");
+        results.close();
+        */
+        System.out.println("ACCURACY: " + trial.getAccuracy());
         System.out.println("F1 for class '1': " + trial.getF1(1));
         System.out.println("F1 for class '0': " + trial.getF1(0));
         System.out.println("Precision for class '1': " + trial.getPrecision(1));
@@ -190,6 +205,23 @@ public class MaxEntClassification {
         //  of validation sets.
         this.instances = instanceLists[TRAINING];
         return instanceLists[TESTING];
+    }
+
+    /*
+        Performs n-fold cross-validation and prints out the results
+
+        DOES NOT WORK
+    */
+    //somehow only runs once when the evaluate() method is called
+    public void crossValidate(int n_folds) throws IOException {
+        CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+        while (crossValidationIterator.hasNext()) {
+            InstanceList[] split = crossValidationIterator.next();
+            trainClassifier(split[0]);
+            System.out.println();
+            System.out.println("NEW TEST:");
+            evaluate(split[1]);
+        }
     }
 }
 

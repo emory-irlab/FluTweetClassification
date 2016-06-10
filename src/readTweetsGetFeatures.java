@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
     used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
+    private static ArrayList<String> labelSet;
     /*
         Get csv-formatted tweets from a path to a file
 
@@ -70,6 +71,7 @@ public class readTweetsGetFeatures {
         tweet using the features for the relevant type of classifier
      */
     public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException{
+        labelSet = new ArrayList<String>(0);
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
@@ -91,8 +93,8 @@ public class readTweetsGetFeatures {
         {profile pic, handle, name, description, tweet, label}
      */
     public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline, String classifierType) throws IOException {
-        String label = toBinaryLabels(tweet[5], classifierType);
-        TweetVector tweetVector = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], label);
+        //String label = toBinaryLabels(tweet[5], classifierType);
+        TweetVector tweetVector = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
 
         //annotate fields with Stanford CoreNLP
 
@@ -274,6 +276,7 @@ public class readTweetsGetFeatures {
         return new String[0];
     }
 
+    /*
     public static String toBinaryLabels(String input, String classifierType) {
         switch (classifierType) {
             case "HumanVsNonHuman":
@@ -285,5 +288,6 @@ public class readTweetsGetFeatures {
         }
         return input;
     }
+    */
 
 }

@@ -8,16 +8,19 @@ import edu.berkeley.nlp.classify.MaximumEntropyClassifier;
  * Created by Alec Wolyniec on 4/26/16.
  */
 public class runClassifierOnTweets {
+    static long startRunTime;
+    static long endRunTime;
 
     /*
         Trains a classifier of the specified type on the given training data, then tests on the given training data.
         Saves the classifier to the file at the given path
     */
     public static void runClassifier (ArrayList<String[]> trainingTweets, String path, String classifierType) throws IOException, ClassNotFoundException {
+        startRunTime = System.currentTimeMillis();
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
-        MaxEntClassification classifier = new MaxEntClassification(path);
+        MaxEntClassification classifier = new MaxEntClassification(path, tweetVectors[0].getLabelSet());
         //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet

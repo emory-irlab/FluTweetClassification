@@ -15,8 +15,9 @@ public class TweetVector {
     private String tweetText;
     private String label;
     private Hashtable<String, Integer> features;
+    private ArrayList<String> labelSet;
 
-    public TweetVector(String pro, String us, String na, String des, String text, String lab) {
+    public TweetVector(String pro, String us, String na, String des, String text, String lab, ArrayList<String> labs) {
         profilePicLink = pro;
         username = us;
         name = na;
@@ -24,7 +25,19 @@ public class TweetVector {
         tweetText = text;
         label = lab;
         features = new Hashtable<String, Integer>();
+        labelSet = labs;
+
+        //if this label is not in the data set yet, include it
+        boolean found = false;
+        for (String str: labs) {
+            if (str.equals(label)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) labelSet.add(label);
     }
+    /*
     public TweetVector(String pro, String us, String na, String des, String text, String lab, Hashtable feats) {
         profilePicLink = pro;
         username = us;
@@ -43,6 +56,7 @@ public class TweetVector {
         label = lab;
         features = new Hashtable<String, Integer>(featNum);
     }
+    */
 
     public String getProfilePicLink() { return profilePicLink; }
 
@@ -55,6 +69,8 @@ public class TweetVector {
     public String getTweetText() { return tweetText; }
 
     public String getLabel() { return label; }
+
+    public String[] getLabelSet() { return labelSet.toArray(new String[labelSet.size()]); }
 
     public Hashtable<String, Integer> getFeatures() { return features; } //enables modification
 

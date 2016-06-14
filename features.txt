@@ -1,4 +1,52 @@
 Done?   Feature name/type
+
+Proposed EvN features:
+        Every unigram in terms of tf-idf (use Denis’s df source)
+        Hashtags
+        Hashtag count
+        User mention count
+        Dredze phrase templates
+        First pronoun/noun and last verb
+        *Noun-verb pairings
+        Verb tenses (death = past, usually)
+        Verb following a proper noun
+        Number of proper nouns
+        Average word length (exc. hashtags)
+        Class keywords (how many documents belonging to the class contain the term and how often the term appears within those documents)
+        All bigrams (don’t use unless you also use all unigrams)
+
+        Event-specific:
+
+        Death
+        “x died of/because of”, miss
+
+        Major trip
+        Words: travel, trip, wanderlust (additional feature if the word follows a hashtag)
+        Place name (additional feature if it follows an @ character, additional feature if it follows a hashtag)
+        Trip word followed by preposition and place name?
+        Usually going to be in the present tense
+        Oftentimes have a lot of hashtags
+
+
+        Falling in love:
+        “in love with (pronoun/proper name)”, “(pronoun/proper name)’s love”
+        pronoun + “fall” + “in love” within one phrase
+        “with (pronoun/proper name/husband/bf/gf/hubby/wifey/bae/etc)
+        future tense + love = bad sign
+
+        Graduation:
+        Word with root “graduation”/“graduate” (extra feature if it’s graduated/graduating) (extra feature if there’s a hashtag before it)
+        The word “congratulations”
+        Year, school type
+        Pronoun/proper noun is the subject of “graduate”
+        Possessive pronoun/proper nouns is the subject of “graduation”
+        “Happy” before “graduation”
+        congratulations, congrats
+        Place marker
+        “last day of school”
+
+
+Lamb, Paul, Dredze flu features:
 Yes     Word classes
 No      *Retweet
 No      *Hashtag

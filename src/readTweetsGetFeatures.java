@@ -226,7 +226,15 @@ public class readTweetsGetFeatures {
         Obtain all features for the life event vs. not life event classifier
      */
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases) {
+        String text = tweetVector.getTweetText();
+        tweetVector.addFeature("Word classes-Travel words", AnnotationFeatures.getFeatureForWordClass(phrases, "Travel words"));
+        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
+        tweetVector.addFeature("Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "Plural 1P pronouns"));
+        tweetVector.addFeature("Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "2P pronouns"));
+        tweetVector.addFeature("Verb count", AnnotationFeatures.verbsCount(phrases));
 
+        tweetVector.addFeature("Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
+        tweetVector.addFeature("Other users mentioned?", TextFeatures.containsMention(text));
     }
 
     /*

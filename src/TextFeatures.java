@@ -18,12 +18,8 @@ import java.util.Iterator;
 
 public class TextFeatures {
 
-	/*
-	 * TODO: containsDates
-	 *       Description-based
-			-Phrases like “follow us”, “tweet us”, “check x out”
-			-Hashtags
-	 * */
+	public static String spaceGroup = "([\\s\\-_]+)";
+
 	public static String[] verbsWithLink = {"follow", "check", "go"};
 	public static HashSet<String> firstNames = new HashSet<String>();
 	public static HashSet<String> lastNames = new HashSet<String>();
@@ -32,14 +28,15 @@ public class TextFeatures {
 	public static Pattern companyNamesPattern = Pattern.compile("");
 	public static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
 	//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-	public static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+	public static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]("+spaceGroup+")|$");
 	public static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
 	public static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
 	public static Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
 	public static Matcher generalMatcher;
-	public static String spaceGroup = "([\\s\\-_]+)";
 	public static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
 	public static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
+	public static Pattern hashtagPattern = Pattern.compile("#(\\w+)");
+	public static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
 
 	public static int checkOutFeature(String tweet) {
 		
@@ -228,7 +225,6 @@ public class TextFeatures {
 
 	public static ArrayList<String> getHashtags(String tweet) {
 
-		Pattern hashtagPattern = Pattern.compile("#(\\w+)");
 		Matcher matcher = hashtagPattern.matcher(tweet);
 		ArrayList<String> hashtags = new ArrayList<String>();
 
@@ -281,7 +277,10 @@ public class TextFeatures {
 
 	public static int isAllUpperCase(String tweet) {
 
-		tweet = removeURL(tweet);
+		tweet = removePattern(tweet, detectURL);
+		tweet = removePattern(tweet, hashtagPattern);
+		tweet = removePattern(tweet, atPattern); //remove all @ groups, which in a tweet without URLS consists of all
+		//user mentions and all @ characters with a URL following them
 
 		for (int i = 0; i < tweet.length(); i++) {
 			char current = tweet.charAt(i);
@@ -393,14 +392,35 @@ public class TextFeatures {
 	}
 	*/
 
+	public static String removePattern(String tweet, Pattern pattern) {
+		generalMatcher = pattern.matcher(tweet);
+		String newTweet = "";
+
+		int lastEnd = 0;
+		while (generalMatcher.find()) {
+			newTweet += tweet.substring(lastEnd, generalMatcher.start());
+			lastEnd = generalMatcher.end();
+		}
+		newTweet += tweet.substring(lastEnd);
+		return newTweet;
+	}
+
+	public static String removeHashtags(String tweet) {
+		return removePattern(tweet, hashtagPattern);
+	}
+
 	public static String removeURL(String tweet) {
 		
 		generalMatcher = detectURL.matcher(tweet);
-		
-		if (generalMatcher.find()) {
-			tweet = tweet.substring(0, generalMatcher.start());
+		String newTweet = "";
+
+		int lastEnd = 0;
+		while (generalMatcher.find()) {
+			newTweet += tweet.substring(lastEnd, generalMatcher.start());
+			lastEnd = generalMatcher.end();
 		}
-		return tweet;
+		newTweet += tweet.substring(lastEnd);
+		return newTweet;
 	}
 	
 	/*

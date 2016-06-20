@@ -33,7 +33,7 @@ public class runClassifierOnTweets {
         classifier.saveClassifier(classifier.classifierFile);
         classifier.clearInstances();
         classifier.evaluate(testInstances);
-
+        //classifier.printConfidence(testInstances, "person");
     }
 
     /*
@@ -50,10 +50,10 @@ public class runClassifierOnTweets {
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException {
         //get the training tweets
-        ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
-        runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
-        //ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(args[2]);
-        //runClassifier(EvNETweets, args[3], "EventVsNonEvent");
+        //ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
+        //runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
+        ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(args[2]);
+        runClassifier(EvNETweets, args[3], "EventVsNonEvent");
         //ArrayList<String[]> SvOTweets = readTweetsGetFeatures.getTweets(args[4]);
         //runClassifier(SvOTweets, args[5], "SelfVsOther");
 

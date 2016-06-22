@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Hashtable;
 import java.util.ArrayList;
 
@@ -29,6 +30,7 @@ import cc.mallet.types.LabelAlphabet;
 import cc.mallet.types.Labeling;
 import cc.mallet.util.Randoms;
 import cc.mallet.types.CrossValidationIterator;
+import org.apache.commons.lang.enums.Enum;
 
 public class MaxEntClassification {
 
@@ -42,7 +44,7 @@ public class MaxEntClassification {
 	 * */
 
 	//Alphabet of features that StanCore extracted from the data
-	public Alphabet dataAlphabet = new Alphabet(8);
+	public Alphabet dataAlphabet = new Alphabet(1);
 	//Target Labels pertinent to this classifier
 	public LabelAlphabet targetAlphabet = new LabelAlphabet();
 	public InstanceList instances;
@@ -80,14 +82,14 @@ public class MaxEntClassification {
 	 * The hashtable should have features for its keys and an
 	 * associated integer value for its features.
 	 */
-	public void addToInstanceList(Hashtable<String, Integer> table, String name, String label) {
-
+	public void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
 		Enumeration<String> features = table.keys();
-		double[] featureValues = new double[table.size()];
+        int numberOfNewFeatures = getNumOfNewFeatures(table);
+		double[] featureValues = new double[dataAlphabet.size() + numberOfNewFeatures];
 
 		while (features.hasMoreElements()) {
 			String featureName = features.nextElement();
-			featureValues[dataAlphabet.lookupIndex(featureName, true)] = (double) ((Integer) table.get(featureName)).intValue();
+			featureValues[dataAlphabet.lookupIndex(featureName, true)] = table.get(featureName);
 		}
 
 		Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
@@ -138,8 +140,8 @@ public class MaxEntClassification {
 
         getAreaUnderCurve(trial);
 
-        //printLabelings(testInstances);
-        //System.out.println();
+        printLabelings(testInstances);
+        System.out.println();
         //PrintWriter p = new PrintWriter(System.out);
     	//((MaxEnt) maxEntClassifier).print(p);
     	System.out.println("--------------------");
@@ -157,7 +159,7 @@ public class MaxEntClassification {
 
         runClassifierOnTweets.endRunTime = System.currentTimeMillis();
         System.out.println("------------------------------");
-        System.out.println("FINISHED RUN TME IN " + (runClassifierOnTweets.endRunTime - runClassifierOnTweets.startRunTime)/1000 + " seconds.");
+        System.out.println("FINISHED RUN TIME IN " + (runClassifierOnTweets.endRunTime - runClassifierOnTweets.startRunTime)/1000 + " seconds.");
         System.out.println("------------------------------");
         System.out.println();
 
@@ -169,7 +171,7 @@ public class MaxEntClassification {
 		AccuracyCoverage a = new AccuracyCoverage(t, "AUC", "Labelings");
 
 		a.displayGraph();
-		System.out.println(a.cumulativeAccuracy());
+		//System.out.println(a.cumulativeAccuracy());
 	}
 
 	public Classifier loadClassifier(File serializedFile)
@@ -242,7 +244,7 @@ public class MaxEntClassification {
         return instanceLists[TESTING];
     }
 
-	public Classifier trainClassifier(InstanceList trainingInstances) {
+    public Classifier trainClassifier(InstanceList trainingInstances) {
 
         // Here we use a maximum entropy (ie polytomous logistic regression)
         //  classifier. Mallet includes a wide variety of classification
@@ -256,70 +258,41 @@ public class MaxEntClassification {
     /*
             Performs n-fold cross-validation and prints out the results
 
-            NOTE: In the evaluate() method, comment out the printLabelings() method call and
-            anything to do with a PrintWriter when this is called. Otherwise, output may be suppressed
-     */
+            DOES NOT WORK
+        */
+    //somehow only runs once when the evaluate() method is called
     public void crossValidate(int n_folds) throws IOException {
         CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
         while (crossValidationIterator.hasNext()) {
             InstanceList[] split = crossValidationIterator.next();
             trainClassifier(split[0]);
             System.out.println();
+            System.out.println("NEW TEST:");
             evaluate(split[1]);
         }
     }
 
-    public void printConfidence(InstanceList testInstances, String desiredClass) {
-        int[] trues = new int[6];
-        int[] falses = new int[6];
-        for (int i = 0; i < testInstances.size(); i++) {
-            //Given an InstanceList, get the label for each instance that's been classified
-            Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
-
-            //get the confidence of correct matches and incorrect matches to the desired class
-            if (labeling.getLabelAtRank(0).toString().equals(desiredClass)) {
-                //if the current test instance was labeled with the desired class, check to see if it was correctly classified
-                double confidence = labeling.getValueAtRank(0);
-                int[] proper;
-                if (testInstances.get(i).getTarget().toString().equals(desiredClass)) {
-                    proper = trues;
-                } else {
-                    proper = falses;
+    /*
+        From the given data alphabet, count the number of features in the input table that have not been
+        seen before
+     */
+    public int getNumOfNewFeatures(Hashtable<String, Double> input) {
+        int newFeats = 0;
+        Enumeration<String> inputKeys = input.keys();
+        //check each feature name in the input data for a match in the data alphabet
+        while (inputKeys.hasMoreElements()) {
+            boolean isInDataAlphabet = false;
+            String currentFeature = inputKeys.nextElement();
+            Iterator it = dataAlphabet.iterator();
+            while (it.hasNext()) {
+                if (it.next().toString().equals(currentFeature)) {
+                    isInDataAlphabet = true;
+                    break;
                 }
-                if (confidence > 0.95) proper[5]++;
-                else if (confidence > 0.90) proper[4]++;
-                else if (confidence > 0.80) proper[3]++;
-                else if (confidence > 0.70) proper[2]++;
-                else if (confidence > 0.60) proper[1]++;
-                else proper[0]++;
             }
+            if (!isInDataAlphabet) newFeats++;
         }
-        //print figures
-        int truesAll = trues[0]+trues[1]+trues[2]+trues[3]+trues[4]+trues[5];
-        int falsesAll = falses[0]+falses[1]+falses[2]+falses[3]+falses[4]+falses[5];
-        int sum = truesAll + falsesAll;
-        int size = testInstances.size();
-        System.out.println();
-        System.out.println("Total size of test set:"+size);
-        System.out.println("Total number of instances classified as "+desiredClass+": "+sum);
 
-        System.out.println();
-        int data60 = truesAll - trues[0];
-        int data70 = data60 - trues[1];
-        int data80 = data70 - trues[2];
-        int data90 = data80 - trues[3];
-        int data95 = data90 - trues[4];
-        double conf60 = ((double)data60)/(sum - trues[0] - falses[0]);
-        double conf70 = ((double)data70)/(sum - trues[0] - trues[1] - falses[0] - falses[1]);
-        double conf80 = ((double)data80)/(sum - trues[0] - trues[1] - trues[2] - falses[0] - falses[1] - falses[2]);
-        double conf90 = ((double)data90)/(trues[4] + trues[5] + falses[4] + falses[5]);
-        double conf95 = ((double)data95)/(trues[5] + falses[5]);
-        System.out.println("Precision for this class by confidence threshold: ");
-        System.out.println("50%: "+(double)truesAll/sum+" ("+100*((double)truesAll)/size+"% of input data)");
-        System.out.println("60%: "+conf60+" ("+100*((double)data60)/size+"% of input data)");
-        System.out.println("70%: "+conf70+" ("+100*((double)data70)/size+"% of input data)");
-        System.out.println("80%: "+conf80+" ("+100*((double)data80)/size+"% of input data)");
-        System.out.println("90%: "+conf90+" ("+100*((double)data90)/size+"% of input data)");
-        System.out.println("95%: "+conf95+" ("+100*((double)data95)/size+"% of input data)");
+        return newFeats;
     }
 }

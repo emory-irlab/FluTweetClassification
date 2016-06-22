@@ -20,7 +20,7 @@ public class runClassifierOnTweets {
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
-        MaxEntClassification classifier = new MaxEntClassification(path, tweetVectors[0].getLabelSet());
+        MaxEntClassification classifier = new MaxEntClassification(path);
         //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet

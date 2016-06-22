@@ -24,7 +24,8 @@ import java.util.regex.Matcher;
     used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
-    private static ArrayList<String> labelSet;
+    private static TweetVector[] tweetVectors;
+    private static int idfUpdateCounter = 0;
     /*
         Get csv-formatted tweets from a path to a file
 
@@ -69,9 +70,12 @@ public class readTweetsGetFeatures {
     /*
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
         tweet using the features for the relevant type of classifier
+
+        Each input tweet is formatted as follows:
+        {profile pic, username, name, description, tweet, label}
      */
     public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException{
-        labelSet = new ArrayList<String>(0);
+        ArrayList<String> labelSet = new ArrayList<String>(0);
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
@@ -79,8 +83,19 @@ public class readTweetsGetFeatures {
 
         //get tweet vector model
         TweetVector[] tweetVectors = new TweetVector[tweets.size()];
+        readTweetsGetFeatures.tweetVectors = tweetVectors;
+
+         //initialize fields
+        //String label = toBinaryLabels(tweet[5], classifierType);
         for (int i = 0; i < tweets.size(); i++) {
-            tweetVectors[i] = getVectorModelFromTweet(tweets.get(i), pipeline, classifierType);
+            //String label = toBinaryLabels(tweet[5], classifierType);
+            String[] tweet = tweets.get(i);
+            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
+        }
+
+         //get features
+        for (int i = 0; i < tweets.size(); i++) {
+            getVectorModelForTweet(tweetVectors[i], pipeline, classifierType);
         }
         return tweetVectors;
     }
@@ -88,23 +103,17 @@ public class readTweetsGetFeatures {
     /*
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
-
-        Input tweet is formatted as follows:
-        {profile pic, handle, name, description, tweet, label}
      */
-    public static TweetVector getVectorModelFromTweet(String[] tweet, StanfordCoreNLP pipeline, String classifierType) throws IOException {
-        //String label = toBinaryLabels(tweet[5], classifierType);
-        TweetVector tweetVector = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
-
+    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType) throws IOException {
         //annotate fields with Stanford CoreNLP
 
         //description
-        Annotation descriptionDocument = new Annotation(tweet[3]);
+        Annotation descriptionDocument = new Annotation(tweetVector.getDescription());
         pipeline.annotate(descriptionDocument);
         CoreLabel[][] descriptionPhrases = getPhrases(descriptionDocument);
 
         //tweet
-        Annotation tweetDocument = new Annotation(tweet[4]);
+        Annotation tweetDocument = new Annotation(tweetVector.getTweetText());
         pipeline.annotate(tweetDocument);
         CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
 
@@ -120,7 +129,6 @@ public class readTweetsGetFeatures {
                 collectFeaturesSelfVsOther(tweetVector, tweetPhrases);
                 break;
         }
-        return tweetVector;
     }
 
     public static CoreLabel[][] getPhrases(Annotation document) {
@@ -225,14 +233,21 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases) {
+    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
         String text = tweetVector.getTweetText();
-        tweetVector.addFeature("Word classes-Travel words", AnnotationFeatures.getFeatureForWordClass(phrases, "Travel words"));
+
+        //get idfs from the text
+        if (idfUpdateCounter == 0) {
+            UnigramModel.updateIDFsFromTweetText(tweetVectors);
+            idfUpdateCounter++;
+        }
+        tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
+
+
         tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
         tweetVector.addFeature("Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "Plural 1P pronouns"));
         tweetVector.addFeature("Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "2P pronouns"));
         tweetVector.addFeature("Verb count", AnnotationFeatures.verbsCount(phrases));
-
         tweetVector.addFeature("Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
         tweetVector.addFeature("Other users mentioned?", TextFeatures.containsMention(text));
     }

@@ -35,7 +35,7 @@ public class TextFeatures {
 	public static Matcher generalMatcher;
 	public static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
 	public static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
-	public static Pattern hashtagPattern = Pattern.compile("#(\\w+)");
+	public static Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
 	public static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
 
 	public static int checkOutFeature(String tweet) {
@@ -55,6 +55,12 @@ public class TextFeatures {
             while (matcher2.find()) counter++;
             if (counter < 4) return 1;
         }
+		return 0;
+	}
+
+	public static int containsAlphabeticCharacters(String text) {
+		for (int i = 0; i < text.length(); i++)
+			if (Character.isAlphabetic(text.charAt(i))) return 1;
 		return 0;
 	}
 	
@@ -229,7 +235,7 @@ public class TextFeatures {
 		ArrayList<String> hashtags = new ArrayList<String>();
 
 		while (matcher.find()) {
-			hashtags.add(matcher.group(1));
+			hashtags.add(matcher.group(2));
 		}
 		return hashtags;
 	}

@@ -51,8 +51,6 @@ public class AnnotationFeatures {
                     "official", "twitter", "account", "follow", "tweet", "us"},
             {"Person punctuation",
                     ",", "|", "&"},
-            {"Travel words",
-                    "travel", "trip"} //may remove
     };
 
     public static int phrasesBeginningWithVerb(CoreLabel[][] phrases) {

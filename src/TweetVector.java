@@ -14,7 +14,7 @@ public class TweetVector {
     private String description;
     private String tweetText;
     private String label;
-    private Hashtable<String, Integer> features;
+    private Hashtable<String, Double> features;
     private ArrayList<String> labelSet;
 
     public TweetVector(String pro, String us, String na, String des, String text, String lab, ArrayList<String> labs) {
@@ -24,7 +24,7 @@ public class TweetVector {
         description = des;
         tweetText = text;
         label = lab;
-        features = new Hashtable<String, Integer>();
+        features = new Hashtable<String, Double>();
         labelSet = labs;
 
         //if this label is not in the data set yet, include it
@@ -72,11 +72,19 @@ public class TweetVector {
 
     public String[] getLabelSet() { return labelSet.toArray(new String[labelSet.size()]); }
 
-    public Hashtable<String, Integer> getFeatures() { return features; } //enables modification
+    public Hashtable<String, Double> getFeatures() { return features; } //enables modification
 
-    public void addFeature(String feature, int value) { //need to purge null entries
-        //double if necessary
+    public void addFeature(String feature, double value) { //need to purge null entries
         features.put(feature, value);
+    }
+
+    public void addFeatures(Hashtable<String, Double> input) {
+        Enumeration<String> en = input.keys();
+        while (en.hasMoreElements()) {
+            String key = en.nextElement();
+            features.put(key, input.get(key));
+        }
+
     }
 
 }

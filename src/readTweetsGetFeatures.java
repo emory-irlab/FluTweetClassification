@@ -68,6 +68,24 @@ public class readTweetsGetFeatures {
     */
 
     /*
+        Pre-processes the tweet to remove all hashtags (but not their text), @ characters in user mentions, URLs,
+        retweets, and emoticons. Also converts space groups to single spaces and converts characters repeated 3+ times
+        to a sequence of the character repeated only twice ("hellooooooo" becomes "helloo")
+     */
+    public static String process(String input) {
+        input = TextFeatures.removeRetweets(input); //retweets must be removed before at character
+        input = TextFeatures.removeHashtagCharInHashtags(input);
+        input = TextFeatures.removeAtCharInMentions(input);
+        input = TextFeatures.removeURL(input);
+        //remove emoticons
+        //converts space groups to single spaces
+        input = input.replaceAll(TextFeatures.spaceGroup, " ");
+        input = TextFeatures.removeCharsRepeated3PlusTimes(input);
+
+        return input;
+    }
+
+    /*
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
         tweet using the features for the relevant type of classifier
 
@@ -85,7 +103,7 @@ public class readTweetsGetFeatures {
         TweetVector[] tweetVectors = new TweetVector[tweets.size()];
         readTweetsGetFeatures.tweetVectors = tweetVectors;
 
-         //initialize fields
+         //initialize tweet vectors
         //String label = toBinaryLabels(tweet[5], classifierType);
         for (int i = 0; i < tweets.size(); i++) {
             //String label = toBinaryLabels(tweet[5], classifierType);
@@ -93,7 +111,7 @@ public class readTweetsGetFeatures {
             tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
         }
 
-         //get features
+         //fill tweet vectors with features
         for (int i = 0; i < tweets.size(); i++) {
             getVectorModelForTweet(tweetVectors[i], pipeline, classifierType);
         }
@@ -101,10 +119,13 @@ public class readTweetsGetFeatures {
     }
 
     /*
-        Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
-        then collect phrases
+        Generate the vector model of a single tweet. Get text (process the text of the tweet itself), annotate text,
+        represent the annotated tweet in terms of phrases, collect phrases, collect features.
      */
     public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType) throws IOException {
+        //get processed text
+        String processedTweet = process(tweetVector.getTweetText());
+
         //annotate fields with Stanford CoreNLP
 
         //description
@@ -113,7 +134,7 @@ public class readTweetsGetFeatures {
         CoreLabel[][] descriptionPhrases = getPhrases(descriptionDocument);
 
         //tweet
-        Annotation tweetDocument = new Annotation(tweetVector.getTweetText());
+        Annotation tweetDocument = new Annotation(processedTweet);
         pipeline.annotate(tweetDocument);
         CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
 
@@ -225,6 +246,7 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("Tweet-Multiple exclamations, multiple question marks", TextFeatures.containsMultipleExclamationsQuestions(text));
         tweetVector.addFeature("Tweet-Check x out string", TextFeatures.checkOutFeature(text));
         tweetVector.addFeature("Tweet-Other users mentioned?", TextFeatures.containsMention(text));
+        tweetVector.addFeature("Tweet-contains at character", TextFeatures.containsAt(text));
         tweetVector.addFeature("Tweet-The word 'deal'", TextFeatures.containsDeal(text));
         tweetVector.addFeature("Tweet-The word 'link'", TextFeatures.containsLink(text));
         tweetVector.addFeature("Tweet-URL links", TextFeatures.containsURL(text));

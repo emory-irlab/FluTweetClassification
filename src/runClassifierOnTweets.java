@@ -27,12 +27,15 @@ public class runClassifierOnTweets {
             TweetVector currentTweet = tweetVectors[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
-        //classifier.crossValidate(5);
+        classifier.crossValidate(5);
+        /*
         InstanceList testInstances = classifier.split(classifier.instances);
         classifier.trainClassifier(classifier.instances);
         classifier.saveClassifier(classifier.classifierFile);
         classifier.clearInstances();
-        classifier.evaluate(testInstances);
+        Hashtable<String, Hashtable<String, Double>> data = classifier.evaluate(testInstances);
+        classifier.printEvaluated(data, 1);
+        */
         //classifier.printConfidence(testInstances, "person");
     }
 

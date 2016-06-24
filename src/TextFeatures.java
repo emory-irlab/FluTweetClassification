@@ -18,25 +18,27 @@ import java.util.Iterator;
 
 public class TextFeatures {
 
-	public static String spaceGroup = "([\\s\\-_]+)";
+	static String spaceGroup = "([\\s\\-_]+)";
+	static String userMention = "(^|"+spaceGroup+")(@)(\\w+)";
 
-	public static String[] verbsWithLink = {"follow", "check", "go"};
-	public static HashSet<String> firstNames = new HashSet<String>();
-	public static HashSet<String> lastNames = new HashSet<String>();
-
-	public static Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
-	public static Pattern companyNamesPattern = Pattern.compile("");
-	public static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
+	static String[] verbsWithLink = {"follow", "check", "go"};
+	static HashSet<String> firstNames = new HashSet<String>();
+	static HashSet<String> lastNames = new HashSet<String>();
+	static Pattern userMentionPattern = Pattern.compile("(^|"+spaceGroup+")(@)(\\w+)");
+	static Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
+	static Pattern companyNamesPattern = Pattern.compile("");
+	static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
 	//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-	public static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]("+spaceGroup+")|$");
-	public static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
-	public static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
-	public static Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
-	public static Matcher generalMatcher;
-	public static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
-	public static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
-	public static Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
-	public static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
+	static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|](("+spaceGroup+")|$)");
+	static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
+	static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
+	static Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
+	static Matcher generalMatcher;
+	static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
+	static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
+	static Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
+	static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
+	static Pattern retweetPattern = Pattern.compile("RT"+userMention);
 
 	public static int checkOutFeature(String tweet) {
 		
@@ -96,6 +98,7 @@ public class TextFeatures {
 	}
 
     //accuracy for containsMention is a bit lower than for containsAt
+	/*
     public static int containsMention(String tweet) {
         int in = tweet.indexOf('@');
         while (in != -1) {
@@ -109,6 +112,15 @@ public class TextFeatures {
         }
         return 0;
     }
+    */
+
+	//revised method
+	public static int containsMention(String tweet) {
+		generalMatcher = userMentionPattern.matcher(tweet);
+		if (generalMatcher.find()) return 1;
+
+		return 0;
+	}
 
 	/*
     Check if the tweet contains strings of multiple exclamation points together and strings of
@@ -398,7 +410,55 @@ public class TextFeatures {
 	}
 	*/
 
+	public static String removeAtCharInMentions(String tweet) { return removePatternKeepGroupNumber(tweet, userMentionPattern, 4); }
+
+	public static String removeCharsRepeated3PlusTimes(String tweet) {
+		if (tweet.equals("")) return "";
+
+		StringBuilder newTweet = new StringBuilder();
+		int numTimesRepeated = 0;
+		char lastChar = tweet.charAt(0);
+		char currentChar;
+		int lastEnd = 0;
+		int lastBeginning = 0;
+		int off;
+
+		for (int i = 0; i < tweet.length(); i++) {
+			currentChar = tweet.charAt(i);
+			if (currentChar != lastChar || i == tweet.length() - 1) {
+				off = 0;
+				if (currentChar == lastChar) {
+					numTimesRepeated++;
+					off = 1;
+				}
+
+				//if it's a sequence of 3+ of the same char, reduce it to a sequence of 2
+				if (numTimesRepeated >= 3) {
+					newTweet.append(tweet.substring(lastEnd, lastBeginning+2));
+					lastEnd = i + off;
+				}
+				lastChar = currentChar;
+				lastBeginning = i;
+				numTimesRepeated = 0;
+			}
+			numTimesRepeated++;
+		}
+		newTweet.append(tweet.substring(lastEnd));
+
+		return newTweet.toString();
+	}
+
+	public static String removeHashtagCharInHashtags(String tweet) { return removePatternKeepGroupNumber(tweet, hashtagPattern, 2); }
+
+	public static String removeHashtags(String tweet) {
+		return removePattern(tweet, hashtagPattern);
+	}
+
+	public static String removeMentions(String tweet) { return removePattern(tweet, userMentionPattern); }
+
 	public static String removePattern(String tweet, Pattern pattern) {
+		if (tweet.equals("")) return "";
+
 		generalMatcher = pattern.matcher(tweet);
 		String newTweet = "";
 
@@ -411,23 +471,24 @@ public class TextFeatures {
 		return newTweet;
 	}
 
-	public static String removeHashtags(String tweet) {
-		return removePattern(tweet, hashtagPattern);
-	}
+	public static String removePatternKeepGroupNumber(String tweet, Pattern pattern, int groupNum) {
+		if (tweet.equals("")) return "";
 
-	public static String removeURL(String tweet) {
-		
-		generalMatcher = detectURL.matcher(tweet);
+		generalMatcher = pattern.matcher(tweet);
 		String newTweet = "";
 
 		int lastEnd = 0;
 		while (generalMatcher.find()) {
-			newTweet += tweet.substring(lastEnd, generalMatcher.start());
+			newTweet += tweet.substring(lastEnd, generalMatcher.start()) + generalMatcher.group(groupNum);
 			lastEnd = generalMatcher.end();
 		}
 		newTweet += tweet.substring(lastEnd);
 		return newTweet;
 	}
+
+	public static String removeRetweets(String tweet) { return removePattern(tweet, retweetPattern); }
+
+	public static String removeURL(String tweet) { return removePattern(tweet, detectURL); }
 	
 	/*
 	 * One may already have the index of the URL and would like it removed.

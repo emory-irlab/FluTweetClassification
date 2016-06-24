@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Hashtable;
 import java.util.ArrayList;
+import java.io.BufferedWriter;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -130,7 +131,8 @@ public class MaxEntClassification {
         }
 	}
 
-	public void evaluate(InstanceList testInstances) throws IOException {
+    public Hashtable<String, Hashtable<String, Double>> evaluate(InstanceList testInstances) throws IOException {
+        Hashtable<String, Hashtable<String, Double>> output = new Hashtable<String, Hashtable<String, Double>>();
 
         // Create an InstanceList that will contain the test data.
         // In order to ensure compatibility, process instances
@@ -140,30 +142,131 @@ public class MaxEntClassification {
 
         getAreaUnderCurve(trial);
 
-        printLabelings(testInstances);
+        //printLabelings(testInstances);
         System.out.println();
         //PrintWriter p = new PrintWriter(System.out);
-    	//((MaxEnt) maxEntClassifier).print(p);
-    	System.out.println("--------------------");
-        System.out.println("ACCURACY: " + trial.getAccuracy());
-        System.out.println("--------------------");
-        System.out.println();
+        //((MaxEnt) maxEntClassifier).print(p);
 
+        //first entry is accuracy
+        Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+        accuracy.put("Accuracy", trial.getAccuracy());
+        output.put("Accuracy", accuracy);
+
+        //other entries are figures for each class
         for (int i = 0; i < targetAlphabet.size(); i++) {
-        	System.out.println("Metrics for class " + targetAlphabet.lookupLabel(i));
-        	System.out.println("F1: " + trial.getF1(i));
-        	System.out.println("Precision: " + trial.getPrecision(i));
-        	System.out.println("Recall: " + trial.getRecall(i));
-        	System.out.println();
+            Hashtable<String, Double> thisClass = new Hashtable<String, Double>();
+            thisClass.put("F1", trial.getF1(i));
+            thisClass.put("Precision", trial.getPrecision(i));
+            thisClass.put("Recall", trial.getRecall(i));
+            output.put(targetAlphabet.lookupLabel(i).toString(), thisClass);
         }
 
-        runClassifierOnTweets.endRunTime = System.currentTimeMillis();
-        System.out.println("------------------------------");
-        System.out.println("FINISHED RUN TIME IN " + (runClassifierOnTweets.endRunTime - runClassifierOnTweets.startRunTime)/1000 + " seconds.");
-        System.out.println("------------------------------");
-        System.out.println();
+        return output;
+    }
 
-        //p.close();
+    /*
+        Average results given across several trials
+    */
+    public Hashtable<String, Hashtable<String, Double>> averageTrialResults(ArrayList<Hashtable<String, Hashtable<String, Double>>> data) {
+        Hashtable<String, Hashtable<String, Double>> averagedData = new Hashtable<String, Hashtable<String, Double>>();
+        int numTrials = data.size();
+
+        //add up figures from each trial
+        for (int i = 0; i < numTrials; i++) {
+            Hashtable<String, Hashtable<String, Double>> trial = data.get(i);
+            //look into the various types of data in each trial's figures (F1, accuracy, etc)
+            Enumeration<String> trialKeys = trial.keys();
+            while (trialKeys.hasMoreElements()) {
+                String currentDataPtName = trialKeys.nextElement();
+
+                Hashtable<String, Double> dataPoint = trial.get(currentDataPtName);
+
+                //get previous values and add to them, if they exist
+                Hashtable<String, Double> oldCumulativeDataPoint;
+                if (averagedData.size() < trial.size()) oldCumulativeDataPoint = null;
+                else oldCumulativeDataPoint = averagedData.get(currentDataPtName);
+
+                Hashtable<String, Double> newCumulativeDataPoint = new Hashtable<String, Double>(dataPoint.size());
+                //add
+                Enumeration<String> dataPointKeys = dataPoint.keys();
+                while (dataPointKeys.hasMoreElements()) {
+                    String currentValueName = dataPointKeys.nextElement();
+
+                    //add the current value to the running sum
+                    double dataValue;
+                    if (oldCumulativeDataPoint == null) dataValue = dataPoint.get(currentValueName);
+                    else dataValue = oldCumulativeDataPoint.get(currentValueName) + dataPoint.get(currentValueName);
+
+                    //get averages if it's the last trial
+                    if (i == numTrials - 1) dataValue /= numTrials;
+
+                    newCumulativeDataPoint.put(currentValueName, dataValue);
+                }
+                //update the value
+                averagedData.put(currentDataPtName, newCumulativeDataPoint);
+            }
+        }
+
+        return averagedData;
+    }
+
+    /*
+        Prints the results of an evaluate calculation
+     */
+    public void printEvaluated(Hashtable<String, Hashtable<String, Double>> input, int nTrials) {
+        System.out.println();
+        System.out.println("Average results for "+nTrials+" trials:");
+
+        System.out.println("--------------------");
+        System.out.println("ACCURACY: " + input.remove("Accuracy").get("Accuracy"));
+        System.out.println("--------------------");
+
+        Enumeration<String> classes = input.keys();
+
+        while (classes.hasMoreElements()) {
+            String className = classes.nextElement();
+            Hashtable<String, Double> values = input.get(className);
+            Enumeration<String> namesOfValues = values.keys();
+            System.out.println();
+            System.out.println("Metrics for class "+className);
+            while(namesOfValues.hasMoreElements()) {
+                String currName = namesOfValues.nextElement();
+                System.out.println(currName+": "+values.get(currName));
+            }
+        }
+    }
+
+    public void writeEvaluatedToFile(Hashtable<String, Hashtable<String, Double>> input, int nTrials, String path) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path)));
+
+        bufferedWriter.newLine();
+        bufferedWriter.write("Average results for "+nTrials+" trials:");
+        bufferedWriter.newLine();
+
+        bufferedWriter.write("--------------------");
+        bufferedWriter.newLine();
+        bufferedWriter.write("ACCURACY: " + input.remove("Accuracy").get("Accuracy"));
+        bufferedWriter.newLine();
+        bufferedWriter.write("--------------------");
+        bufferedWriter.newLine();
+
+        Enumeration<String> classes = input.keys();
+
+        while (classes.hasMoreElements()) {
+            String className = classes.nextElement();
+            Hashtable<String, Double> values = input.get(className);
+            Enumeration<String> namesOfValues = values.keys();
+            bufferedWriter.newLine();
+            bufferedWriter.write("Metrics for class "+className);
+            bufferedWriter.newLine();
+            while(namesOfValues.hasMoreElements()) {
+                String currName = namesOfValues.nextElement();
+                bufferedWriter.write(currName+": "+values.get(currName));
+                bufferedWriter.newLine();
+            }
+        }
+
+        bufferedWriter.close();
     }
 
 	public void getAreaUnderCurve(Trial t) {
@@ -229,9 +332,13 @@ public class MaxEntClassification {
 	//  randomly shuffling the copy, and then allocating
 	//  instances to each sub-list based on the provided proportions.
 
+        /*
         InstanceList[] instanceLists =
             instances.split(new Randoms(),
-	                    new double[] {0.8, 0.2, 0.0}); //always generates the same sequence of tweets
+	                    new double[] {0.8, 0.2, 0.0});
+        */
+        InstanceList[] instanceLists = instances.split(new Randoms(),
+                        new double[] {0.5, 0.5, 0.0});
 
         //  The third position is for the "validation" set,
         //  which is a set of instances not used directly
@@ -257,19 +364,19 @@ public class MaxEntClassification {
 
     /*
             Performs n-fold cross-validation and prints out the results
-
-            DOES NOT WORK
         */
-    //somehow only runs once when the evaluate() method is called
     public void crossValidate(int n_folds) throws IOException {
         CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+        ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
         while (crossValidationIterator.hasNext()) {
             InstanceList[] split = crossValidationIterator.next();
             trainClassifier(split[0]);
             System.out.println();
             System.out.println("NEW TEST:");
-            evaluate(split[1]);
+            resultsOverTrials.add(evaluate(split[1]));
         }
+        //printEvaluated(averageTrialResults(resultsOverTrials), n_folds);
+        writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, "data/testResults.txt");
     }
 
     /*

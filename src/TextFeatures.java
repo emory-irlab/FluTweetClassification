@@ -1,6 +1,3 @@
-import edu.stanford.nlp.ling.CoreAnnotations;
-import edu.stanford.nlp.ling.CoreLabel;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,42 +8,59 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-
 import java.util.Iterator;
 
 public class TextFeatures {
-
-	static String spaceGroup = "([\\s\\-_]+)";
-	static String userMention = "(^|"+spaceGroup+")(@)(\\w+)";
-
-	static String[] verbsWithLink = {"follow", "check", "go"};
-	static HashSet<String> firstNames = new HashSet<String>();
-	static HashSet<String> lastNames = new HashSet<String>();
-	static Pattern userMentionPattern = Pattern.compile("(^|"+spaceGroup+")(@)(\\w+)");
-	static Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
-	static Pattern companyNamesPattern = Pattern.compile("");
-	static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
+	
+	public static String spaceGroup = "([\\s\\-_]+)";
+	public static String[] verbsWithLink = {"follow", "check", "go"};
+	
+	//All hashsets are loaded upon run time
+	
+	//Dictionary word searches
+	public static HashSet<String> firstNames = new HashSet<String>();
+	public static HashSet<String> lastNames = new HashSet<String>();
+	public static HashSet<String> listOfWordsDeath = new HashSet<String>();
+	public static HashSet<String> listOfWordsFamily = new HashSet<String>();
+	public static HashSet<String> listOfWordsMarriage = new HashSet<String>();
+	//etc.
+	
+	//Sentiment analysis hash sets
+	//public static HashSet<String> negativeAdjectives = new HashSet<String>();
+	//public static HashSet<String> positiveAdjectives = new HashSet<String>();
+	//public static HashSet<String> neutralAdjectives = new HashSet<String>();
+	public static HashSet<String> negativeAdverbs = new HashSet<String>();
+	public static HashSet<String> neutralAdverbs = new HashSet<String>();
+	public static HashSet<String> positiveAdverbs = new HashSet<String>();
+	public static HashSet<String> negativeEmoticons = new HashSet<String>();
+	public static HashSet<String> positiveEmoticons = new HashSet<String>();
+	
+	public static Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
+	public static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
 	//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-	static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|](("+spaceGroup+")|$)");
-	static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
-	static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
-	static Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
-	static Matcher generalMatcher;
-	static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
-	static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
-	static Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
-	static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
-	static Pattern retweetPattern = Pattern.compile("RT"+userMention);
-
+	public static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+	public static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)( |$))");
+	public static Pattern firstWordExcludeThe = Pattern.compile("(?![The])(?![\\s|$])?(\\w)+(\\s|$)");
+	public static Pattern hashtagPattern = Pattern.compile("#(\\w+)");
+	public static Pattern lastNamePattern = Pattern.compile("[^^]"+spaceGroup+"([a-zA-Z]+)$");
+	public static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter");
+	public static Pattern multipleExclamationsPattern = Pattern.compile("(!{2,})|(\\?{2,})");
+	public static Pattern numberOfExclamationsPattern = Pattern.compile("!+");
+	public static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
+	public static Pattern spaceGroupsPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
+	public static Pattern subscriptionPhrasePattern = Pattern.compile("(?i)follow (?i)(us)?|(?i)tweet(s)?");
+	public static Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
+	
+	public static Matcher generalMatcher;
+	
+	
 	public static int checkOutFeature(String tweet) {
 		
 		//find either the word check or out first, determine number of words
 		//between them using white space
 		
 		tweet = tweet.toLowerCase();
-		generalMatcher = checkOutPattern.matcher(tweet);
+        generalMatcher = checkOutPattern.matcher(tweet);
         //if a "check x out" group has been found
         while (generalMatcher.find()) {
             String spaceBetween = generalMatcher.group(7);
@@ -59,7 +73,7 @@ public class TextFeatures {
         }
 		return 0;
 	}
-
+	
 	public static int containsAlphabeticCharacters(String text) {
 		for (int i = 0; i < text.length(); i++)
 			if (Character.isAlphabetic(text.charAt(i))) return 1;
@@ -72,33 +86,50 @@ public class TextFeatures {
 		}
 		return 0;
 	}
-
-	//"(?i)" - ignores case while parsing
-
+	
 	public static int containsDeal(String tweet) {
-
+		
 		if (tweet.toLowerCase().contains("deal")) {
 			return 1;
 		}
 		return 0;
 	}
-
+	
 	public static int containsDigits(String text) {
 		for (int i = (int)'0'; i < (int)'9' + 1; i++) {
 			if (text.indexOf((char)i) != -1) return 1;
 		}
 		return 0;
 	}
-
+	
 	public static int containsLink(String tweet) {
+		
 		if (tweet.toLowerCase().contains("link")) {
 			return 1;
 		}
 		return 0;
 	}
-
-    //accuracy for containsMention is a bit lower than for containsAt
+	
 	/*
+    Check if the tweet contains strings of multiple exclamation points together and strings of
+    multiple question marks together
+ 	*/
+	public static int containsMultipleExclamationsQuestions(String tweet) {
+		
+		generalMatcher = multipleExclamationsPattern.matcher(tweet);
+		if (generalMatcher.find()) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	/*
+	 * Checks if the first name of the user
+	 * appears in a large list of human first names.
+	 * 
+	 * */
+	
+    //accuracy for containsMention is a bit lower than for containsAt
     public static int containsMention(String tweet) {
         int in = tweet.indexOf('@');
         while (in != -1) {
@@ -112,41 +143,31 @@ public class TextFeatures {
         }
         return 0;
     }
-    */
-
-	//revised method
-	public static int containsMention(String tweet) {
-		generalMatcher = userMentionPattern.matcher(tweet);
-		if (generalMatcher.find()) return 1;
-
-		return 0;
-	}
-
+    
 	/*
-    Check if the tweet contains strings of multiple exclamation points together and strings of
-    multiple question marks together
- 	*/
-	public static int containsMultipleExclamationsQuestions(String tweet) {
-		Pattern pattern = Pattern.compile("(!{2,})|(\\?{2,})");
-		Matcher matcher = pattern.matcher(tweet);
-		if (matcher.find()) {
+	 * Methods seeks out use of the word official
+	 * This method is primarily for twitter handle/name
+	 * */
+	
+	public static int containsOfficial(String tweet) {
+		if (tweet.toLowerCase().contains("official")) {
 			return 1;
 		}
 		return 0;
 	}
-
+	
 	public static int containsTimeMark(String tweet) {
-
-		Matcher timeMatcher = timePattern.matcher(tweet);
-
-		if (timeMatcher.find()) {
+		
+		generalMatcher = timePattern.matcher(tweet);
+		
+		if (generalMatcher.find()) {
 			return 1;
 		}
 		return 0;
 	}
-
+	
 	/*
-    Does it contain a sequence of 2 or more consecutive uppercase characters?
+	Does it contain a sequence of 2 or more consecutive uppercase characters?
 	*/
 	public static int containsUpperCaseSequence(String text) {
 		int lastOne = 0;
@@ -157,39 +178,39 @@ public class TextFeatures {
 			}
 			else lastOne = 0;
 		}
-
+	
 		return 0;
 	}
-
+	
 	/*
 	 * Fairly primitive method for detecting URLs in a tweet.
 	 * Twitter does not seem to do embedded URLs which is pleasant.
-	 *
+	 * 
 	 * Reasoning: Corporations or government organizations etc. almost
 	 * always put URLs in their Tweets.
 	 * */
-
+	
 	public static int containsURL(String tweet) {
-
+		
 		generalMatcher = detectURL.matcher(tweet);
-
+		
 		if (generalMatcher.find()) {
 			return 1;
 		}
 		return 0;
 	}
-
+	
 	public static int countCompanyTerms(String description) {
-
+		
 		generalMatcher = companyTermsPattern.matcher(description);
 		int count = 0;
-
+		
 		while (generalMatcher.find()) {
 			count++;
 		}
 		return count;
 	}
-
+	
 	/*
     Counts the number of phrases ending in a single or multiple exclamation points
  	*/
@@ -202,71 +223,109 @@ public class TextFeatures {
 		}
 		return count;
 	}
-
+	
+	
 	/*
-    Counts the instances of sequences of space characters (defined as \s, -, and _) surrounded on both sides by
-    non-space characters
- 	*/
+	Counts the instances of sequences of space characters (defined as \s, -, and _) surrounded on both sides by
+	non-space characters
+	 */
 	public static int countSpaceGroups(String text) {
 		int counter = 0;
-		generalMatcher = spaceGroupCounterPattern.matcher(text);
+		
+		generalMatcher = spaceGroupsPattern.matcher(text);
 		while (generalMatcher.find()) {
 			counter++;
 		}
 		return counter;
 	}
-
+	
+	/*
+	 * Counts the number of times the description uses the phrases:
+	 * Follow (us)
+	 * Tweet(s)
+	 * CASE INSENSITIVE
+	 * */
+	public static int countSubscriptionPhrases(String description) {
+		
+		int count = 0;
+		generalMatcher = subscriptionPhrasePattern.matcher(description);
+		
+		while (generalMatcher.find()) {
+			count++;
+		}
+		return count + checkOutFeature(description);
+	}
+	
 	/*
 	 * Checks if the first name of the user
 	 * appears in a large list of human first names.
-	 * 
-	 * TODO: Test method and make sure it retains the loaded namelist
-	 * throughout method calls.
-	 * 
 	 * */
-	
 	public static int firstWordIsCommonFirstName(String name) { //possibly take out some chars
-        generalMatcher = firstNamePattern.matcher(name);
-        if (generalMatcher.find()) name = generalMatcher.group(2).toLowerCase();
+        Pattern pattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find()) name = matcher.group(2).toLowerCase();
 		
-		if (firstNames.isEmpty()) initializeNames(firstNames, "data/FirstNames.csv");
+		if (firstNames.isEmpty()) initializeHashSet(firstNames, "src\\FirstNames.csv");
 
 		Iterator<String> names = firstNames.iterator();
         while (names.hasNext()) {
             String nam = names.next().toLowerCase();
-            //System.out.println(nam+", "+name);
             if (nam.equals(name)) return 1;
         }
 
 		return 0;
 	}
-
+	
+	/*
+    Checks to see how many times the tweet contains strings of multiple exclamation points together and strings of
+    multiple question marks together
+	 */
+	public static int getFeatureForMultipleExclamationsQuestions(String tweet) {
+		int count = 0;
+		
+		generalMatcher = multipleExclamationsPattern.matcher(tweet);
+		while (generalMatcher.find()) {
+			count++;
+		}
+		return count;
+	}
+	
+	/*
+    Counts the number of phrases ending in a single or multiple exclamation points
+	 */
+	public static int getFeatureForNumberOfExclamationPhrases(String tweet) {
+		int count = 0;
+		
+		generalMatcher = numberOfExclamationsPattern.matcher(tweet);
+		while (generalMatcher.find()) {
+			count++;
+		}
+		return count;
+	}
+	
 	public static ArrayList<String> getHashtags(String tweet) {
-
-		Matcher matcher = hashtagPattern.matcher(tweet);
+		
+		generalMatcher = hashtagPattern.matcher(tweet);
 		ArrayList<String> hashtags = new ArrayList<String>();
-
-		while (matcher.find()) {
-			hashtags.add(matcher.group(2));
+		
+		while (generalMatcher.find()) {
+		    hashtags.add(generalMatcher.group(1));
 		}
 		return hashtags;
 	}
-
+	
 	public static int getURLIndex(String tweet) {
-
+		
 		generalMatcher = detectURL.matcher(tweet);
-
+				
 		if (generalMatcher.find()) {
 			return generalMatcher.start();
 		}
 		return -1;
 	}
 	
-	public static void initializeNames(HashSet<String> names, String namePath) {
-		/*
-		 * TODO: Adjust file so it can be run on any computer.
-		 * 
-		 * */
+	public static void initializeHashSet(HashSet<String> names, String namePath) {
+		
 		File nameFile = new File(namePath);
 		BufferedReader b;
 		
@@ -285,30 +344,41 @@ public class TextFeatures {
 			System.out.println("ERROR: " + e.getMessage());
 		}
 	}
-
+	
 	/*
-	 *   TODO: Remove URLs, mentions, and hashtags
-	 *
-	 * Checks to see if all alphabetical characters in a tweet, excluding URLs, mentions of other users,
-	 * and hashtags, are uppercase
+	 * Checks to see if all text in a tweet is uppercase
 	 * */
-
+	
 	public static int isAllUpperCase(String tweet) {
-
-		tweet = removePattern(tweet, detectURL);
-		tweet = removePattern(tweet, hashtagPattern);
-		tweet = removePattern(tweet, atPattern); //remove all @ groups, which in a tweet without URLS consists of all
-		//user mentions and all @ characters with a URL following them
-
+		
+		tweet = removeURL(tweet);
+		
 		for (int i = 0; i < tweet.length(); i++) {
-			char current = tweet.charAt(i);
-			if (Character.isAlphabetic(current) && !Character.isUpperCase(current)) {
+			if (!Character.isUpperCase(tweet.charAt(i))) {
 				return 0;
 			}
 		}
 		return 1;
 	}
-
+	
+	/*
+	 * Determines the first word of the name, excluding "The",
+	 * and checks if it appears in the description.
+	 * */
+	public static int isNameInDescription(String name, String description) {
+		
+		generalMatcher = firstWordExcludeThe.matcher(name);
+		
+		if (generalMatcher.find()) {
+			name = generalMatcher.group().toLowerCase();
+		}
+		
+		if (description.toLowerCase().contains(name)) {
+			return 1;
+		}
+		return 0;
+	}
+	
 	public static boolean isPunctuation(String input) {
 		char[] punctuation = {'.', ',', '"', '\'', '(', ')', '[', ']', '!', '?', ';', '`', '{', '}'};
 		for (int i = 0; i < input.length(); i++) {
@@ -329,6 +399,8 @@ public class TextFeatures {
 	 * From EMC^2 twitterfeed:
 	 * "What should be your first step to modernize your data center?
 	 * @guychurchward explains http://emc.im/6010BSrfE"
+	 * 
+	 * Esoteric and did not show to be much help. Avoiding implementation.
 	 * */
 	
 	public static int isSingleQuestionURLTweet(String tweet) {
@@ -359,32 +431,31 @@ public class TextFeatures {
 		}
 		return 0;
 	}
-
+	
 	/*
-    Checks if the last name of the user appears in a list of nearly 6000 US last names
- 	*/
+	Checks if the last name of the user appears in a list of nearly 6000 US last names
+	 */
 	public static int lastWordIsCommonLastName(String name) {
-		Pattern pattern = Pattern.compile("[^^]"+spaceGroup+"([a-zA-Z]+)$");
-		Matcher matcher = pattern.matcher(name);
-		if (matcher.find()) name = matcher.group(2).toLowerCase();
-
-		if (lastNames.isEmpty()) initializeNames(lastNames, "data/LastNames.csv");
-
+		generalMatcher = lastNamePattern.matcher(name);
+		if (generalMatcher.find()) name = generalMatcher.group(2).toLowerCase();
+	
+		if (lastNames.isEmpty()) initializeHashSet(lastNames, "src\\LastNames.csv");
+	
 		Iterator<String> names = lastNames.iterator();
 		while (names.hasNext()) {
 			String nam = names.next().toLowerCase();
 			//System.out.println(nam+", "+name);
 			if (nam.equals(name)) return 1;
 		}
-
+	
 		return 0;
 	}
-
+	
 	public static int mentionsSocialMedia(String description) {
-
+		
 		int count = 0;
 		generalMatcher = mentionsSocMedia.matcher(description);
-
+		
 		while (generalMatcher.find()) {
 			count++;
 		}
@@ -396,99 +467,27 @@ public class TextFeatures {
 	 *
 	 * Counts number of personal plural pronouns
 	 * */
-	/*
+	
 	public static int numPluralPersonalPronouns(String tweet) {
 		
-		Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
-		Matcher m = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
+		generalMatcher = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
 		int count = 0;
 		
-		while (m.find()) {
+		while (generalMatcher.find()) {
 			count++;
 		}
 		return count;
 	}
-	*/
-
-	public static String removeAtCharInMentions(String tweet) { return removePatternKeepGroupNumber(tweet, userMentionPattern, 4); }
-
-	public static String removeCharsRepeated3PlusTimes(String tweet) {
-		if (tweet.equals("")) return "";
-
-		StringBuilder newTweet = new StringBuilder();
-		int numTimesRepeated = 0;
-		char lastChar = tweet.charAt(0);
-		char currentChar;
-		int lastEnd = 0;
-		int lastBeginning = 0;
-		int off;
-
-		for (int i = 0; i < tweet.length(); i++) {
-			currentChar = tweet.charAt(i);
-			if (currentChar != lastChar || i == tweet.length() - 1) {
-				off = 0;
-				if (currentChar == lastChar) {
-					numTimesRepeated++;
-					off = 1;
-				}
-
-				//if it's a sequence of 3+ of the same char, reduce it to a sequence of 2
-				if (numTimesRepeated >= 3) {
-					newTweet.append(tweet.substring(lastEnd, lastBeginning+2));
-					lastEnd = i + off;
-				}
-				lastChar = currentChar;
-				lastBeginning = i;
-				numTimesRepeated = 0;
-			}
-			numTimesRepeated++;
+	
+	public static String removeURL(String tweet) {
+		
+		generalMatcher = detectURL.matcher(tweet);
+		
+		if (generalMatcher.find()) {
+			tweet = tweet.substring(0, generalMatcher.start());
 		}
-		newTweet.append(tweet.substring(lastEnd));
-
-		return newTweet.toString();
+		return tweet;
 	}
-
-	public static String removeHashtagCharInHashtags(String tweet) { return removePatternKeepGroupNumber(tweet, hashtagPattern, 2); }
-
-	public static String removeHashtags(String tweet) {
-		return removePattern(tweet, hashtagPattern);
-	}
-
-	public static String removeMentions(String tweet) { return removePattern(tweet, userMentionPattern); }
-
-	public static String removePattern(String tweet, Pattern pattern) {
-		if (tweet.equals("")) return "";
-
-		generalMatcher = pattern.matcher(tweet);
-		String newTweet = "";
-
-		int lastEnd = 0;
-		while (generalMatcher.find()) {
-			newTweet += tweet.substring(lastEnd, generalMatcher.start());
-			lastEnd = generalMatcher.end();
-		}
-		newTweet += tweet.substring(lastEnd);
-		return newTweet;
-	}
-
-	public static String removePatternKeepGroupNumber(String tweet, Pattern pattern, int groupNum) {
-		if (tweet.equals("")) return "";
-
-		generalMatcher = pattern.matcher(tweet);
-		String newTweet = "";
-
-		int lastEnd = 0;
-		while (generalMatcher.find()) {
-			newTweet += tweet.substring(lastEnd, generalMatcher.start()) + generalMatcher.group(groupNum);
-			lastEnd = generalMatcher.end();
-		}
-		newTweet += tweet.substring(lastEnd);
-		return newTweet;
-	}
-
-	public static String removeRetweets(String tweet) { return removePattern(tweet, retweetPattern); }
-
-	public static String removeURL(String tweet) { return removePattern(tweet, detectURL); }
 	
 	/*
 	 * One may already have the index of the URL and would like it removed.
@@ -499,20 +498,146 @@ public class TextFeatures {
 		return tweet.substring(0, index);
 	}
 	
-	/**
-	 * TODO: Rewrite method to find verb in same sentence with link
+	/*
+	 * ------------------------MULTICLASS FEATURES------------------*
 	 * */
 	
-	/*public static int verbAndLink(String tweet) {
+	/*search_terms = ['baby','birth','birth','became a mom','become a mom','have a kid','had a kid','new job','start working','started working',
+	 * 'begin new job','begin working','engaged','popped the question','buy a diamond ring','bought a diamond ring','buying a diamond ring',
+	 * 'engagement','have a baby','had a baby','having a baby','birth','became a mother','becoming a mother','became a mom',
+	 * 'becoming a mom','have a kid','had a kid','having a kid','married' 'wedding','marry','graduate','graduating','graduated', 
+	 * 'graduation','trip','get into','got into','accepted into', 'admitted','died','dying','pass away','passed away', 'got a divorce',
+	 * 'getting a divorce','separated','death','fall in love','fall for','crush on','have the hots for','fall in love','falling in love',
+	 * 'fell in love','in love', 'crush on','fell out of love','broke up','break up','separate','separated','dumped','breakup','fight',
+	 * 'argument','argue','fought','accident','robbed','mugged','mug','rob','robbery','fired','lost my job','was laid off','got laid off',
+	 * 'lost job','change job','changed job','job loss','pregnant','pregnancy','ill','illness','got cancer','got HIV','got AIDS','got a STD',
+	 * 'have cancer','had a heart attack','have a heart disease','have a serious illness', 'diagnosed','cancer','lymphoma','pancretic',
+	 * 'cardiac','ill','sick','kicked out','rejected','expelled','reject','rejection','retired','retiring','retirement','move',
+	 * 'moving','moved','leave','leaving','left','relocating','relocate','relocated','relocation','travel','travelled','traveling',
+	 * 'went to','arrived at','flew to','flying to','arriving','arrive','dumped','rejected','dump','reject','rejection']
+	 * */
+	
+	public static int countNegativeEmoticons(String tweet) {
 		
-		if (containsLink(tweet) == 1) {
-			for (String v : verbsWithLink) {
-				if (tweet.contains(v)) {
-					return 1;
-				}
+		if (negativeEmoticons.isEmpty()) {
+			System.out.println("Dictionary negativeEmoticons is not initialized.");
+			return 0;
+		}
+		
+		String[] tokens = tweet.split("\\s");
+		int count = 0;
+		
+		for (String token : tokens) {
+			if (negativeEmoticons.contains(token)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	
+	public static int countPositiveEmoticons(String tweet) {
+		
+		if (positiveEmoticons.isEmpty()) {
+			System.out.println("Dictionary positiveEmoticons is not initialized.");
+			return 0;
+		}
+		
+		String[] tokens = tweet.split("\\s");
+		int count = 0;
+		
+		for (String token : tokens) {
+			if (positiveEmoticons.contains(token)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/*
+	 * Using a count method because the more of the words in the dict
+	 * show up, the better the probability of the tweet being
+	 * about that subject.
+	 * 
+	 * Method should likely be rewritten using Stan to avoid this
+	 * splitting process
+	 * 
+	 * */
+	
+	public static int countWordsInDict(String tweet, HashSet<String> dict) {
+		/*
+		 * Numerous methods would be called, each with its corresponding dictionary.
+		 * A count would be returned for the number of words in the tweet
+		 * that appear in the aforementioned dictionary.
+		 * 
+		 * Major_Trip - List of touristy countries, beach, mountains, forests, states,
+		 * 
+		 * 
+		 * */
+		if (dict.isEmpty()) {
+			System.out.println("Dictionary is not initialized.");
+			return 0;
+		}
+		
+		int count = 0;
+		String[] splitTweet = tweet.toLowerCase().split("\\s");
+		
+		for (String s : splitTweet) {
+			if (dict.contains(s)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	/*
+	 * Seems like Hashtags could be a key feature for determining
+	 * the context of the tweet
+	 * 
+	 * Though hashtags should be found, and then the words run
+	 * against one of the word class dictionaries.
+	 * 
+	 * 
+	 * DO NOT IMPLEMENT
+	 *
+	public static int countHashtagsInDict(String tweet) {
+		
+		if (listOfHashTags.isEmpty()) {
+			System.out.println("Dictionary listOfHashTags is not initialized.");
+		}
+		
+		int count = 0;
+		//Hashtag pattern returns the hashtag with the word
+		generalMatcher = hashtagPattern.matcher(tweet);
+		
+		while (generalMatcher.find()) {
+			String group = generalMatcher.group().substring(1);
+			if (listOfHashTags.contains(group)) {
+				count++;
+			} 
+			else {
+				//Helps the hashtag dictionary 
+				listOfHashTags.add(group);
+			}
+		}
+		return count;
+	}*/
+	
+	
+	public static int mentionsFamily(String tweet) throws IOException {
+		
+		if (listOfWordsFamily.isEmpty()) {
+			System.out.println("Dictionary is not initialized.");
+			return 0;
+		}
+		
+		String[] splitTweet = tweet.split("\\s");
+		
+		for (String s : splitTweet) {
+			if (listOfWordsFamily.contains(s.toLowerCase())) {
+				return 1;
 			}
 		}
 		return 0;
-	}*/
-	
+	}
 }

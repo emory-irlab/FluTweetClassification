@@ -1,10 +1,13 @@
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
+import java.util.Hashtable;
+import java.util.Enumeration;
 
 /**
  * Created by Alec Wolyniec on 6/8/16.
  */
+
 public class AnnotationFeatures {
     /*
     Pre-defined word classes. Some entries contain special cases, rules specifying that the string to be matched to it
@@ -18,8 +21,47 @@ public class AnnotationFeatures {
      2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
        word being scanned, and not the word itself
     */
+    //word class names
+    public final static String infectionWordClassName = "Infection";
+    public final static String possessionWordClassName = "Possession";
+    public final static String concernWordClassName = "Concern";
+    public final static String vaccinationWordClassName = "Vaccination";
+    public final static String pastTenseWordClassName = "Past Tense";
+    public final static String presentTenseWordClassName = "Present Tense";
+    public final static String selfWordClassName = "Self";
+    public final static String othersWordClassName = "Others";
+    public final static String plural1PPronounsWordClassName = "Plural 1P Pronouns";
+    public final static String _2PPronounsWordClassName = "2P Pronouns";
+    public final static String followMeWordClassName = "Follow Me";
+    public final static String numericalReferencesWordClassName = "Numerical References";
+    public final static String orgAccountDescriptionsWordClassName = "Org. Account Descriptions";
+    public final static String personPunctuationWordClassName = "Person Punctuation";
 
+    private static Hashtable<String, String[]> wordClasses = new Hashtable<String, String[]>();
     //Note: Multi-word words need to go before single-word words
+    private static String[] infectionWordClass = {"getting", "got", "recovered", "have", "having", "had", "has",
+            "catching", "catch", "cured", "infected"};
+    private static String[] possessionWordClass = {"2the flu", "bird", "flu", "sick", "epidemic"};
+    private static String[] concernWordClass = {"afraid", "worried", "scared", "fear", "worry", "nervous", "dread",
+            "dreaded", "terrified"};
+    private static String[] vaccinationWordClass = {"2nasal spray", "vaccine", "vaccines", "shot", "shots", "mist",
+            "tamiflu", "jab"};
+    private static String[] pastTenseWordClass = {"was", "did", "had", "got", "were", "V-ed"};
+    private static String[] presentTenseWordClass = {"2it 's", "is", "am", "are", "have", "has", "V-ing"}; //'s as in "is"?
+    private static String[] selfWordClass = {"2I 've", "2I 'd", "2I 'm", "im", "my", "me", "I"};
+    private static String[] othersWordClass = {"2he 's", "2she 's", "2you 're", "2they 're", "2she 'll", "2he 'll", "your",
+            "everyone", "you", "it", "its", "u", "her", "he", "she", "they", "husband", "wife", "brother",
+            "sister", "people", "kid", "kids", "children", "son", "daughter", "his", "hers", "him"};
+    private static String[] plural1PPronounsWordClass = {"we", "our", "ourselves", "ours", "us"};
+    private static String[] _2PPronounsWordClass = {"2you 're", "2y 'all", "you", "your", "yours",
+            "yall", "u", "ur", "yourself", "yourselves"};
+    private static String[] followMeWordClass = {"follow", "tweet", "visit"};
+    private static String[] numericalReferencesWordClass = {"2a couple", "2a lot", "many", "some", "all", "most",
+            "lots", "none", "much", "few"};
+    private static String[] orgAccountDescriptionsWordClass = {"official", "twitter", "account", "follow", "tweet", "us"};
+    private static String[] personPuncuationWordClass = {",", "|", "&"};
+
+    /*
     private static String[][] wordClasses = {
             {"Infection",
                     "getting", "got", "recovered", "have", "having", "had", "has", "catching", "catch", "cured", "infected"},
@@ -52,6 +94,25 @@ public class AnnotationFeatures {
             {"Person punctuation",
                     ",", "|", "&"},
     };
+    */
+
+    public static void initializeWordClasses(String pathToTopicFile) {
+        wordClasses.put(infectionWordClassName, infectionWordClass);
+        wordClasses.put(possessionWordClassName, possessionWordClass);
+        wordClasses.put(concernWordClassName, concernWordClass);
+        wordClasses.put(vaccinationWordClassName, vaccinationWordClass);
+        wordClasses.put(pastTenseWordClassName, pastTenseWordClass);
+        wordClasses.put(presentTenseWordClassName, presentTenseWordClass);
+        wordClasses.put(selfWordClassName, selfWordClass);
+        wordClasses.put(othersWordClassName, othersWordClass);
+        wordClasses.put(plural1PPronounsWordClassName, plural1PPronounsWordClass);
+        wordClasses.put(_2PPronounsWordClassName, _2PPronounsWordClass);
+        wordClasses.put(followMeWordClassName, followMeWordClass);
+        wordClasses.put(numericalReferencesWordClassName, numericalReferencesWordClass);
+        wordClasses.put(orgAccountDescriptionsWordClassName, orgAccountDescriptionsWordClass);
+
+        //get topic word classes
+    }
 
     public static int phrasesBeginningWithVerb(CoreLabel[][] phrases) {
         int counter = 0;
@@ -91,12 +152,17 @@ public class AnnotationFeatures {
     Count the number of words/strings in the given word class
     */
     public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) {
+        //initialize word classes
+        if (wordClasses.size() == 0) initializeWordClasses("data/tweet_key_50.txt");
+
         //initialize
         int counter = 0;
         String[] relevantWordClass = new String[1];
-        for (String[] aClass: wordClasses) {
-            if (aClass[0].equals(relevantClassName)) {
-                relevantWordClass = aClass;
+        Enumeration<String> wordClassNames = wordClasses.keys();
+        while (wordClassNames.hasMoreElements()) {
+            String currentClassName = wordClassNames.nextElement();
+            if (currentClassName.equals(relevantClassName)) {
+                relevantWordClass = wordClasses.get(currentClassName);
                 break;
             }
         }

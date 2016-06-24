@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-
 /**
  * Created by Alec Wolyniec on 4/14/16.
  */
@@ -227,21 +226,29 @@ public class readTweetsGetFeatures {
 
         //features based on the user's profile description
         String description = tweetVector.getDescription();
-        tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Org. account descriptions"));
+        tweetVector.addFeature("Description-Word classes-Org. Account Descriptions",
+                AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, AnnotationFeatures.orgAccountDescriptionsWordClassName));
         tweetVector.addFeature("Description-Check x out string", TextFeatures.checkOutFeature(description));
         tweetVector.addFeature("Description-Mentions social media", TextFeatures.mentionsSocialMedia(description));
-        tweetVector.addFeature("Description-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Self"));
-        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Plural 1P pronouns"));
-        tweetVector.addFeature("Description-Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "2P pronouns"));
-        tweetVector.addFeature("Description-Word classes-Person punctuation", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Person punctuation"));
+        tweetVector.addFeature("Description-Word classes-Self",
+                AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, AnnotationFeatures.selfWordClassName));
+        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns",
+                AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, AnnotationFeatures.plural1PPronounsWordClassName));
+        tweetVector.addFeature("Description-Word classes-2P pronouns",
+                AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, AnnotationFeatures._2PPronounsWordClassName));
+        tweetVector.addFeature("Description-Word classes-Person punctuation",
+                AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, AnnotationFeatures.personPunctuationWordClassName));
         tweetVector.addFeature("Description-Verb count", AnnotationFeatures.verbsCount(descriptionPhrases));
 
         //features based on the tweet
         String text = tweetVector.getTweetText();
-        tweetVector.addFeature("Tweet-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Self"));
-        tweetVector.addFeature("Tweet-Word classes-Others", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Others"));
+        tweetVector.addFeature("Tweet-Word classes-Self",
+                AnnotationFeatures.getFeatureForWordClass(tweetPhrases, AnnotationFeatures.selfWordClassName));
+        tweetVector.addFeature("Tweet-Word classes-Others",
+                AnnotationFeatures.getFeatureForWordClass(tweetPhrases, AnnotationFeatures.othersWordClassName));
         //including plural 1p pronouns may decrease accuracy somewhat
-        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Plural 1P pronouns"));
+        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns",
+                AnnotationFeatures.getFeatureForWordClass(tweetPhrases, AnnotationFeatures.plural1PPronounsWordClassName));
         tweetVector.addFeature("Tweet-Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
         tweetVector.addFeature("Tweet-Multiple exclamations, multiple question marks", TextFeatures.containsMultipleExclamationsQuestions(text));
         tweetVector.addFeature("Tweet-Check x out string", TextFeatures.checkOutFeature(text));
@@ -264,14 +271,6 @@ public class readTweetsGetFeatures {
             idfUpdateCounter++;
         }
         tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
-
-
-        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "Plural 1P pronouns"));
-        tweetVector.addFeature("Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "2P pronouns"));
-        tweetVector.addFeature("Verb count", AnnotationFeatures.verbsCount(phrases));
-        tweetVector.addFeature("Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
-        tweetVector.addFeature("Other users mentioned?", TextFeatures.containsMention(text));
     }
 
     /*
@@ -279,14 +278,22 @@ public class readTweetsGetFeatures {
      */
     public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
         //the number of words/strings in each of the given word classes
-        tweetVector.addFeature("Word classes-Infection", AnnotationFeatures.getFeatureForWordClass(phrases, "Infection"));
-        tweetVector.addFeature("Word classes-Possession", AnnotationFeatures.getFeatureForWordClass(phrases, "Possession"));
-        tweetVector.addFeature("Word classes-Concern", AnnotationFeatures.getFeatureForWordClass(phrases, "Concern"));
-        tweetVector.addFeature("Word classes-Vaccination", AnnotationFeatures.getFeatureForWordClass(phrases, "Vaccination"));
-        tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Past Tense"));
-        tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Present Tense"));
-        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", AnnotationFeatures.getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Word classes-Infection",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.infectionWordClassName));
+        tweetVector.addFeature("Word classes-Possession",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.possessionWordClassName));
+        tweetVector.addFeature("Word classes-Concern",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.concernWordClassName));
+        tweetVector.addFeature("Word classes-Vaccination",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.vaccinationWordClassName));
+        tweetVector.addFeature("Word classes-Past Tense",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.pastTenseWordClassName));
+        tweetVector.addFeature("Word classes-Present Tense",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.presentTenseWordClassName));
+        tweetVector.addFeature("Word classes-Self",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.selfWordClassName));
+        tweetVector.addFeature("Word classes-Others",
+                AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.othersWordClassName));
 
         //non-word class features over the tweet
         String tweet = tweetVector.getTweetText();

@@ -37,4 +37,10 @@ public class util {
             return lem.toLowerCase();
         }
     }
+
+    public static int containsAlphabeticCharacters(String text) {
+        for (int i = 0; i < text.length(); i++)
+            if (Character.isAlphabetic(text.charAt(i))) return 1;
+        return 0;
+    }
 }

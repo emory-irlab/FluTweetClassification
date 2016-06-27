@@ -19,9 +19,8 @@ import java.util.regex.Matcher;
  */
 
 /*
-    Methods useful for creating a vector model from each tweet in an input set, representing all of the features
-    used in Lamb, Paul, and Dredze 2013
- */
+
+*/
 public class readTweetsGetFeatures {
     private static TweetVector[] tweetVectors;
     private static int idfUpdateCounter = 0;
@@ -151,6 +150,10 @@ public class readTweetsGetFeatures {
         }
     }
 
+    /*
+        Breaks a Stanford CoreNLP-annotated document into a series of phrases, delimited by punctuation tokens
+        (the range of punctuation marks is defined in TextFeatures)
+     */
     public static CoreLabel[][] getPhrases(Annotation document) {
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
@@ -207,7 +210,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the human vs. non-human classifier
     */
-    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) {
+    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
 
         //features based on the user's profile pic
 
@@ -270,13 +273,22 @@ public class readTweetsGetFeatures {
             UnigramModel.updateIDFsFromTweetText(tweetVectors);
             idfUpdateCounter++;
         }
+        //tf-idf values of words as features
         tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
+
+        //generated topics as features
+        AnnotationFeatures.initializeWordClasses(AnnotationFeatures.topicWordClassFilePath);
+        for (int i = 0; i < AnnotationFeatures.topicWordClassNames.size(); i++) {
+            String currentTopicName = AnnotationFeatures.topicWordClassNames.get(i);
+            tweetVector.addFeature("Word classes-" + currentTopicName,
+                    AnnotationFeatures.getFeatureForWordClass(phrases, currentTopicName));
+        }
     }
 
     /*
         Obtain all features for the self vs. other classifier
      */
-    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
+    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
         //the number of words/strings in each of the given word classes
         tweetVector.addFeature("Word classes-Infection",
                 AnnotationFeatures.getFeatureForWordClass(phrases, AnnotationFeatures.infectionWordClassName));

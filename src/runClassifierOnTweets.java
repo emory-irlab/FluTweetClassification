@@ -31,34 +31,17 @@ public class runClassifierOnTweets {
         /*
          * Cross validation portion.
          * */
+        classifier.crossValidate(5);
+
+        //regular run
         InstanceList testInstances = classifier.split(classifier.instances);
         classifier.trainClassifier(classifier.instances);
         classifier.saveClassifier(classifier.classifierFile);
 
         classifier.clearInstances();
-        classifier.evaluate(testInstances);
+        Hashtable<String, Hashtable<String, Double>> results = classifier.evaluate(testInstances);
+        classifier.printEvaluated(results, 1);
         //classifier.evaluateWithConfidenceThreshold(testInstances, .9);
-    }
-    
-    /*
-     * For each additional dictionary hash set created, it must be added into this method.
-     * */
-    
-    public static void initializeHashSets() {
-    	
-    	TextFeatures.initializeHashSet(TextFeatures.firstNames, "src\\data\\FirstNames.csv");
-    	TextFeatures.initializeHashSet(TextFeatures.lastNames, "src\\data\\LastNames.csv");
-    	TextFeatures.initializeHashSet(TextFeatures.listOfWordsFamily, "src\\data\\FamilyTitles.txt");
-    	TextFeatures.initializeHashSet(TextFeatures.negativeAdverbs, "src\\data\\negativeAdverbs.txt");
-    	TextFeatures.initializeHashSet(TextFeatures.positiveAdverbs, "src\\data\\positiveAdverbs.txt");
-    	TextFeatures.initializeHashSet(TextFeatures.neutralAdverbs, "src\\data\\neutralAdverbs.txt");
-    	TextFeatures.initializeHashSet(TextFeatures.negativeEmoticons, "src\\data\\negativeEmoticons.txt");
-    	TextFeatures.initializeHashSet(TextFeatures.positiveEmoticons, "src\\data\\positiveEmoticons.txt");
-    	//TextFeatures.initializeHashSet(TextFeatures.positiveAdjectives, "src\\positiveAdjectives.txt");
-    	//TextFeatures.initializeHashSet(TextFeatures.negativeAdjectives, "src\\negativeAdjectives.txt");
-    	//TextFeatures.initializeHashSet(TextFeatures.neutralAdjectives, "src\\neutralAdjectives.txt");
-    	//And following, all lists of word classes.
-    	
     }
 
     /*
@@ -82,13 +65,13 @@ public class runClassifierOnTweets {
     	startRunTime = System.currentTimeMillis();
     	
     	//Initialize hash sets once at run time
-    	initializeHashSets();
+    	TextFeatures.initializeHashSets();
     	
         //get the training tweets
-//        ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
-//        runClassifier(HvNTweets, classifierPathHvN, "HumanVsNonHuman");
-        ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(dataPathEvN);
-        runClassifier(EvNETweets, classifierPathEvN, "EventVsNonEvent");
+        //ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
+        //runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
+        ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(args[2]);
+        runClassifier(EvNETweets, args[3], "EventVsNonEvent");
         //ArrayList<String[]> SvOTweets = readTweetsGetFeatures.getTweets(args[4]);
         //runClassifier(trainingTweets, args[5], "SelfVsOther");
 

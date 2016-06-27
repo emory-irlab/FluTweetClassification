@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="org.twitter4j:twitter4j-examples:4.0.3" type="repository">
+    <properties maven-id="org.twitter4j:twitter4j-examples:4.0.3" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/twitter4j/twitter4j-examples/4.0.3/twitter4j-examples-4.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/twitter4j/twitter4j-core/4.0.3/twitter4j-core-4.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/twitter4j/twitter4j-async/4.0.3/twitter4j-async-4.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/twitter4j/twitter4j-stream/4.0.3/twitter4j-stream-4.0.3.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/twitter4j/twitter4j-media-support/4.0.3/twitter4j-media-support-4.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

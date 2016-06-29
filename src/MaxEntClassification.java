@@ -98,8 +98,10 @@ public class MaxEntClassification {
 
 		//printLabelings(testInstances);
 		System.out.println();
-		//PrintWriter p = new PrintWriter(System.out);
-		//((MaxEnt) maxEntClassifier).print(p);
+		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
+		//p.write("\n");
+		((MaxEnt) maxEntClassifier).print();
+		//p.close();
 
 		//first entry is accuracy
 		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
@@ -419,7 +421,7 @@ public class MaxEntClassification {
 
         InstanceList[] instanceLists =
             instances.split(new Randoms(),
-	                    new double[] {0.8, 0.2, 0.0}); //always generates the same sequence of tweets
+	                    new double[] {0.5, 0.5, 0.0}); //better than 0.8, 0.2 split
 
         //  The third position is for the "validation" set,                                                 
         //  which is a set of instances not used directly                                                  
@@ -439,7 +441,7 @@ public class MaxEntClassification {
 	    //  algorithms, see the JavaDoc API for details.                                                   
 		
 	    ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer();
-	    maxEntClassifier = trainer.train(trainingInstances);
+		maxEntClassifier = trainer.train(trainingInstances);
 	    return maxEntClassifier;
 	}
 }

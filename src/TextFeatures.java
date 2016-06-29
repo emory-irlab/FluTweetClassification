@@ -110,26 +110,25 @@ public class TextFeatures {
 		****************************
 		*         Features         *
 		* **************************
-
 	 */
 
 	public static int checkOutFeature(String tweet) {
-		
+
 		//find either the word check or out first, determine number of words
 		//between them using white space
-		
+
 		tweet = tweet.toLowerCase();
-        generalMatcher = checkOutPattern.matcher(tweet);
-        //if a "check x out" group has been found
-        while (generalMatcher.find()) {
-            String spaceBetween = generalMatcher.group(7);
-            Pattern pattern2 = Pattern.compile("\\s");
-            Matcher matcher2 = pattern2.matcher(spaceBetween);
-            int counter = 0;
-            //count the number of spaces between "check" and "out"
-            while (matcher2.find()) counter++;
-            if (counter < 4) return 1;
-        }
+		generalMatcher = checkOutPattern.matcher(tweet);
+		//if a "check x out" group has been found
+		while (generalMatcher.find()) {
+			String spaceBetween = generalMatcher.group(7);
+			Pattern pattern2 = Pattern.compile("\\s");
+			Matcher matcher2 = pattern2.matcher(spaceBetween);
+			int counter = 0;
+			//count the number of spaces between "check" and "out"
+			while (matcher2.find()) counter++;
+			if (counter < 4) return 1;
+		}
 		return 0;
 	}
 
@@ -138,7 +137,7 @@ public class TextFeatures {
 			if (Character.isAlphabetic(text.charAt(i))) return 1;
 		return 0;
 	}
-	
+
 	public static int containsAt(String tweet) {
 		if (tweet.contains("@")){
 			return 1;
@@ -186,7 +185,7 @@ public class TextFeatures {
 	 *
 	 * */
 
-    //accuracy for containsMention is a bit lower than for containsAt
+	//accuracy for containsMention is a bit lower than for containsAt
 	/*
     public static int containsMention(String tweet) {
         int in = tweet.indexOf('@');
@@ -196,7 +195,6 @@ public class TextFeatures {
             Matcher matcher = pattern.matcher(after);
             //if there is no http(s):// right after the "@", count as user mention
             if (!matcher.find() || matcher.start() > 0) return 1;
-
             in = tweet.indexOf('@', in+1);
         }
         return 0;
@@ -292,6 +290,18 @@ public class TextFeatures {
 	}
 
 	/*
+		Counts the number of instances of a given pattern
+	 */
+	public static int countInstancesOf(String text, Pattern pattern) {
+		int count = 0;
+		generalMatcher = pattern.matcher(text);
+		while (generalMatcher.find()) {
+			count++;
+		}
+		return count;
+	}
+
+	/*
     Counts the instances of sequences of space characters (defined as \s, -, and _) surrounded on both sides by
     non-space characters
  	*/
@@ -326,17 +336,17 @@ public class TextFeatures {
 	 * appears in a large list of human first names.
 	 * */
 	public static int firstWordIsCommonFirstName(String name) { //possibly take out some chars
-        generalMatcher = firstNamePattern.matcher(name);
-        if (generalMatcher.find()) name = generalMatcher.group(2).toLowerCase();
-		
+		generalMatcher = firstNamePattern.matcher(name);
+		if (generalMatcher.find()) name = generalMatcher.group(2).toLowerCase();
+
 		if (firstNames.isEmpty()) initializeHashSet(firstNames, "data/hashSets/FirstNames.csv");
 
 		Iterator<String> names = firstNames.iterator();
-        while (names.hasNext()) {
-            String nam = names.next().toLowerCase();
-            //System.out.println(nam+", "+name);
-            if (nam.equals(name)) return 1;
-        }
+		while (names.hasNext()) {
+			String nam = names.next().toLowerCase();
+			//System.out.println(nam+", "+name);
+			if (nam.equals(name)) return 1;
+		}
 
 		return 0;
 	}
@@ -374,7 +384,7 @@ public class TextFeatures {
 		ArrayList<String> hashtags = new ArrayList<String>();
 
 		while (generalMatcher.find()) {
-		    hashtags.add(generalMatcher.group(1));
+			hashtags.add(generalMatcher.group(1));
 		}
 		return hashtags;
 	}
@@ -440,7 +450,7 @@ public class TextFeatures {
 		}
 		return true;
 	}
-	
+
 	/*
 	 * A "Question Tweet" is one of the following format:
 	 * From EMC^2 twitterfeed:
@@ -449,30 +459,30 @@ public class TextFeatures {
 	 *
 	 * Esoteric and did not show to be much help. Avoiding implementation.
 	 * */
-	
+
 	public static int isSingleQuestionURLTweet(String tweet) {
-		
+
 		int sentenceCount = 0;
 		int questionCount = 0;
 		int URLCount = 0;
-		
+
 		if (containsURL(tweet) == 1) {
 			tweet = removeURL(tweet);
 			URLCount++;
 		}
-		
+
 		Pattern p = Pattern.compile("[.?!]");
 		Matcher endOfSentence = p.matcher(tweet);
-		
+
 		while (endOfSentence.find()) {
-			
+
 			sentenceCount++;
 
 			if (endOfSentence.group(0).equals("?")) {
 				questionCount++;
 			}
 		}
-		
+
 		if(sentenceCount == 1 && questionCount == 1 && URLCount == 1) {
 			return 1;
 		}
@@ -508,7 +518,7 @@ public class TextFeatures {
 		}
 		return count;
 	}
-	
+
 	/*
 	 * Not to be implemented (will likely be incorporated as a word class feature)
 	 *
@@ -516,10 +526,10 @@ public class TextFeatures {
 	 * */
 	/*
 	public static int numPluralPersonalPronouns(String tweet) {
-		
+
 		generalMatcher = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
 		int count = 0;
-		
+
 		while (generalMatcher.find()) {
 			count++;
 		}
@@ -606,16 +616,16 @@ public class TextFeatures {
 	public static String removeRetweets(String tweet) { return removePattern(tweet, retweetPattern); }
 
 	public static String removeURL(String tweet) { return removePattern(tweet, detectURL); }
-	
+
 	/*
 	 * One may already have the index of the URL and would like it removed.
 	 * This just skips a few steps of the alternate version.
 	 * */
-	
+
 	public static String removeURL(String tweet, int index) {
 		return tweet.substring(0, index);
 	}
-	
+
 
 	/*
 	 * ------------------------MULTICLASS FEATURES------------------*
@@ -718,15 +728,12 @@ public class TextFeatures {
 	 * DO NOT IMPLEMENT
 	 *
 	public static int countHashtagsInDict(String tweet) {
-
 		if (listOfHashTags.isEmpty()) {
 			System.out.println("Dictionary listOfHashTags is not initialized.");
 		}
-
 		int count = 0;
 		//Hashtag pattern returns the hashtag with the word
 		generalMatcher = hashtagPattern.matcher(tweet);
-
 		while (generalMatcher.find()) {
 			String group = generalMatcher.group().substring(1);
 			if (listOfHashTags.contains(group)) {

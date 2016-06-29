@@ -34,6 +34,7 @@ public class runClassifierOnTweets {
         classifier.crossValidate(5);
 
         //regular run
+        /*
         InstanceList testInstances = classifier.split(classifier.instances);
         classifier.trainClassifier(classifier.instances);
         classifier.saveClassifier(classifier.classifierFile);
@@ -41,6 +42,7 @@ public class runClassifierOnTweets {
         classifier.clearInstances();
         Hashtable<String, Hashtable<String, Double>> results = classifier.evaluate(testInstances);
         classifier.printEvaluated(results, 1);
+        */
         //classifier.evaluateWithConfidenceThreshold(testInstances, .9);
     }
 
@@ -63,16 +65,18 @@ public class runClassifierOnTweets {
     	String classifierPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\EvNClassifierFile.txt";
     	//String[] labels = {"Human", "Not Human"};
     	startRunTime = System.currentTimeMillis();
+
+        ArrayList<String> randomTweets = TweetParser.getUnlabeledTweetEntitiesAndLabel()
     	
     	//Initialize hash sets once at run time
     	TextFeatures.initializeHashSets();
     	
         //get the training tweets
-        //ArrayList<String[]> HvNTweets = readTweetsGetFeatures.getTweets(args[0]);
+        //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
         //runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
-        ArrayList<String[]> EvNETweets = readTweetsGetFeatures.getTweets(args[2]);
+        ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
         runClassifier(EvNETweets, args[3], "EventVsNonEvent");
-        //ArrayList<String[]> SvOTweets = readTweetsGetFeatures.getTweets(args[4]);
+        //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
         //runClassifier(trainingTweets, args[5], "SelfVsOther");
 
     }

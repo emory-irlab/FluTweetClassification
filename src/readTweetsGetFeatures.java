@@ -13,26 +13,9 @@ import java.io.IOException;
     Methods useful for creating a vector model from each tweet in an input set, representing all of the features
     used in Lamb, Paul, and Dredze 2013
  */
-	public class readTweetsGetFeatures {
+public class readTweetsGetFeatures {
     private static TweetVector[] tweetVectors;
     private static int idfUpdateCounter = 0;
-    /*
-        Get csv-formatted tweets from a path to a file
-        Fields should be as follows: profile picture, handle, name, description, tweet, label
-     */
-    public static ArrayList<String[]> getTweets(String pathToTweetFile) throws FileNotFoundException, IOException {
-        ArrayList<String[]> tweets = new ArrayList<String[]>();
-        BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));
-        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
-        for (CSVRecord record : records) {
-            String[] tweetFields = new String[6];
-            for (int i = 0; i < 6; i++) {
-                tweetFields[i] = record.get(i);
-            }
-            tweets.add(tweetFields);
-        }
-        return tweets;
-    }
 
     /*
         Get tweets from a path to a file
@@ -56,6 +39,16 @@ import java.io.IOException;
     }
     */
 
+    public static String process(String input) {
+        input = TextFeatures.removeRetweets(input);
+        input = TextFeatures.removeHashtagCharInHashtags(input);
+        input = TextFeatures.removeAtCharInMentions(input);
+        input = TextFeatures.removeURL(input);
+        input = input.replaceAll(TextFeatures.spaceGroup, " ");
+        input = TextFeatures.removeCharsRepeated3PlusTimes(input);
+        return input;
+    }
+
     /*
         From a collection of tweets, set up a Stanford CoreNLP annotator to use, and create a vector model for each
         tweet using the features for the relevant type of classifier
@@ -73,7 +66,7 @@ import java.io.IOException;
         TweetVector[] tweetVectors = new TweetVector[tweets.size()];
         readTweetsGetFeatures.tweetVectors = tweetVectors;
 
-         //initialize fields
+        //initialize fields
         //String label = toBinaryLabels(tweet[5], classifierType);
         for (int i = 0; i < tweets.size(); i++) {
             //String label = toBinaryLabels(tweet[5], classifierType);
@@ -81,7 +74,7 @@ import java.io.IOException;
             tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
         }
 
-         //get features
+        //get features
         for (int i = 0; i < tweets.size(); i++) {
             getVectorModelForTweet(tweetVectors[i], pipeline, classifierType);
         }
@@ -94,6 +87,7 @@ import java.io.IOException;
      */
     public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType) throws IOException {
         //annotate fields with Stanford CoreNLP
+        String processedTweet = process(tweetVector.getTweetText());
 
         //description
         Annotation descriptionDocument = new Annotation(tweetVector.getDescription());
@@ -101,7 +95,7 @@ import java.io.IOException;
         CoreLabel[][] descriptionPhrases = getPhrases(descriptionDocument);
 
         //tweet
-        Annotation tweetDocument = new Annotation(tweetVector.getTweetText());
+        Annotation tweetDocument = new Annotation(processedTweet);
         pipeline.annotate(tweetDocument);
         CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
 
@@ -175,7 +169,7 @@ import java.io.IOException;
     /*
         Obtain all features for the human vs. non-human classifier
     */
-    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) {
+    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
 
         //features based on the user's profile pic
 
@@ -194,21 +188,29 @@ import java.io.IOException;
 
         //features based on the user's profile description
         String description = tweetVector.getDescription();
-        tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Org. account descriptions"));
+        tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+                AnnotationFeatures.orgAccountDescriptionsWordClassName));
         tweetVector.addFeature("Description-Check x out string", TextFeatures.checkOutFeature(description));
         tweetVector.addFeature("Description-Mentions social media", TextFeatures.mentionsSocialMedia(description));
-        tweetVector.addFeature("Description-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Self"));
-        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Plural 1P pronouns"));
-        tweetVector.addFeature("Description-Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "2P pronouns"));
-        tweetVector.addFeature("Description-Word classes-Person punctuation", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases, "Person punctuation"));
+        tweetVector.addFeature("Description-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+                AnnotationFeatures.selfWordClassName));
+        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+                AnnotationFeatures.plural1PPronounsWordClassName));
+        tweetVector.addFeature("Description-Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+                AnnotationFeatures._2PPronounsWordClassName));
+        tweetVector.addFeature("Description-Word classes-Person punctuation", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+                AnnotationFeatures.personPunctuationWordClassName));
         tweetVector.addFeature("Description-Verb count", AnnotationFeatures.verbsCount(descriptionPhrases));
 
         //features based on the tweet
         String text = tweetVector.getTweetText();
-        tweetVector.addFeature("Tweet-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Self"));
-        tweetVector.addFeature("Tweet-Word classes-Others", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Others"));
+        tweetVector.addFeature("Tweet-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(tweetPhrases,
+                AnnotationFeatures.selfWordClassName));
+        tweetVector.addFeature("Tweet-Word classes-Others", AnnotationFeatures.getFeatureForWordClass(tweetPhrases,
+                AnnotationFeatures.othersWordClassName));
         //including plural 1p pronouns may decrease accuracy somewhat
-        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(tweetPhrases, "Plural 1P pronouns"));
+        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(tweetPhrases,
+                AnnotationFeatures.plural1PPronounsWordClassName));
         tweetVector.addFeature("Tweet-Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
         tweetVector.addFeature("Tweet-Multiple exclamations, multiple question marks", TextFeatures.containsMultipleExclamationsQuestions(text));
         tweetVector.addFeature("Tweet-Check x out string", TextFeatures.checkOutFeature(text));
@@ -229,48 +231,56 @@ import java.io.IOException;
             UnigramModel.updateIDFsFromTweetText(tweetVectors);
             idfUpdateCounter++;
         }
-        
-        //Syntax related features
+        //unigram features (tf-idf value of each word)
         tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
-        
-        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "Plural 1P pronouns"));
-        tweetVector.addFeature("Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(phrases, "2P pronouns"));
-        tweetVector.addFeature("Verb count", AnnotationFeatures.verbsCount(phrases));
-        tweetVector.addFeature("Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
-        tweetVector.addFeature("Other users mentioned?", TextFeatures.containsMention(text));
-        
+
+        //topics
+
+        //other features
+         //addition 1
+        tweetVector.addFeature("Hashtag Count", TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));
+        tweetVector.addFeature("User Mention Count", TextFeatures.countInstancesOf(text, TextFeatures.userMentionPattern));
+        tweetVector.addFeature("URL Count", TextFeatures.countInstancesOf(text, TextFeatures.detectURL));
+
         //Sentiment analysis
         tweetVector.addFeature("Positive Adverbs", TextFeatures.countWordsInDict(text, TextFeatures.positiveAdverbs));
         tweetVector.addFeature("Negative Adverbs", TextFeatures.countWordsInDict(text, TextFeatures.negativeAdverbs));
         tweetVector.addFeature("Neutral Adverbs", TextFeatures.countWordsInDict(text, TextFeatures.neutralAdverbs));
-        //tweetVector.addFeature("Positive Emoticons", TextFeatures.countWordsInDict(text, TextFeatures.positiveEmoticons));
-        //tweetVector.addFeature("Negative Emoticons", TextFeatures.countWordsInDict(text, TextFeatures.negativeEmoticons));
+        tweetVector.addFeature("Positive Emoticons", TextFeatures.countWordsInDict(text, TextFeatures.positiveEmoticons));
+        tweetVector.addFeature("Negative Emoticons", TextFeatures.countWordsInDict(text, TextFeatures.negativeEmoticons));
         tweetVector.addFeature("Mentions Family", TextFeatures.mentionsFamily(text));
-        
+
         //Stylometry
 //        tweetVector.addFeature("Contains Mentions", TextFeatures.containsAt(text));
 //        tweetVector.addFeature("Contains URL", TextFeatures.containsURL(text));
 //        tweetVector.addFeature("Count Uppercase Words", TextFeatures.countUpperCaseWords(text));
 //        tweetVector.addFeature("Count Exclamations", TextFeatures.countExclamationPhrases(text));
 //        tweetVector.addFeature("Count Question Marks", TextFeatures.countQuestionMarkGroups(text));
-        
-        
+
+
     }
 
     /*
         Obtain all features for the self vs. other classifier
      */
-    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) {
+    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
         //the number of words/strings in each of the given word classes
-        tweetVector.addFeature("Word classes-Infection", AnnotationFeatures.getFeatureForWordClass(phrases, "Infection"));
-        tweetVector.addFeature("Word classes-Possession", AnnotationFeatures.getFeatureForWordClass(phrases, "Possession"));
-        tweetVector.addFeature("Word classes-Concern", AnnotationFeatures.getFeatureForWordClass(phrases, "Concern"));
-        tweetVector.addFeature("Word classes-Vaccination", AnnotationFeatures.getFeatureForWordClass(phrases, "Vaccination"));
-        tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Past Tense"));
-        tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Present Tense"));
-        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", AnnotationFeatures.getFeatureForWordClass(phrases, "Others"));
+        tweetVector.addFeature("Word classes-Infection", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.infectionWordClassName));
+        tweetVector.addFeature("Word classes-Possession", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.possessionWordClassName));
+        tweetVector.addFeature("Word classes-Concern", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.concernWordClassName));
+        tweetVector.addFeature("Word classes-Vaccination", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.vaccinationWordClassName));
+        tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.pastTenseWordClassName));
+        tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.presentTenseWordClassName));
+        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.selfWordClassName));
+        tweetVector.addFeature("Word classes-Others", AnnotationFeatures.getFeatureForWordClass(phrases,
+                AnnotationFeatures.othersWordClassName));
 
         //non-word class features over the tweet
         String tweet = tweetVector.getTweetText();

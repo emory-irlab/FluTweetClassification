@@ -18,7 +18,8 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException {
-        UnigramModel.initializeIDFS();
+        String text = "I #like potatoes # and #furthermore...";
+        System.out.println(TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));
     }
 }
 

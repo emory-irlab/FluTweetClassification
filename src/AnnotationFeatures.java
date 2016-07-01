@@ -1,8 +1,13 @@
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
+
+import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.io.*;
+import java.util.ArrayList;
+
 
 /**
  * Created by Alec Wolyniec on 6/8/16.
@@ -36,6 +41,8 @@ public class AnnotationFeatures {
     public final static String numericalReferencesWordClassName = "Numerical References";
     public final static String orgAccountDescriptionsWordClassName = "Org. Account Descriptions";
     public final static String personPunctuationWordClassName = "Person Punctuation";
+    public static ArrayList<String> topicWordClassNames = new ArrayList<String>();
+    public static String topicWordClassFilePath = "data/topics/tweet_key_500.txt";
 
     private static Hashtable<String, String[]> wordClasses = new Hashtable<String, String[]>();
     //Note: Multi-word words need to go before single-word words
@@ -96,7 +103,7 @@ public class AnnotationFeatures {
     };
     */
 
-    public static void initializeWordClasses(String pathToTopicFile) {
+    public static void initializeWordClasses(String pathToTopicFile) throws IOException {
         wordClasses.put(infectionWordClassName, infectionWordClass);
         wordClasses.put(possessionWordClassName, possessionWordClass);
         wordClasses.put(concernWordClassName, concernWordClass);
@@ -110,8 +117,34 @@ public class AnnotationFeatures {
         wordClasses.put(followMeWordClassName, followMeWordClass);
         wordClasses.put(numericalReferencesWordClassName, numericalReferencesWordClass);
         wordClasses.put(orgAccountDescriptionsWordClassName, orgAccountDescriptionsWordClass);
+        wordClasses.put(personPunctuationWordClassName, personPuncuationWordClass);
 
         //get topic word classes
+        Hashtable<String, String[]> topics = getTopics(pathToTopicFile);
+        Enumeration<String> topicNames = topics.keys();
+        while (topicNames.hasMoreElements()) {
+            String currentName = topicNames.nextElement();
+            topicWordClassNames.add(currentName);
+            wordClasses.put(currentName, topics.get(currentName));
+        }
+    }
+
+    public static Hashtable<String, String[]> getTopics(String pathToTopicFile) throws IOException, FileNotFoundException{
+        Hashtable<String, String[]> topics = new Hashtable<String, String[]>();
+        String name;
+        String[] data;
+
+        File file = new File(pathToTopicFile);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+
+        String currentLine = "";
+        while ((currentLine = bufferedReader.readLine()) != null) {
+            String[] lineSep = currentLine.split("\\t");
+            name = lineSep[0];
+            data = lineSep[2].split(" ");
+            topics.put(name, data);
+        }
+        return topics;
     }
 
     public static int phrasesBeginningWithVerb(CoreLabel[][] phrases) {
@@ -131,7 +164,7 @@ public class AnnotationFeatures {
         return counter;
     }
 
-    public static int numericalReferencesCount(CoreLabel[][] phrases) {
+    public static int numericalReferencesCount(CoreLabel[][] phrases) throws IOException {
         int counter = 0;
         for (CoreLabel[] phrase : phrases) {
             for (CoreLabel token : phrase) if (token.tag().equals("CD")) counter++;
@@ -151,9 +184,9 @@ public class AnnotationFeatures {
     /*
     Count the number of words/strings in the given word class
     */
-    public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) {
+    public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) throws IOException {
         //initialize word classes
-        if (wordClasses.size() == 0) initializeWordClasses("data/tweet_key_50.txt");
+        if (wordClasses.size() == 0) initializeWordClasses(topicWordClassFilePath);
 
         //initialize
         int counter = 0;

@@ -10,16 +10,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="stanford-corenlp-3.6.0" level="project" />
-    <orderEntry type="library" name="slf4j-api-1.7.12" level="project" />
     <orderEntry type="library" name="xom-1.2.10" level="project" />
     <orderEntry type="library" name="jollyday-0.4.7" level="project" />
     <orderEntry type="library" name="stanford-corenlp-3.6.0-models" level="project" />
-    <orderEntry type="library" name="javax.json-api-1.0" level="project" />
-    <orderEntry type="library" name="jaxb-api-2.2.7" level="project" />
-    <orderEntry type="library" name="joda-time-2.9" level="project" />
-    <orderEntry type="library" name="xalan-2.7.0" level="project" />
-    <orderEntry type="library" name="xercesImpl-2.8.0" level="project" />
-    <orderEntry type="library" name="xml-apis-1.3.03" level="project" />
     <orderEntry type="library" name="twitter4j-async-4.0.4" level="project" />
     <orderEntry type="library" name="twitter4j-core-4.0.4" level="project" />
     <orderEntry type="library" name="twitter4j-examples-4.0.4" level="project" />
@@ -60,8 +53,10 @@
     <orderEntry type="library" name="Maven: com.googlecode.netlib-java:netlib-java:0.9.3" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
     <orderEntry type="library" name="Maven: org.jdom:jdom:1.1" level="project" />
-    <orderEntry type="library" name="ark-tweet-nlp-0.3.2" level="project" />
     <orderEntry type="library" name="java" level="project" />
+    <orderEntry type="library" name="edu.cmu.cs:ark-tweet-nlp:0.3.2" level="project" />
+    <orderEntry type="library" name="org.twitter4j:twitter4j-examples:4.0.3" level="project" />
+    <orderEntry type="library" name="jgrapht:jgrapht:0.6.0" level="project" />
     <orderEntry type="library" name="commons-csv-1.4" level="project" />
     <orderEntry type="library" name="commons-csv-1.4-sources" level="project" />
   </component>

@@ -14,12 +14,11 @@ import edu.stanford.nlp.pipeline.*;
  * Created by Alec Wolyniec on 6/14/16.
  */
 public class UnigramModel {
-    private static int numDocs;
     private static ArrayList<String> stopWordList = new ArrayList<String>();
     //private static Hashtable<String, Long> idfStarts = new Hashtable<String, Long>();
     private static Hashtable<String, Double> tweetIDFs = new Hashtable<String, Double>();
     private static String stopWordFilePath = "data/stopwords.txt";
-    //private static String idfFilePath = "data/term_webcounts.txt";
+    private static String idfFilePath = "data/term_webcounts.txt";
     private static long totalDocs;
     private static Pattern wordPattern = Pattern.compile("((\\w+'?\\w+)|\\w)([ !\"#$%&'()*+,-./:;<=>?@_`{|}~])");
 
@@ -45,50 +44,69 @@ public class UnigramModel {
         stopWordList = stopWords;
     }
 
-    /*
-        Gets list of idfs from file
-     */
-    /*
-    public static void initializeIDFs() throws FileNotFoundException, IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(new File(idfFilePath)));
+    public static void initializeIDFS() throws FileNotFoundException, IOException {
+        File idfFile = new File(idfFilePath);
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(idfFile));
+        //the first line is the total number of documents
+        totalDocs = Long.parseLong(bufferedReader.readLine());
+
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        Annotation currentWord;
+
+        /*
+            look through the number of documents each word is in. If it appears in more than 1000 documents,
+            and it contains at least one alphabetical character, keep a count of the number of times the
+            word's lemma appears (lowercase unless it's a proper noun).
+         */
         String currentLine;
-        //the first line is the number of documents
-        totalDocs = Long.parseLong(reader.readLine());
+        while ( (currentLine = bufferedReader.readLine()) != null ) {
+            String[] line = currentLine.split("\\t");
+            String word = line[0];
+            double documentCountOfWord = Double.parseDouble(line[1]);
 
-        String lastStart = "";
-        long lineCounter = 0;
-        long lastLineNum = 0;
-        long greatestLineDiff = 0;
-        long numUnder50Counter = 0;
-        long numOver10KCounter = 0;
-        while ((currentLine = reader.readLine()) != null) {
-            String prefix = currentLine.substring(0, 5);
-            if (prefix.indexOf("\t") != -1) prefix = prefix.substring(0, prefix.indexOf("\t"));
+            currentWord = new Annotation(word);
+            pipeline.annotate(currentWord);
+            if (currentWord.get(TokensAnnotation.class).size() == 0) continue;
+            CoreLabel thisWord = currentWord.get(TokensAnnotation.class).get(0);
 
-            if (!prefix.equals(lastStart)) {
-                //System.out.println(lineCounter);
-                lastStart = prefix;
-                long arrayLength = lineCounter - lastLineNum;
-                if (arrayLength < 50) numUnder50Counter++;
-                if (arrayLength > 10000) numOver10KCounter++;
-                if (arrayLength > greatestLineDiff) greatestLineDiff = arrayLength;
-                lastLineNum = lineCounter;
-                idfStarts.put(prefix, lineCounter);
+            //only use document counts of words that appear in more than 1000 documents and have at least one alphabetic character
+            if (Long.parseLong(line[1]) > 1000 && util.containsAlphabeticCharacters(thisWord.originalText()) == 1) {
+                String formattedWord = util.lowerCaseLemmaUnlessProperNoun(thisWord);
+                //combine lemmas (lowercase unless proper noun), or at least strings with the same lowercase value, into a single entry
+                //if the formatted word is already being counted, add the current count to its count
+                if (tweetIDFs.get(formattedWord) != null) {
+                    tweetIDFs.put(formattedWord, documentCountOfWord + tweetIDFs.get(formattedWord));
+                }
+                else {
+                    tweetIDFs.put(formattedWord, documentCountOfWord);
+                }
             }
-            lineCounter++;
         }
-        System.out.println(idfStarts.size());
-        System.out.println("Longest: "+greatestLineDiff);
-        System.out.println("Number under 50: "+numUnder50Counter);
-        System.out.println("Number over 10k: "+numOver10KCounter);
+
+        /*
+            Check through all lemma document frequencies. Discard any that are less than 10,000, and divide
+            total document number by each document count to get each word's idf
+         */
+        Enumeration<String> lemmaDFs = tweetIDFs.keys();
+        while (lemmaDFs.hasMoreElements()) {
+            String currentLemma = lemmaDFs.nextElement();
+            double currentDF = tweetIDFs.get(currentLemma);
+            if (currentDF < 10000) {
+                tweetIDFs.remove(currentLemma);
+            }
+            else {
+                tweetIDFs.put(currentLemma, totalDocs/currentDF);
+            }
+        }
     }
-    */
 
     /*
         Initializes idfs from tweet texts
      */
     public static void updateIDFsFromTweetText(TweetVector[] tweetVectors) {
-        numDocs = tweetVectors.length;
+        totalDocs = tweetVectors.length;
         //go through all tweets
         for (int i = 0; i < tweetVectors.length; i++) {
             String text = tweetVectors[i].getTweetText();
@@ -124,11 +142,11 @@ public class UnigramModel {
             }
         }
 
-        //Get idfs from numDocs and the document count of each word
+        //Get idfs from totalDocs and the document count of each word
         Enumeration<String> keys = tweetIDFs.keys();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            tweetIDFs.put(key, numDocs/tweetIDFs.get(key));
+            tweetIDFs.put(key, totalDocs/tweetIDFs.get(key));
         }
     }
 
@@ -169,7 +187,7 @@ public class UnigramModel {
                 String text = util.lowerCaseLemmaUnlessProperNoun(token);
 
                 //don't use if the token contains no alphabetic characters
-                if (TextFeatures.containsAlphabeticCharacters(text) == 0) continue;
+                if (util.containsAlphabeticCharacters(text) == 0) continue;
 
                 //only use stopwords if requested in args
                 if (!stopWords && isStopWord(text)) continue;
@@ -193,8 +211,8 @@ public class UnigramModel {
         while (tfKeys.hasMoreElements()) {
             String tfKey = tfKeys.nextElement();
 
-            //get the word's idf. If it has none, input a default idf of numDocs/1.0
-            double idf = numDocs;
+            //get the word's idf. If it has none, input a default idf of totalDocs/1.0
+            double idf = (double) totalDocs;
             Enumeration<String> idfKeys = tweetIDFs.keys();
             while (idfKeys.hasMoreElements()) {
                 String idfKey = idfKeys.nextElement();

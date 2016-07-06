@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_csv_1_4.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_twitter4j_twitter4j_core_4_0_2.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/testResults/9-8Plus5KRandomTweets.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/AnnotationFeatures.class" afterPath="$PROJECT_DIR$/target/classes/AnnotationFeatures.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/TweetParser.class" afterPath="$PROJECT_DIR$/target/classes/TweetParser.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/util.class" afterPath="$PROJECT_DIR$/target/classes/util.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/FluTweetsFeatureExtraction.iml" afterPath="$PROJECT_DIR$/FluTweetsFeatureExtraction.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AnnotationFeatures.java" afterPath="$PROJECT_DIR$/src/AnnotationFeatures.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/MaxEntClassification.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TweetParser.java" afterPath="$PROJECT_DIR$/src/TweetParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/readTweetsGetFeatures.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/runClassifierOnTweets.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/util.java" afterPath="$PROJECT_DIR$/src/util.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -51,7 +34,7 @@
       <file leaf-file-name="AnnotationFeatures.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/AnnotationFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.32846716">
+            <state vertical-scroll-proportion="0.33582088">
               <caret line="342" column="36" selection-start-line="342" selection-start-column="36" selection-end-line="342" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -304,6 +287,122 @@
       <recent name="$PROJECT_DIR$/data/testResults" />
       <recent name="$PROJECT_DIR$/jars" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/FamilyTitles.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/negativeAdverbs.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/negativeEmoticons.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/neutralAdverbs.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/positiveAdverbs.txt</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/positiveEmoticons.txt</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/hashSets/positiveAdjectives.txt</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Application.testRunClassifier">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -836,12 +935,18 @@
       <option name="project" value="LOCAL" />
       <updated>1467221214542</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Work on phrase templates">
+      <created>1467771187246</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1467771187246</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-2" y="36" width="1280" height="729" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -849,8 +954,8 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31230283" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3254717" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31083202" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32496077" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31083202" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32861635" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25605816" sideWeight="0.47826087" order="0" side_tool="false" content_ui="combo" />
@@ -897,7 +1002,8 @@
     <MESSAGE value="Removed irrelevant features" />
     <MESSAGE value="unigram model is final" />
     <MESSAGE value="quick fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="quick fix" />
+    <MESSAGE value="Work on phrase templates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Work on phrase templates" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1297,7 +1403,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AnnotationFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.32846716">
+        <state vertical-scroll-proportion="0.33582088">
           <caret line="342" column="36" selection-start-line="342" selection-start-column="36" selection-end-line="342" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />

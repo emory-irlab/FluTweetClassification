@@ -2,6 +2,7 @@ import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
 import org.apache.commons.csv.*;
+import edu.stanford.nlp.util.CoreMap;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -59,7 +60,7 @@ public class readTweetsGetFeatures {
         ArrayList<String> labelSet = new ArrayList<String>(0);
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         //get tweet vector model
@@ -98,6 +99,7 @@ public class readTweetsGetFeatures {
         Annotation tweetDocument = new Annotation(processedTweet);
         pipeline.annotate(tweetDocument);
         CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
+        List<CoreMap> tweetSentences = tweetDocument.get(SentencesAnnotation.class);
 
         //collect features
         switch (classifierType) {
@@ -105,7 +107,7 @@ public class readTweetsGetFeatures {
                 collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
                 break;
             case "EventVsNonEvent":
-                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases);
+                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences);
                 break;
             case "SelfVsOther":
                 collectFeaturesSelfVsOther(tweetVector, tweetPhrases);
@@ -223,7 +225,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
+    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
         String text = tweetVector.getTweetText();
 
         //get idfs from the text
@@ -234,6 +236,9 @@ public class readTweetsGetFeatures {
         //unigram features (tf-idf value of each word)
         tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
 
+        //phrase templates
+        AnnotationFeatures.getPhraseTemplates(tweetSentences);
+
         //topics
 
         //other features
@@ -243,12 +248,14 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("URL Count", TextFeatures.countInstancesOf(text, TextFeatures.detectURL));
 
         //Sentiment analysis
+        /*
         tweetVector.addFeature("Positive Adverbs", TextFeatures.countWordsInDict(text, TextFeatures.positiveAdverbs));
         tweetVector.addFeature("Negative Adverbs", TextFeatures.countWordsInDict(text, TextFeatures.negativeAdverbs));
         tweetVector.addFeature("Neutral Adverbs", TextFeatures.countWordsInDict(text, TextFeatures.neutralAdverbs));
         tweetVector.addFeature("Positive Emoticons", TextFeatures.countWordsInDict(text, TextFeatures.positiveEmoticons));
         tweetVector.addFeature("Negative Emoticons", TextFeatures.countWordsInDict(text, TextFeatures.negativeEmoticons));
         tweetVector.addFeature("Mentions Family", TextFeatures.mentionsFamily(text));
+        */
 
         //Stylometry
 //        tweetVector.addFeature("Contains Mentions", TextFeatures.containsAt(text));

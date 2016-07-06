@@ -70,6 +70,8 @@ public class TweetParser {
         ArrayList<String[]> tweetEntities = new ArrayList<String[]>();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(pathToTSVFile)));
         String currentLine;
+        if (skipFirstLine) bufferedReader.readLine();
+
         while ((currentLine = bufferedReader.readLine()) != null) {
             String[] columns = currentLine.split("\\t");
             long tweetID = Long.parseLong(columns[column]);
@@ -94,8 +96,46 @@ public class TweetParser {
             }
 
         }
-
         return tweetEntities;
+    }
+
+    /*
+        Get a column of tweet text from a tsv file and give it a label
+     */
+    public static ArrayList<String[]> getUnlabeledTweetTextAndLabel(String pathToTSVFile, int column, boolean skipFirstLine, String label) throws FileNotFoundException, IOException {
+        ArrayList<String[]> tweetEntities = new ArrayList<String[]>();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(pathToTSVFile)));
+        String currentLine;
+        if (skipFirstLine) bufferedReader.readLine();
+
+        while ((currentLine = bufferedReader.readLine()) != null) {
+            String[] columns = currentLine.split("\\t");
+            String[] info = new String[6];
+            info[0] = "";
+            info[1] = "";
+            info[2] = "";
+            info[3] = "";
+            info[4] = columns[column];
+            info[5] = label;
+            tweetEntities.add(info);
+        }
+        return tweetEntities;
+    }
+
+    /*
+        Writes several string arrays containing tweet entities to a csv file. Append indicates whether to append
+        the tweet entities to the existing content of the file or to start anew
+     */
+    public static void writeTweetEntitiesToFile(ArrayList<String[]> tweetEntities, String pathToCSVFile, boolean append) throws IOException, FileNotFoundException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToCSVFile), append));
+        for (String[] tweetEntity: tweetEntities) {
+            for (int i = 0; i < tweetEntity.length; i++) {
+                bufferedWriter.write(tweetEntity[i]);
+                if (i < tweetEntity.length - 1) bufferedWriter.write(",");
+            }
+            bufferedWriter.newLine();
+        }
+        bufferedWriter.close();
     }
 
     public static String getTweet(String tweetID) {

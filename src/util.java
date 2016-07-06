@@ -43,4 +43,13 @@ public class util {
             if (Character.isAlphabetic(text.charAt(i))) return 1;
         return 0;
     }
+
+    public static boolean isAllNumeric(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            if (!Character.isDigit(text.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

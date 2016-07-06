@@ -94,13 +94,13 @@ public class MaxEntClassification {
 		// instances.
 		Trial trial = new Trial(maxEntClassifier, testInstances);
 
-		getAreaUnderCurve(trial);
+		//getAreaUnderCurve(trial);
 
 		//printLabelings(testInstances);
-		System.out.println();
+		//System.out.println();
 		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
 		//p.write("\n");
-		((MaxEnt) maxEntClassifier).print();
+		//((MaxEnt) maxEntClassifier).print();
 		//p.close();
 
 		//first entry is accuracy

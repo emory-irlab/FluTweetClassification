@@ -66,10 +66,16 @@ public class runClassifierOnTweets {
     	//String[] labels = {"Human", "Not Human"};
     	startRunTime = System.currentTimeMillis();
 
-        ArrayList<String> randomTweets = TweetParser.getUnlabeledTweetEntitiesAndLabel()
+        //ArrayList<String[]> randomTweets = TweetParser.getUnlabeledTweetEntitiesAndLabel("data/tweets/5kRandomTweets.txt", 2, true, "none_of_the_above");
     	
     	//Initialize hash sets once at run time
     	TextFeatures.initializeHashSets();
+
+        //random tweet texts for EvN dataset
+        /*
+        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets.csv");
+        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_copy.csv", true);
+        */
     	
         //get the training tweets
         //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);

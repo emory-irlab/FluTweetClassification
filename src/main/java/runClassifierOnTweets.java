@@ -9,16 +9,16 @@ public class runClassifierOnTweets {
 	 *     CSV out the labelins and plot in spreadsheet
 	 * */
 
-	public static long startRunTime;
-	public static long endRunTime;
-	
+    public static long startRunTime;
+    public static long endRunTime;
+
     /*
         Trains a classifier of the specified type on the given training data, then tests on the given training data.
         Saves the classifier to the file at the given path
     */
     public static void runClassifier (ArrayList<String[]> trainingTweets, String path, String classifierType) throws IOException, ClassNotFoundException {
-        
-    	TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
+
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
         MaxEntClassification classifier = new MaxEntClassification(path);
@@ -58,23 +58,25 @@ public class runClassifierOnTweets {
         5 - path to a file where the self vs. other classifier will be stored
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException {
-    	
-    	//String dataPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\tweet_person_vs_organization.csv";
-    	//String classifierPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\HvNClassifierFile.txt";
-    	String dataPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\twitterLifeEventExtracted1000.csv";
-    	String classifierPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\EvNClassifierFile.txt";
-    	//String[] labels = {"Human", "Not Human"};
-    	startRunTime = System.currentTimeMillis();
+
+        //String dataPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\tweet_person_vs_organization.csv";
+        //String classifierPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\HvNClassifierFile.txt";
+        String dataPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\twitterLifeEventExtracted1000.csv";
+        String classifierPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\EvNClassifierFile.txt";
+        //String[] labels = {"Human", "Not Human"};
+        startRunTime = System.currentTimeMillis();
 
         //ArrayList<String[]> randomTweets = TweetParser.getUnlabeledTweetEntitiesAndLabel("data/tweets/5kRandomTweets.txt", 2, true, "none_of_the_above");
-    	
-    	//Initialize hash sets once at run time
-    	TextFeatures.initializeHashSets();
+
+        //Initialize hash sets once at run time
+        TextFeatures.initializeHashSets();
 
         //random tweet texts for EvN dataset
-        /*ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_20k.csv");
-        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_random.csv", true);*/
-    	
+        /*
+        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_20k.csv");
+        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_20k_random.csv", true);
+    	*/
+
         //get the training tweets
         //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
         //runClassifier(HvNTweets, args[1], "HumanVsNonHuman");

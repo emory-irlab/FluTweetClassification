@@ -237,12 +237,15 @@ public class readTweetsGetFeatures {
         tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
 
         //phrase templates
-        //AnnotationFeatures.getPhraseTemplates(tweetSentences);
+        ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
+        for (String template: phraseTemplates) {
+            tweetVector.addFeature(template, 1.0);
+        }
 
         //topics
 
         //other features
-         //addition 1
+        //addition 1
         tweetVector.addFeature("Hashtag Count", TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));
         tweetVector.addFeature("User Mention Count", TextFeatures.countInstancesOf(text, TextFeatures.userMentionPattern));
         tweetVector.addFeature("URL Count", TextFeatures.countInstancesOf(text, TextFeatures.detectURL));

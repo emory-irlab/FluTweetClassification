@@ -35,7 +35,7 @@ public class MaxEntClassification {
 	 * General MaxEnt Classifier capable of multi-classification
 	 * via supervised learning. Enter a filename to store the classifier at.
 	 * */
-	
+
 	//Alphabet of features that StanCore extracted from the data
 	public Alphabet dataAlphabet = new Alphabet(8);
 	//Target Labels pertinent to this classifier
@@ -43,22 +43,22 @@ public class MaxEntClassification {
 	public InstanceList instances;
 	public Classifier maxEntClassifier;
 	public File classifierFile;
-	
+
 	public MaxEntClassification(String pathToClassifier) throws IOException, ClassNotFoundException {
-		
+
 		classifierFile = new File(pathToClassifier);
-	        
-        if (!classifierFile.exists()) {
-        	classifierFile.createNewFile();
-        } else {
-        	maxEntClassifier = loadClassifier(classifierFile);
-        }
-        
-        targetAlphabet.startGrowth();
-        
-        instances = new InstanceList(dataAlphabet, targetAlphabet);
+
+		if (!classifierFile.exists()) {
+			classifierFile.createNewFile();
+		} else {
+			maxEntClassifier = loadClassifier(classifierFile);
+		}
+
+		targetAlphabet.startGrowth();
+
+		instances = new InstanceList(dataAlphabet, targetAlphabet);
 	}
-	
+
 	/*
 	 * This method takes in a Hashtable, name, and label, converts
 	 * it to an instance then adds it to the instance list.
@@ -67,7 +67,7 @@ public class MaxEntClassification {
 	 */
 	public void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
 		Enumeration<String> features = table.keys();
-        int numberOfNewFeatures = getNumOfNewFeatures(table);
+		int numberOfNewFeatures = getNumOfNewFeatures(table);
 		double[] featureValues = new double[dataAlphabet.size() + numberOfNewFeatures];
 
 		while (features.hasMoreElements()) {
@@ -267,83 +267,83 @@ public class MaxEntClassification {
 	 * It removes all instances in "instances" that are below
 	 * the threshold the user provides.
 	 * */
-	
-	public void evaluateWithConfidenceThreshold(InstanceList testInstances, double threshold) throws IOException {
-		
-		System.out.println("For threshold: " + threshold);
-		
-		for (int i = 0; i < testInstances.size(); i++) {
-        	//Given an InstanceList, get the label for each instance that's been classified
-            Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
 
-            // print the labels with their weights in descending order (ie best first)                     
-            for (int rank = 0; rank < labeling.numLocations(); rank++) {
-            	
-            	if (labeling.getValueAtRank(rank) < threshold) {
-                	testInstances.remove(i);
-            	}
-            }
-        }
-		
+	public void evaluateWithConfidenceThreshold(InstanceList testInstances, double threshold) throws IOException {
+
+		System.out.println("For threshold: " + threshold);
+
+		for (int i = 0; i < testInstances.size(); i++) {
+			//Given an InstanceList, get the label for each instance that's been classified
+			Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
+
+			// print the labels with their weights in descending order (ie best first)
+			for (int rank = 0; rank < labeling.numLocations(); rank++) {
+
+				if (labeling.getValueAtRank(rank) < threshold) {
+					testInstances.remove(i);
+				}
+			}
+		}
+
 		Trial trial = new Trial(maxEntClassifier, testInstances);
-		
+
 		//printDataAboveThresholdCSV(trial, threshold, "person");
-        
-        //getAreaUnderCurve(trial);
-        
-        PrintWriter p = new PrintWriter(System.out);
-    	((MaxEnt) maxEntClassifier).print(p);
-    	System.out.println("--------------------");
-        System.out.println("ACCURACY: " + trial.getAccuracy());
-        System.out.println("--------------------");
-        System.out.println();
-        
-        for (int i = 0; i < targetAlphabet.size(); i++) {
-        	System.out.println("Metrics for class " + targetAlphabet.lookupLabel(i));
-        	System.out.println("F1: " + trial.getF1(i));
-        	System.out.println("Precision: " + trial.getPrecision(i));
-        	System.out.println("Recall: " + trial.getRecall(i));
-        	System.out.println();
-        }
-        
-        runClassifierOnTweets.endRunTime = System.currentTimeMillis();
-        System.out.println("------------------------------");
-        System.out.println("FINISHED RUN TME IN " + (runClassifierOnTweets.endRunTime - runClassifierOnTweets.startRunTime)/1000 + " SECONDS.");
-        System.out.println("------------------------------");
-        System.out.println();
-        
-        p.close();
+
+		//getAreaUnderCurve(trial);
+
+		PrintWriter p = new PrintWriter(System.out);
+		((MaxEnt) maxEntClassifier).print(p);
+		System.out.println("--------------------");
+		System.out.println("ACCURACY: " + trial.getAccuracy());
+		System.out.println("--------------------");
+		System.out.println();
+
+		for (int i = 0; i < targetAlphabet.size(); i++) {
+			System.out.println("Metrics for class " + targetAlphabet.lookupLabel(i));
+			System.out.println("F1: " + trial.getF1(i));
+			System.out.println("Precision: " + trial.getPrecision(i));
+			System.out.println("Recall: " + trial.getRecall(i));
+			System.out.println();
+		}
+
+		runClassifierOnTweets.endRunTime = System.currentTimeMillis();
+		System.out.println("------------------------------");
+		System.out.println("FINISHED RUN TME IN " + (runClassifierOnTweets.endRunTime - runClassifierOnTweets.startRunTime)/1000 + " SECONDS.");
+		System.out.println("------------------------------");
+		System.out.println();
+
+		p.close();
 	}
-	
+
 	public void getAreaUnderCurve(Trial t) {
-		
+
 		AccuracyCoverage a = new AccuracyCoverage(t, "AUC", "Labelings");
-		
+
 		a.displayGraph();
 		System.out.println(a.cumulativeAccuracy());
 	}
-    /*
+	/*
     From the given data alphabet, count the number of features in the input table that have not been
     seen before
     */
 	public int getNumOfNewFeatures(Hashtable<String, Double> input) {
-	    int newFeats = 0;
-	    Enumeration<String> inputKeys = input.keys();
-	    //check each feature name in the input data for a match in the data alphabet
-	    while (inputKeys.hasMoreElements()) {
-	        boolean isInDataAlphabet = false;
-	        String currentFeature = inputKeys.nextElement();
-	        Iterator it = dataAlphabet.iterator();
-	        while (it.hasNext()) {
-	            if (it.next().toString().equals(currentFeature)) {
-	                isInDataAlphabet = true;
-	                break;
-	            }
-	        }
-	        if (!isInDataAlphabet) newFeats++;
-	    }
-	
-	    return newFeats;
+		int newFeats = 0;
+		Enumeration<String> inputKeys = input.keys();
+		//check each feature name in the input data for a match in the data alphabet
+		while (inputKeys.hasMoreElements()) {
+			boolean isInDataAlphabet = false;
+			String currentFeature = inputKeys.nextElement();
+			Iterator it = dataAlphabet.iterator();
+			while (it.hasNext()) {
+				if (it.next().toString().equals(currentFeature)) {
+					isInDataAlphabet = true;
+					break;
+				}
+			}
+			if (!isInDataAlphabet) newFeats++;
+		}
+
+		return newFeats;
 	}
 
 	/*
@@ -365,83 +365,83 @@ public class MaxEntClassification {
 
 
 	public Classifier loadClassifier(File serializedFile)
-           throws FileNotFoundException, IOException, ClassNotFoundException {
+			throws FileNotFoundException, IOException, ClassNotFoundException {
 
-           // The standard way to save classifiers and Mallet data                                            
-           //  for repeated use is through Java serialization.                                                
-           // Here we load a serialized classifier from a file.                                               
+		// The standard way to save classifiers and Mallet data
+		//  for repeated use is through Java serialization.
+		// Here we load a serialized classifier from a file.
 
-           Classifier classifier;
+		Classifier classifier;
 
-           ObjectInputStream ois =
-               new ObjectInputStream (new FileInputStream (serializedFile));
-           classifier = (Classifier) ois.readObject();
-           ois.close();
+		ObjectInputStream ois =
+				new ObjectInputStream (new FileInputStream (serializedFile));
+		classifier = (Classifier) ois.readObject();
+		ois.close();
 
-           return classifier;
-    }
-	
+		return classifier;
+	}
+
 	public void printLabelings(InstanceList testInstances) throws IOException {
-		
-        for (int i = 0; i < testInstances.size(); i++) {
-        	//Given an InstanceList, get the label for each instance that's been classified
-            Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
 
-            // print the labels with their weights in descending order (ie best first)                     
-            for (int rank = 0; rank < labeling.numLocations(); rank++){
-                System.out.print(labeling.getLabelAtRank(rank) + ":" +
-                                 labeling.getValueAtRank(rank) + " ");
-            }
-            System.out.println();
-        }
-    }
-	
+		for (int i = 0; i < testInstances.size(); i++) {
+			//Given an InstanceList, get the label for each instance that's been classified
+			Labeling labeling = maxEntClassifier.classify(testInstances.get(i)).getLabeling();
+
+			// print the labels with their weights in descending order (ie best first)
+			for (int rank = 0; rank < labeling.numLocations(); rank++){
+				System.out.print(labeling.getLabelAtRank(rank) + ":" +
+						labeling.getValueAtRank(rank) + " ");
+			}
+			System.out.println();
+		}
+	}
+
 	public void saveClassifier(File serializedFile)
-            throws IOException {
+			throws IOException {
 
-            // The standard method for saving classifiers in                                                   
-            //  Mallet is through Java serialization. Here we                                                  
-            //  write the classifier object to the specified file.                                             
+		// The standard method for saving classifiers in
+		//  Mallet is through Java serialization. Here we
+		//  write the classifier object to the specified file.
 
-            ObjectOutputStream oos =
-                new ObjectOutputStream(new FileOutputStream (serializedFile));
-            oos.writeObject (maxEntClassifier);
-            oos.close();
-        }
-	
+		ObjectOutputStream oos =
+				new ObjectOutputStream(new FileOutputStream (serializedFile));
+		oos.writeObject (maxEntClassifier);
+		oos.close();
+	}
+
 	public InstanceList split(InstanceList instances) {
 
-        int TRAINING = 0;
-        int TESTING = 1;
-        int VALIDATION = 2;
-                               
-	// The division takes place by creating a copy of the list,                                        
-	//  randomly shuffling the copy, and then allocating                                               
-	//  instances to each sub-list based on the provided proportions.                                  
+		int TRAINING = 0;
+		int TESTING = 1;
+		int VALIDATION = 2;
 
-        InstanceList[] instanceLists =
-            instances.split(new Randoms(),
-	                    new double[] {0.5, 0.5, 0.0}); //better than 0.8, 0.2 split
+		// The division takes place by creating a copy of the list,
+		//  randomly shuffling the copy, and then allocating
+		//  instances to each sub-list based on the provided proportions.
 
-        //  The third position is for the "validation" set,                                                 
-        //  which is a set of instances not used directly                                                  
-        //  for training, but available for determining                                                    
-        //  when to stop training and for estimating optimal                                               
-        //  settings of nuisance parameters.                                                               
-        //  Most Mallet ClassifierTrainers can not currently take advantage                                 
-        //  of validation sets.
-        this.instances = instanceLists[TRAINING];
-        return instanceLists[TESTING];
-    }
-	
+		InstanceList[] instanceLists =
+				instances.split(new Randoms(),
+						new double[] {0.5, 0.5, 0.0}); //better than 0.8, 0.2 split
+
+		//  The third position is for the "validation" set,
+		//  which is a set of instances not used directly
+		//  for training, but available for determining
+		//  when to stop training and for estimating optimal
+		//  settings of nuisance parameters.
+		//  Most Mallet ClassifierTrainers can not currently take advantage
+		//  of validation sets.
+		this.instances = instanceLists[TRAINING];
+		return instanceLists[TESTING];
+	}
+
 	public Classifier trainClassifier(InstanceList trainingInstances) {
 
-	    // Here we use a maximum entropy (ie polytomous logistic regression)                               
-	    //  classifier. Mallet includes a wide variety of classification                                   
-	    //  algorithms, see the JavaDoc API for details.                                                   
-		
-	    ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer();
+		// Here we use a maximum entropy (ie polytomous logistic regression)
+		//  classifier. Mallet includes a wide variety of classification
+		//  algorithms, see the JavaDoc API for details.
+
+		ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer();
 		maxEntClassifier = trainer.train(trainingInstances);
-	    return maxEntClassifier;
+		return maxEntClassifier;
 	}
 }

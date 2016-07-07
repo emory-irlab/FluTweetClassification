@@ -38,6 +38,24 @@ public class util {
         }
     }
 
+    /*
+    Return the lemma of the inputted token, in all lower case if it is not a proper noun, with
+    only the first letter capitalized if it is a proper noun
+    */
+    public static String lowerCaseLemmaUnlessProperNoun(IndexedWord token) {
+        String lem = token.get(LemmaAnnotation.class);
+        String tag = token.tag();
+        if (tag.substring(0, Math.min(3, tag.length())).equals("NNP")) {
+            StringBuilder output = new StringBuilder();
+            output.append(Character.toUpperCase(lem.charAt(0)));
+            output.append(lem.toLowerCase().substring(1));
+            return output.toString();
+        }
+        else {
+            return lem.toLowerCase();
+        }
+    }
+
     public static int containsAlphabeticCharacters(String text) {
         for (int i = 0; i < text.length(); i++)
             if (Character.isAlphabetic(text.charAt(i))) return 1;

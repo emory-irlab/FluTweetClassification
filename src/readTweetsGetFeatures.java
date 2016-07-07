@@ -237,7 +237,10 @@ public class readTweetsGetFeatures {
         tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
 
         //phrase templates
-        AnnotationFeatures.getPhraseTemplates(tweetSentences);
+        ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
+        for (String template: phraseTemplates) {
+            tweetVector.addFeature(template, 1.0);
+        }
 
         //topics
 

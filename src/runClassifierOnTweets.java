@@ -73,10 +73,10 @@ public class runClassifierOnTweets {
 
         //random tweet texts for EvN dataset
         /*
-        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets.csv");
-        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_copy.csv", true);
-        */
-    	
+        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_20k.csv");
+        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_20k_random.csv", true);
+    	*/
+
         //get the training tweets
         //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
         //runClassifier(HvNTweets, args[1], "HumanVsNonHuman");

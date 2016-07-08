@@ -165,14 +165,14 @@ public class AnnotationFeatures {
         subject, /V if it is the verb, and /O if it is the object
      */
     public static ArrayList<String> getPhraseTemplates(List<CoreMap> sentences) {
-        System.out.println();
-        System.out.println("New tweet: ");
+        //System.out.println();
+        //System.out.println("New tweet: ");
 
         ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
         //look through each sentence
         for (CoreMap sentence: sentences) {
-            System.out.println();
-            System.out.println("New sentence: ");
+            //System.out.println();
+            //System.out.println("New sentence: ");
             SemanticGraph graph = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
 
             //check for all types of subject-verb-object templates
@@ -181,14 +181,14 @@ public class AnnotationFeatures {
                 //for verbs
                 if (vertex.tag().charAt(0) == 'V') {
                     //Simple case: verb has an nsubj (direct noun subject) and a dobj (direct object)
-                    ArrayList<String[]> templatesNSubjDObj = getTemplatesNSubjDObj(graph, vertex);
-                    for (String[] template: templatesNSubjDObj) phraseTemplates.add(template);
+                    ArrayList<String[]> templatesVerbs = getTemplatesForVerbs(graph, vertex);
+                    for (String[] template: templatesVerbs) phraseTemplates.add(template);
                 }
 
                 //for nouns
                 if (vertex.tag().charAt(0) == 'N') {
-                    ArrayList<String[]> templatesNsubjVCop = getTemplatesNSubjVCop(graph, vertex);
-                    for (String[] template: templatesNsubjVCop) phraseTemplates.add(template);
+                    ArrayList<String[]> templatesNouns = getTemplatesForNouns(graph, vertex);
+                    for (String[] template: templatesNouns) phraseTemplates.add(template);
                 }
 
                 //System.out.println(vertex.originalText() + "/" + vertex.tag());
@@ -209,7 +209,7 @@ public class AnnotationFeatures {
             Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
             //ArrayList<String[]> templates = traverseForTemplates(tree, tree); //add to phraseTemplates
 
-            //tree.pennPrint();
+            tree.pennPrint();
         }
 
         ArrayList<String> compressedPhraseTemplates = new ArrayList<String>();
@@ -465,9 +465,9 @@ public class AnnotationFeatures {
 
     /*
         From a root verb, get all possible phrase templates in which the verb has a direct noun or pronoun subject
-        and a direct object (noun or pronoun).
+        and either a direct object (noun or pronoun) or a verb complement as its object.
      */
-    public static ArrayList<String[]> getTemplatesNSubjDObj(SemanticGraph graph, IndexedWord vertex) {
+    public static ArrayList<String[]> getTemplatesForVerbs(SemanticGraph graph, IndexedWord vertex) {
         ArrayList<String[]> templates = new ArrayList<String[]>();
         String subject = "";
         String verb = util.lowerCaseLemmaUnlessProperNoun(vertex)+"/V";
@@ -477,8 +477,12 @@ public class AnnotationFeatures {
             if (pair.first().getShortName().equals("nsubj")) {
                 subject = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S";
             }
-            //find object
+            //find direct object
             else if (pair.first().getShortName().equals("dobj")) {
+                object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
+            }
+            //find complementing verb object if no direct object has been found
+            else if (object.length() == 0 && pair.first.getShortName().equals("xcomp") && pair.second().tag().charAt(0) == 'V') {
                 object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
             }
 
@@ -497,19 +501,50 @@ public class AnnotationFeatures {
             }
         }
 
-        System.out.println(subject);
-        System.out.println(verb);
-        System.out.println(object);
+        //System.out.println(subject+", "+verb+", "+object);
 
         return templates;
     }
 
     /*
-        If a noun has a dependent verb with a relationship of "cop" and a dependent noun with a relationship of
+        If a noun has a dependent verb with a relationship of "cop" (copula) and a dependent noun with a relationship of
         "nsubj", that root noun is the object, the verb is the verb and the noun is the subject
     */
-    public static ArrayList<String[]> getTemplatesNSubjVCop(SemanticGraph graph, IndexedWord vertex) {
-        return null;
+    public static ArrayList<String[]> getTemplatesForNouns(SemanticGraph graph, IndexedWord vertex) {
+        String subject = "";
+        String verb = "";
+        String object = util.lowerCaseLemmaUnlessProperNoun(vertex)+"/O";
+        ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
+
+        for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
+            //get the copula if it's there
+            if (pair.first().getShortName().equals("cop")) {
+                verb = util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/V";
+            }
+
+            //get the nsubj if it's there
+            if (pair.first().getShortName().equals("nsubj")) {
+                subject = util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/O";
+            }
+
+            //construct all possible templates, given the data
+            if (verb.length() > 0) {
+                String[] verbObjectTemplate = {verb, object};
+                phraseTemplates.add(verbObjectTemplate);
+
+                if (subject.length() > 0) {
+                    String[] subjectObjectTemplate = {subject, object};
+                    phraseTemplates.add(subjectObjectTemplate);
+
+                    String[] subjectVerbObjectTemplate = {subject, verb, object};
+                    phraseTemplates.add(subjectVerbObjectTemplate);
+                }
+            }
+        }
+
+        //System.out.println(subject+", "+verb+", "+object);
+
+        return phraseTemplates;
     }
 
     public static Hashtable<String, String[]> getTopics(String pathToTopicFile) throws IOException, FileNotFoundException{

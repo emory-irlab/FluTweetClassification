@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/AnnotationFeatures.class" afterPath="$PROJECT_DIR$/target/classes/AnnotationFeatures.class" />
+    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="Final phrase template refinement">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" />
     </list>
@@ -36,10 +35,13 @@
       <file leaf-file-name="AnnotationFeatures.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2987013">
-              <caret line="523" column="66" selection-start-line="523" selection-start-column="66" selection-end-line="523" selection-end-column="66" />
+            <state vertical-scroll-proportion="0.3276699">
+              <caret line="581" column="59" selection-start-line="581" selection-start-column="59" selection-end-line="581" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#22171#22179#0" expanded="true" />
+                <element signature="e#22232#22240#0" expanded="true" />
+                <element signature="e#26118#26126#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -49,7 +51,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+              <caret line="74" column="24" selection-start-line="74" selection-start-column="24" selection-end-line="74" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -172,7 +174,7 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2" />
+    <option name="x" value="-4" />
     <option name="y" value="41" />
     <option name="width" value="1280" />
     <option name="height" value="728" />
@@ -882,11 +884,17 @@
       <option name="project" value="LOCAL" />
       <updated>1467995762379</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Final phrase template refinement">
+      <created>1468014126540</created>
+      <option name="number" value="00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1468014126540</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2" y="41" width="1280" height="728" extended-state="0" />
+    <frame x="-4" y="41" width="1280" height="728" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -971,7 +979,8 @@
     <MESSAGE value="Work on phrase templates" />
     <MESSAGE value="reformat" />
     <MESSAGE value="More complete phrase templates ready to test" />
-    <option name="LAST_COMMIT_MESSAGE" value="More complete phrase templates ready to test" />
+    <MESSAGE value="Final phrase template refinement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final phrase template refinement" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1308,28 +1317,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/UnigramModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="240" column="0" selection-start-line="240" selection-start-column="0" selection-end-line="240" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1350,12 +1341,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2987013">
-          <caret line="523" column="66" selection-start-line="523" selection-start-column="66" selection-end-line="523" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="74" column="24" selection-start-line="74" selection-start-column="24" selection-end-line="74" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3276699">
+          <caret line="581" column="59" selection-start-line="581" selection-start-column="59" selection-end-line="581" selection-end-column="59" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#22171#22179#0" expanded="true" />
+            <element signature="e#22232#22240#0" expanded="true" />
+            <element signature="e#26118#26126#0" expanded="true" />
           </folding>
         </state>
       </provider>

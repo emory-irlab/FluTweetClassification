@@ -146,6 +146,8 @@ public class AnnotationFeatures {
      */
 
     /*
+        Dependency parse version has est. 74% recall, 95% precision (trial of 20 tweet texts)
+
         Return phrase templates (in the form of ArrayLists) of words filling certain semantic roles. Returns the
         following templates for each sentence.
 
@@ -165,14 +167,14 @@ public class AnnotationFeatures {
         subject, /V if it is the verb, and /O if it is the object
      */
     public static ArrayList<String> getPhraseTemplates(List<CoreMap> sentences) {
-        System.out.println();
-        System.out.println("New tweet: ");
+        //System.out.println();
+        //System.out.println("New tweet: ");
 
         ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
         //look through each sentence
         for (CoreMap sentence: sentences) {
-            System.out.println();
-            System.out.println("New sentence: ");
+            //System.out.println();
+            //System.out.println("New sentence: ");
             SemanticGraph graph = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
 
             //check for all types of subject-verb-object templates
@@ -191,14 +193,14 @@ public class AnnotationFeatures {
                     for (String[] template: templatesNouns) phraseTemplates.add(template);
                 }
 
-                System.out.println(vertex.originalText() + "/" + vertex.tag());
+                //System.out.println(vertex.originalText() + "/" + vertex.tag());
                 if (vertex.tag().charAt(0) == 'V' || vertex.tag().charAt(0) == 'N') {
                     for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
-                        System.out.println("Child: "+pair.second().originalText()+"/"+pair.second().tag()+", Relation: "+pair.first().getShortName()+" "+pair.first().getLongName());
+                        //System.out.println("Child: "+pair.second().originalText()+"/"+pair.second().tag()+", Relation: "+pair.first().getShortName()+" "+pair.first().getLongName());
                     }
 
                     for (Pair<GrammaticalRelation, IndexedWord> pair: graph.parentPairs(vertex)) {
-                        System.out.println("Parent: "+pair.second().originalText()+"/"+pair.second().tag()+", Relation: "+pair.first().getShortName()+" "+pair.first().getLongName());
+                        //System.out.println("Parent: "+pair.second().originalText()+"/"+pair.second().tag()+", Relation: "+pair.first().getShortName()+" "+pair.first().getLongName());
                     }
                 }
             }
@@ -207,7 +209,7 @@ public class AnnotationFeatures {
             Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
             //ArrayList<String[]> templates = traverseForTemplates(tree, tree); //add to phraseTemplates
 
-            tree.pennPrint();
+            //tree.pennPrint();
         }
 
         ArrayList<String> compressedPhraseTemplates = new ArrayList<String>();
@@ -464,28 +466,35 @@ public class AnnotationFeatures {
      */
     public static ArrayList<String[]> getTemplatesForVerbs(SemanticGraph graph, IndexedWord vertex) {
         ArrayList<String[]> templates = new ArrayList<String[]>();
-        String subject = "";
+        ArrayList<String> subjects = new ArrayList<String>();
+        ArrayList<String> objects = new ArrayList<String>();
+
+        //String subject = "";
         String verb = checkForNegs(graph, vertex) + util.lowerCaseLemmaUnlessProperNoun(vertex)+"/V";
-        String object = "";
+        //String object = "";
         for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
             //find subject
-            if (pair.first().getShortName().equals("nsubj")) {
-                subject = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S";
+            if (pair.first().getShortName().contains("nsubj")) { //use .contains() so it collects nsubj and nsubjpass
+                //subject = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S";
+                subjects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S");
             }
             //find direct object
             else if (pair.first().getShortName().equals("dobj")) {
-                object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
+                //object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
+                objects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O");
             }
             //find complementing verb/adjective object if no direct object has been found
-            else if (object.length() == 0 && pair.first().getShortName().equals("xcomp") &&
+            else if (objects.size() == 0 && pair.first().getShortName().equals("xcomp") &&
                     (pair.second().tag().charAt(0) == 'V' || pair.second().tag().charAt(0) == 'J')) {
-                object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
+                //object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
+                objects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O");
             }
         }
 
         //if the verb has no nsubj and it has an xclausal complement verb as its parent,
         //use the parent verb's subject as the subject
-        if (subject.length() == 0) {
+        //if (subject.length() == 0) {
+        if (subjects.size() == 0) {
             for (Pair<GrammaticalRelation, IndexedWord> pair : graph.parentPairs(vertex)) {
                 if (pair.first().getShortName().equals("xcomp") && pair.second().tag().charAt(0) == 'V') {
                     //if a suitable parent is found, get all of its phrase templates and check for the subject
@@ -493,7 +502,7 @@ public class AnnotationFeatures {
                     for (String[] template: parentVerbTemplates) {
                         //if the first entry ends in "/S", that entry is the subject
                         if (template[0].substring(template[0].length() - 2).equals("/S")) {
-                            subject = template[0];
+                            subjects.add(template[0]);
                             break;
                         }
                     }
@@ -502,20 +511,34 @@ public class AnnotationFeatures {
         }
 
         //make all possible templates from the given data
-        if (subject.length() > 0) {
+        //if (subject.length() > 0) {
+        for (String subject: subjects) {
             String[] subjectVerbTemplate = {subject, verb};
             templates.add(subjectVerbTemplate);
-            if (object.length() > 0) {
+
+            //test
+            //System.out.println(subject+", "+verb);
+
+            //if (object.length() > 0) {
+            for (String object: objects) {
                 String[] subjectVerbObjectTemplate = {subject, verb, object};
                 templates.add(subjectVerbObjectTemplate);
+
+                String[] subjectObjectTemplate = {subject, object};
+                templates.add(subjectObjectTemplate);
+
+                //test
+                //System.out.println(subject+", "+verb+", "+object);
             }
         }
-        if (object.length() > 0) {
+        //if (object.length() > 0) {
+        for (String object: objects) {
             String[] verbObjectTemplate = {verb, object};
             templates.add(verbObjectTemplate);
-        }
 
-        System.out.println(subject+", "+verb+", "+object);
+            //test
+            //System.out.println(verb+", "+object);
+        }
 
         return templates;
     }
@@ -525,7 +548,9 @@ public class AnnotationFeatures {
         "nsubj", that root noun is the object, the verb is the verb and the noun is the subject
     */
     public static ArrayList<String[]> getTemplatesForNouns(SemanticGraph graph, IndexedWord vertex) {
-        String subject = "";
+        ArrayList<String> subjects = new ArrayList<String>();
+
+        //String subject = "";
         String verb = "";
         String object = util.lowerCaseLemmaUnlessProperNoun(vertex)+"/O";
         ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
@@ -538,7 +563,8 @@ public class AnnotationFeatures {
 
             //get the nsubj if it's there
             if (pair.first().getShortName().equals("nsubj")) {
-                subject = util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/S";
+                subjects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/S");
+                //subject = util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/S";
             }
 
         }
@@ -548,16 +574,23 @@ public class AnnotationFeatures {
             String[] verbObjectTemplate = {verb, object};
             phraseTemplates.add(verbObjectTemplate);
 
-            if (subject.length() > 0) {
+            //System.out.println(verb+", "+object);
+
+            //if (subject.length() > 0) {
+            for (String subject: subjects) {
                 String[] subjectObjectTemplate = {subject, object};
                 phraseTemplates.add(subjectObjectTemplate);
 
+                String[] subjectVerbTemplate = {subject, verb};
+                phraseTemplates.add(subjectVerbTemplate);
+
                 String[] subjectVerbObjectTemplate = {subject, verb, object};
                 phraseTemplates.add(subjectVerbObjectTemplate);
+
+                //test
+                //System.out.println(subject+", "+verb+", "+object);
             }
         }
-
-        System.out.println(subject+", "+verb+", "+object);
 
         return phraseTemplates;
     }

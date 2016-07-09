@@ -66,6 +66,11 @@ public class MaxEntClassification {
 	 * associated integer value for its features.
 	 */
 	public void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
+		//test
+		if (table.size() > 1000) {
+			System.out.print("");
+		}
+
 		Enumeration<String> features = table.keys();
 		int numberOfNewFeatures = getNumOfNewFeatures(table);
 		double[] featureValues = new double[dataAlphabet.size() + numberOfNewFeatures];
@@ -361,6 +366,24 @@ public class MaxEntClassification {
 		}
 		//printEvaluated(averageTrialResults(resultsOverTrials), n_folds);
 		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, "data/testResults.txt");
+	}
+
+	/*
+		Runs n trials on the data
+	 */
+	public void runNTrials(int n) throws IOException {
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
+
+		for (int i = 0; i < n; i++) {
+			InstanceList testInstances = split(instances);
+			trainClassifier(instances);
+			saveClassifier(classifierFile);
+
+			Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
+			resultsOverTrials.add(results);
+		}
+		clearInstances();
+		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, "data/testResults.txt");
 	}
 
 

@@ -31,18 +31,11 @@ public class runClassifierOnTweets {
         /*
          * Cross validation portion.
          * */
-        classifier.crossValidate(5);
+        //classifier.crossValidate(5);
 
-        //regular run
-        /*
-        InstanceList testInstances = classifier.split(classifier.instances);
-        classifier.trainClassifier(classifier.instances);
-        classifier.saveClassifier(classifier.classifierFile);
+        //non-cross-validation test
+        classifier.runNTrials(5);
 
-        classifier.clearInstances();
-        Hashtable<String, Hashtable<String, Double>> results = classifier.evaluate(testInstances);
-        classifier.printEvaluated(results, 1);
-        */
         //classifier.evaluateWithConfidenceThreshold(testInstances, .9);
     }
 

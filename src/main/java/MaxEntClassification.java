@@ -67,7 +67,7 @@ public class MaxEntClassification {
 	 */
 	public void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
 		//test
-		if (table.size() > 1000) {
+		if (dataAlphabet.size() > 10000) {
 			System.out.print("");
 		}
 

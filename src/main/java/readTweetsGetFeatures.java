@@ -1,13 +1,9 @@
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
-import org.apache.commons.csv.*;
 import edu.stanford.nlp.util.CoreMap;
 
-import java.io.FileNotFoundException;
 import java.util.*;
-import java.io.FileReader;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 /*
@@ -228,13 +224,13 @@ public class readTweetsGetFeatures {
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
         String text = tweetVector.getTweetText();
 
-        //get idfs from the text
-        if (idfUpdateCounter == 0) {
-            UnigramModel.updateIDFsFromTweetText(tweetVectors);
-            idfUpdateCounter++;
-        }
         //unigram features (tf-idf value of each word)
-        tweetVector.addFeatures(UnigramModel.getFeaturesTFIDFNoStopWords(phrases));
+        NGramModel tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
+
+        //bigram features (tf-idf value of each word); bigrams must appear at least twice to be considered
+        //NGramModel tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 2);
+        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
 
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);

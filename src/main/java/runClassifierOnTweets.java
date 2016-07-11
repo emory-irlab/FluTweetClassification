@@ -65,10 +65,8 @@ public class runClassifierOnTweets {
         TextFeatures.initializeHashSets();
 
         //random tweet texts for EvN dataset
-        /*
-        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_20k.csv");
-        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_20k_random.csv", true);
-    	*/
+//        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_100k.csv");
+//        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_100k_random.csv", true);
 
         //get the training tweets
         //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);

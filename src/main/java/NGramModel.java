@@ -326,12 +326,8 @@ public class NGramModel {
             // (i.e. it has not appeared in enough documents to be stored), the word will not be in the output
             double idf = 0.0;
             Enumeration<String> idfKeys = tweetIDFs.keys();
-            while (idfKeys.hasMoreElements()) {
-                String idfKey = idfKeys.nextElement();
-                if (idfKey.equals(tfKey)) {
-                    idf = tweetIDFs.get(tfKey);
-                    break;
-                }
+            if (tweetIDFs.get(tfKey) != null) {
+                idf = tweetIDFs.get(tfKey);
             }
 
             //get tf-idf value

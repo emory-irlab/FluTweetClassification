@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/testData/5ExampleTweetTexts.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/testData/5MoreExampleTweetTexts.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/featureTestCases.class" afterPath="$PROJECT_DIR$/target/classes/featureTestCases.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/NGramModel.java" afterPath="$PROJECT_DIR$/src/main/java/NGramModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/featureTestCases.java" afterPath="$PROJECT_DIR$/src/main/java/featureTestCases.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -41,12 +36,9 @@
       <file leaf-file-name="NGramModel.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5652174">
-              <caret line="331" column="0" selection-start-line="331" selection-start-column="0" selection-end-line="331" selection-end-column="0" />
-              <folding>
-                <element signature="e#4796#4807#0" expanded="true" />
-                <element signature="e#13614#13630#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="1.0869565">
+              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -54,7 +46,7 @@
       <file leaf-file-name="stopwords.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/stopwords.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.7777777">
+            <state vertical-scroll-proportion="0.0">
               <caret line="43" column="31" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="31" />
               <folding />
             </state>
@@ -85,7 +77,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="227" column="119" selection-start-line="227" selection-start-column="119" selection-end-line="227" selection-end-column="119" />
+              <caret line="271" column="101" selection-start-line="271" selection-start-column="101" selection-end-line="271" selection-end-column="101" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -175,8 +167,8 @@
         <option value="$PROJECT_DIR$/data/testData/5ExampleTweetTexts.txt" />
         <option value="$PROJECT_DIR$/data/testData/5MoreExampleTweetTexts.txt" />
         <option value="$PROJECT_DIR$/src/main/java/featureTestCases.java" />
-        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
         <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
       </list>
     </option>
   </component>
@@ -198,8 +190,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-4" />
-    <option name="y" value="40" />
+    <option name="x" value="-3" />
+    <option name="y" value="38" />
     <option name="width" value="1280" />
     <option name="height" value="730" />
   </component>
@@ -228,10 +220,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope">
-        <subPane subId="Project Files" />
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -324,6 +312,10 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope">
+        <subPane subId="Project Files" />
+      </pane>
+      <pane id="Scratches" />
       <pane id="PackagesPane">
         <subPane />
       </pane>
@@ -944,11 +936,17 @@
       <option name="project" value="LOCAL" />
       <updated>1468289225182</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Fixed performance bug, ready to test again">
+      <created>1468295436143</created>
+      <option name="number" value="00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1468295436143</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="40" width="1280" height="730" extended-state="0" />
+    <frame x="-3" y="38" width="1280" height="730" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1013,7 +1011,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added some HumanVsNonHuman features" />
     <MESSAGE value="Designated defective features, fixed checkOutFeature" />
     <MESSAGE value="version runs with 78% accuracy on dataset of almost 10k tweets" />
     <MESSAGE value="weird git things were fixed" />
@@ -1038,7 +1035,8 @@
     <MESSAGE value="Fixed a MAJOR bug in the unigram model, and converted the unigram model to a generalized n-gram model" />
     <MESSAGE value="moved test results" />
     <MESSAGE value="edited results printing" />
-    <option name="LAST_COMMIT_MESSAGE" value="edited results printing" />
+    <MESSAGE value="Fixed performance bug, ready to test again" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed performance bug, ready to test again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1055,11 +1053,17 @@
           <properties />
           <option name="timeStamp" value="104" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/NGramModel.java</url>
+          <line>328</line>
+          <properties />
+          <option name="timeStamp" value="110" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="110" />
+      <option name="time" value="111" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1258,7 +1262,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-4.9259257">
           <caret line="3610" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="3610" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1266,7 +1269,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="3609" column="228" selection-start-line="3609" selection-start-column="228" selection-end-line="3609" selection-end-column="228" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1274,7 +1276,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="34" selection-start-line="0" selection-start-column="34" selection-end-line="0" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1282,7 +1283,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.24879228">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1290,7 +1290,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1298,7 +1297,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1306,7 +1304,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.92753625">
           <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1314,7 +1311,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.92753625">
           <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1322,7 +1318,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1330,7 +1325,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1338,7 +1332,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1346,7 +1339,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.73188406">
           <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1354,7 +1346,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.9154589">
           <caret line="101" column="11" selection-start-line="101" selection-start-column="11" selection-end-line="101" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1362,7 +1353,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.92753625">
           <caret line="108" column="29" selection-start-line="108" selection-start-column="29" selection-end-line="108" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1370,7 +1360,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.68599033">
           <caret line="104" column="7" selection-start-line="104" selection-start-column="7" selection-end-line="104" selection-end-column="7" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1378,7 +1367,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="3.9855072">
           <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1386,14 +1374,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="79" column="5" selection-start-line="79" selection-start-column="5" selection-end-line="79" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3609" column="419" selection-start-line="3609" selection-start-column="419" selection-end-line="3609" selection-end-column="419" />
           <folding />
         </state>
       </provider>
@@ -1408,7 +1388,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/stopwords.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.7777777">
+        <state vertical-scroll-proportion="0.0">
           <caret line="43" column="31" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="31" />
           <folding />
         </state>
@@ -1418,7 +1398,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.14492753">
           <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1438,10 +1417,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7826087">
+          <caret line="3609" column="419" selection-start-line="3609" selection-start-column="419" selection-end-line="3609" selection-end-column="419" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="227" column="119" selection-start-line="227" selection-start-column="119" selection-end-line="227" selection-end-column="119" />
+          <caret line="271" column="101" selection-start-line="271" selection-start-column="101" selection-end-line="271" selection-end-column="101" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1450,12 +1436,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5652174">
-          <caret line="331" column="0" selection-start-line="331" selection-start-column="0" selection-end-line="331" selection-end-column="0" />
-          <folding>
-            <element signature="e#4796#4807#0" expanded="true" />
-            <element signature="e#13614#13630#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="1.0869565">
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

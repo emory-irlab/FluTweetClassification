@@ -13,6 +13,8 @@ import java.io.IOException;
 public class readTweetsGetFeatures {
     private static TweetVector[] tweetVectors;
     private static int idfUpdateCounter = 0;
+    private static NGramModel tweetTextUnigramModel = null;
+    private static NGramModel tweetTextBigramModel = null;
 
     /*
         Get tweets from a path to a file
@@ -225,12 +227,18 @@ public class readTweetsGetFeatures {
         String text = tweetVector.getTweetText();
 
         //unigram features (tf-idf value of each word)
-        NGramModel tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+        if (tweetTextUnigramModel == null) {
+            tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+        }
         tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least twice to be considered
-        //NGramModel tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 2);
-        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
+        /*
+        if (tweetTextBigramModel == null) {
+            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 2);
+        }
+        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
+        */
 
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
@@ -262,8 +270,6 @@ public class readTweetsGetFeatures {
 //        tweetVector.addFeature("Count Uppercase Words", TextFeatures.countUpperCaseWords(text));
 //        tweetVector.addFeature("Count Exclamations", TextFeatures.countExclamationPhrases(text));
 //        tweetVector.addFeature("Count Question Marks", TextFeatures.countQuestionMarkGroups(text));
-
-
     }
 
     /*

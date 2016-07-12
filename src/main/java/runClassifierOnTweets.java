@@ -16,12 +16,12 @@ public class runClassifierOnTweets {
         Trains a classifier of the specified type on the given training data, then tests on the given training data.
         Saves the classifier to the file at the given path
     */
-    public static void runClassifier (ArrayList<String[]> trainingTweets, String path, String classifierType) throws IOException, ClassNotFoundException {
+    public static void runClassifier (ArrayList<String[]> trainingTweets, String pathToClassifier, String classifierType, String pathToResultsFile) throws IOException, ClassNotFoundException {
 
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
 
         //make the classifier
-        MaxEntClassification classifier = new MaxEntClassification(path);
+        MaxEntClassification classifier = new MaxEntClassification(pathToClassifier);
         //train the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet
@@ -31,10 +31,10 @@ public class runClassifierOnTweets {
         /*
          * Cross validation portion.
          * */
-        //classifier.crossValidate(5);
+        //classifier.crossValidate(5, pathToResultsFile);
 
         //non-cross-validation test
-        classifier.runNTrials(5);
+        classifier.runNTrials(5, pathToResultsFile);
 
         //classifier.evaluateWithConfidenceThreshold(testInstances, .9);
     }
@@ -49,6 +49,7 @@ public class runClassifierOnTweets {
         3 - path to a file where the <relevant life event> vs. <non-relevant life event> classifier will be stored
         4 - path to a file containing SvO tweets
         5 - path to a file where the self vs. other classifier will be stored
+        6 - path to a file where the results will be stored
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException {
 
@@ -70,11 +71,11 @@ public class runClassifierOnTweets {
 
         //get the training tweets
         //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
-        //runClassifier(HvNTweets, args[1], "HumanVsNonHuman");
+        //runClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
         ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
-        runClassifier(EvNETweets, args[3], "EventVsNonEvent");
+        runClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
-        //runClassifier(trainingTweets, args[5], "SelfVsOther");
+        //runClassifier(trainingTweets, args[5], "SelfVsOther", args[6]);
 
     }
 }

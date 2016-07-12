@@ -354,7 +354,7 @@ public class MaxEntClassification {
 	/*
         Performs n-fold cross-validation and prints out the results
     */
-	public void crossValidate(int n_folds) throws IOException {
+	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 		while (crossValidationIterator.hasNext()) {
@@ -365,13 +365,13 @@ public class MaxEntClassification {
 			resultsOverTrials.add(evaluate(split[1]));
 		}
 		//printEvaluated(averageTrialResults(resultsOverTrials), n_folds);
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, "data/testResults.txt");
+		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile);
 	}
 
 	/*
 		Runs n trials on the data
 	 */
-	public void runNTrials(int n) throws IOException {
+	public void runNTrials(int n, String pathToResultsFile) throws IOException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
 
 		for (int i = 0; i < n; i++) {
@@ -383,7 +383,7 @@ public class MaxEntClassification {
 			resultsOverTrials.add(results);
 		}
 		clearInstances();
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, "data/testResults.txt");
+		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile);
 	}
 
 

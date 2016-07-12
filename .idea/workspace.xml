@@ -2,26 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResults/testResults100Topics.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResults/testResults10Topics.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResults/testResults50Topics.txt" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/10-8PlusElementaryPhraseTemplates.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/10-8PlusElementaryPhraseTemplates.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/11-8Plus20KRandomTweets.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/11-8Plus20KRandomTweets.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/12-10PlusRefinedPhraseTemplates.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/12-10PlusRefinedPhraseTemplates.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/13-10PlusMoreRefinedPhraseTemplates.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/13-10PlusMoreRefinedPhraseTemplates.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/14-13Plus20KRandoms.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/14-13Plus20KRandoms.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/5-testResultsAdverbsAndFamily.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/5-testResultsAdverbsAndFamily.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/6-testResultsMoreEvNTextFeatures.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/6-testResultsMoreEvNTextFeatures.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/7-addEmoticons.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/7-addEmoticons.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/8-addHashtagCount.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/8-addHashtagCount.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/9-8Plus5KRandomTweets.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/9-8Plus5KRandomTweets.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/X9-addURLAndMentionCounts.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/X9-addURLAndMentionCounts.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/testResultsAshersVersion.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/testResultsAshersVersion.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/testResultsImprovedTFIDF.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/testResultsImprovedTFIDF.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/testResultsTF.txt" afterPath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsTF.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResults/testResultsTFIDF.txt" afterPath="$PROJECT_DIR$/data/oldTestResultsEventClassifier/testResultsTFIDF.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -63,11 +46,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MaxEntClassification.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-6.4444447">
+              <caret line="362" column="24" selection-start-line="362" selection-start-column="24" selection-end-line="362" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="runClassifierOnTweets.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.7463768">
+              <caret line="79" column="5" selection-start-line="79" selection-start-column="5" selection-end-line="79" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4710145">
-              <caret line="236" column="48" selection-start-line="236" selection-start-column="48" selection-end-line="236" selection-end-column="48" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="248" column="28" selection-start-line="248" selection-start-column="28" selection-end-line="248" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -151,14 +154,14 @@
         <option value="$PROJECT_DIR$/src/main/java/TweetVector.java" />
         <option value="$PROJECT_DIR$/src/main/java/util.java" />
         <option value="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" />
-        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
-        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
         <option value="$PROJECT_DIR$/src/main/java/UnigramModel.java" />
         <option value="$PROJECT_DIR$/data/tweets/tweet_event_plus_100k_random.csv" />
         <option value="$PROJECT_DIR$/data/tweets/tweet_event.csv" />
         <option value="$PROJECT_DIR$/data/tweets/tweet_event_plus_20k_random.csv" />
         <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
       </list>
     </option>
   </component>
@@ -914,7 +917,13 @@
       <option name="project" value="LOCAL" />
       <updated>1468273981811</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="moved test results">
+      <created>1468288394529</created>
+      <option name="number" value="00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1468288394529</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1007,7 +1016,8 @@
     <MESSAGE value="Another phrase template refinement, awaiting test" />
     <MESSAGE value="updated test framework" />
     <MESSAGE value="Fixed a MAJOR bug in the unigram model, and converted the unigram model to a generalized n-gram model" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed a MAJOR bug in the unigram model, and converted the unigram model to a generalized n-gram model" />
+    <MESSAGE value="moved test results" />
+    <option name="LAST_COMMIT_MESSAGE" value="moved test results" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1203,14 +1213,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="68" column="68" selection-start-line="68" selection-start-column="68" selection-end-line="68" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TweetVector.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.29577464">
@@ -1249,14 +1251,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1404,6 +1398,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="248" column="28" selection-start-line="248" selection-start-column="28" selection-end-line="248" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1415,13 +1419,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4710145">
-          <caret line="236" column="48" selection-start-line="236" selection-start-column="48" selection-end-line="236" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="-6.4444447">
+          <caret line="362" column="24" selection-start-line="362" selection-start-column="24" selection-end-line="362" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7463768">
+          <caret line="79" column="5" selection-start-line="79" selection-start-column="5" selection-end-line="79" selection-end-column="5" />
+          <folding />
         </state>
       </provider>
     </entry>

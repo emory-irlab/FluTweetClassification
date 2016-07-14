@@ -34,9 +34,10 @@ public class runClassifierOnTweets {
         //classifier.crossValidate(5, pathToResultsFile);
 
         //non-cross-validation test
-        classifier.runNTrials(5, pathToResultsFile);
+        //classifier.runNTrials(5, pathToResultsFile);
 
-        //classifier.evaluateWithConfidenceThreshold(testInstances, .9);
+        classifier.runNTrials(5, pathToResultsFile, 0.5);
+        //classifier.evaluateWithConfidenceThresholdOverNTrialsAndWrite(testInstances, .9, pathToResultsFile);
     }
 
     /*
@@ -70,10 +71,10 @@ public class runClassifierOnTweets {
 //        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_100k_random.csv", true);
 
         //get the training tweets
-        //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
-        //runClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
-        ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
-        runClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
+        ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
+        runClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
+        //ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
+        //runClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
         //runClassifier(trainingTweets, args[5], "SelfVsOther", args[6]);
 

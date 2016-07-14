@@ -67,9 +67,11 @@ public class MaxEntClassification {
 	 */
 	public void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
 		//test
+		/*
 		if (dataAlphabet.size() > 10000) {
 			System.out.print("");
 		}
+		*/
 
 		Enumeration<String> features = table.keys();
 		int numberOfNewFeatures = getNumOfNewFeatures(table);
@@ -197,8 +199,8 @@ public class MaxEntClassification {
 		}
 	}
 
-	public void writeEvaluatedToFile(Hashtable<String, Hashtable<String, Double>> input, int nTrials, String path) throws IOException {
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path)));
+	public void writeEvaluatedToFile(Hashtable<String, Hashtable<String, Double>> input, int nTrials, String path, boolean append) throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path), append));
 
 		bufferedWriter.newLine();
 		bufferedWriter.write("Average results for "+nTrials+" trials:");
@@ -271,6 +273,9 @@ public class MaxEntClassification {
 	 * Method to be used after first training the classifier.
 	 * It removes all instances in "instances" that are below
 	 * the threshold the user provides.
+	 *
+	 *  NOTE: Recall, and thus F1, for the "person" class may be incorrect here, as will precision, recall, and
+		F1 for the "organization" class
 	 * */
 
 	public void evaluateWithConfidenceThreshold(InstanceList testInstances, double threshold) throws IOException {
@@ -365,7 +370,7 @@ public class MaxEntClassification {
 			resultsOverTrials.add(evaluate(split[1]));
 		}
 		//printEvaluated(averageTrialResults(resultsOverTrials), n_folds);
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile);
+		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, false);
 	}
 
 	/*
@@ -373,8 +378,19 @@ public class MaxEntClassification {
 	 */
 	public void runNTrials(int n, String pathToResultsFile) throws IOException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
+		//save the instances the classifier started out with
+		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
+		for (Instance instance: instances) {
+			instancesCopy.add(instance);
+		}
 
 		for (int i = 0; i < n; i++) {
+			//ensure that the classifier starts each trial with the same instances it started out with
+			clearInstances();
+			for (Instance instance: instancesCopy) {
+				instances.add(instance);
+			}
+
 			InstanceList testInstances = split(instances);
 			trainClassifier(instances);
 			saveClassifier(classifierFile);
@@ -382,8 +398,141 @@ public class MaxEntClassification {
 			Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
 			resultsOverTrials.add(results);
 		}
+		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
+	}
+
+	/*
+		Runs n trials on the data at a given threshold of confidence for the "person" class
+
+		NOTE: Recall, and thus F1, for the "person" class may be incorrect here, as will precision, recall, and
+		F1 for the "organization" class
+
+		TODO: Change the label of all tweets with less than <threshold> confidence for the "person" class
+		to "organization". If this isn't possible, simply calculate your own trial results
+	 */
+	public void runNTrials(int n, String pathToResultsFile, double confidenceThreshold) throws IOException {
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
+		//save the instances the classifier started out with
+		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
+		for (Instance instance: instances) {
+			instancesCopy.add(instance);
+		}
+
+		//run n trials
+		for (int i = 0; i < n; i++) {
+			//ensure that the classifier starts each trial with the same instances it started out with
+			clearInstances();
+			for (Instance instance: instancesCopy) {
+				instances.add(instance);
+			}
+			//train the classifier
+			InstanceList testInstances = split(instances);
+			//InstanceList trimmedTestInstances = new InstanceList(dataAlphabet, targetAlphabet); //to contain only the instances passing the test
+			trainClassifier(instances);
+			saveClassifier(classifierFile);
+
+			Hashtable<String, Hashtable<String, Double>> resultsForTrial = new Hashtable<String, Hashtable<String, Double>>();
+			int personInstances = 0;
+			int organizationInstances = 0;
+			int classifiedAsPerson = 0;
+			int classifiedAsOrganization = 0;
+			int correctlyClassifiedAsPerson = 0;
+			int correctlyClassifiedAsOrganization = 0;
+
+			//if the confidence with which an instance is classified as "person" meets or exceeds the threshold,
+			//label it as "person". Otherwise, label it as "organization". Calculate the accuracy, recall, precision, and
+			//F1 of the trial from this data
+			for (int j = 0; j < testInstances.size(); j++) {
+				Instance instance = testInstances.get(j);
+
+				//get the correct label
+				String correctLabel = instance.getLabeling().toString();
+
+				//get the label given by the classifier
+				Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
+				String experimentalLabel = "";
+
+				for (int rank = 0; rank < labeling.numLocations(); rank++) {
+					if (labeling.getLabelAtRank(rank).toString().equals("person")) {
+						if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
+							experimentalLabel = "person";
+						}
+						else {
+							experimentalLabel = "organization";
+						}
+					}
+
+					/*
+					if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
+						//trimmedTestInstances.add(testInstances.get(i));
+					}
+					*/
+				}
+
+				//get inferences from this data
+				if (correctLabel.equals("person")) {
+					personInstances++;
+
+					if (experimentalLabel.equals("person")) {
+						correctlyClassifiedAsPerson++;
+						classifiedAsPerson++;
+					}
+					else {
+						classifiedAsOrganization++;
+					}
+				}
+				else if (correctLabel.equals("organization")) {
+					organizationInstances++;
+
+					if (experimentalLabel.equals("organization")) {
+						correctlyClassifiedAsOrganization++;
+						classifiedAsOrganization++;
+					}
+					else {
+						classifiedAsPerson++;
+					}
+				}
+			}
+			//calculate the actual figures
+			Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+			accuracy.put("Accuracy", (((double)correctlyClassifiedAsPerson) + correctlyClassifiedAsOrganization)/testInstances.size());
+			resultsForTrial.put("Accuracy", accuracy);
+
+			Hashtable<String, Double> person = new Hashtable<String, Double>();
+			double perPrecision = ((double)correctlyClassifiedAsPerson)/classifiedAsPerson;
+			double perRecall = ((double)correctlyClassifiedAsPerson)/personInstances;
+			double perF1 = (2 * perPrecision * perRecall)/(perPrecision + perRecall);
+			person.put("Precision", perPrecision);
+			person.put("Recall", perRecall);
+			person.put("F1", perF1);
+			resultsForTrial.put("person", person);
+
+			Hashtable<String, Double> organization = new Hashtable<String, Double>();
+			double orgPrecision = ((double)correctlyClassifiedAsOrganization)/classifiedAsOrganization;
+			double orgRecall = ((double)correctlyClassifiedAsOrganization)/organizationInstances;
+			double orgF1 = (2 * orgPrecision * orgRecall)/(orgPrecision + orgRecall);
+			organization.put("Precision", orgPrecision);
+			organization.put("Recall", orgRecall);
+			organization.put("F1", orgF1);
+			resultsForTrial.put("organization", organization);
+
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//evaluate using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = evaluate(trimmedTestInstances);
+			evaluate(trimmedTestInstances);
+			*/
+			resultsOverTrials.add(resultsForTrial);
+		}
 		clearInstances();
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile);
+		//include a header to describe the confidence threshold
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToResultsFile), false));
+		bufferedWriter.write("Using a threshold of: "+confidenceThreshold);
+		bufferedWriter.newLine();
+		//write the averaged results
+		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
 	}
 
 
@@ -442,9 +591,12 @@ public class MaxEntClassification {
 		//  randomly shuffling the copy, and then allocating
 		//  instances to each sub-list based on the provided proportions.
 
+		/*InstanceList[] instanceLists =
+				instances.split(new Randoms(),
+						new double[] {0.5, 0.5, 0.0}); *///better than 0.8, 0.2 split
 		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
-						new double[] {0.5, 0.5, 0.0}); //better than 0.8, 0.2 split
+						new double[] {0.8, 0.2, 0.0});
 
 		//  The third position is for the "validation" set,
 		//  which is a set of instances not used directly

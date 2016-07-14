@@ -2,6 +2,7 @@ import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.SystemUtils;
 
 import java.util.*;
 import java.io.IOException;
@@ -230,15 +231,19 @@ public class readTweetsGetFeatures {
         if (tweetTextUnigramModel == null) {
             tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
         }
-        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
+        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
+        //tf-only test
+        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least twice to be considered
         /*
         if (tweetTextBigramModel == null) {
             tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 2);
         }
-        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDFNoStopWords(phrases));
         */
+        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
+        //tf-only test
+        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases));
 
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);

@@ -14,10 +14,14 @@ import edu.stanford.nlp.pipeline.*;
  * Created by Alec Wolyniec on 6/14/16.
  */
 public class NGramModel {
+    //general helper parameters
     public static final String textName = "text";
     public static final String descriptionName = "description";
 
+    //parameters to specify type
     private int N;
+    private boolean stopWords;
+
     private int freqThreshold;
     private ArrayList<String> stopWordList = new ArrayList<String>();
     //private static Hashtable<String, Long> idfStarts = new Hashtable<String, Long>();
@@ -30,19 +34,26 @@ public class NGramModel {
     /*
         Initializes an n-gram model from an int specifying the number of words per gram, a
         dataset to collect idfs on, a string indicating the type of data to collect, a path to a file containing stopwords
-        to be used, and an int specifying the number of documents an n-gram must appear in in order
-        to be considered
+        to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of times
+        an n-gram must appear in the training data in order to be considered
      */
     public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq) throws IOException {
         N = n;
         freqThreshold = freq;
         dataType = dT;
-        initializeIDFsFromTweetText(tweetVectors);
-        getStopWordList(stopWordPath);
+        if (stopWordPath.length() > 0) {
+            getStopWordList(stopWordPath);
+            stopWords = false;
+        }
+        else {
+            stopWords = true;
+        }
+        initializeIDFs(tweetVectors);
     }
 
     /*
-        Gets all n-grams (with the specified n) from a List of CoreLabels representing a text
+        Gets all n-grams (with the specified n) from a List of CoreLabels representing a text. Stop words are not
+        valid tokens if stopWords is false.
      */
     public ArrayList<String> getNGrams(List<CoreLabel> input, boolean stopWords) {
         ArrayList<String> output = new ArrayList<String>();
@@ -85,9 +96,9 @@ public class NGramModel {
                 StringBuilder nGram = new StringBuilder();
                 for (int index : indices) {
                     if (index < 0) {
-                        nGram.append("pre ");
+                        nGram.append("-pre- ");
                     } else if (index > input.size() - 1) {
-                        nGram.append("post ");
+                        nGram.append("-post- ");
                     } else {
                         nGram.append(util.lowerCaseLemmaUnlessProperNoun(input.get(index)));
                         nGram.append(" ");
@@ -198,9 +209,12 @@ public class NGramModel {
 
     /*
         Initializes idfs from tweet data fields. Only maintains a list of those that appear at least as many
-        times as specified by the frequency threshold
+        times as specified by the frequency threshold, and excludes stop words if this model is set to do so
+
+        actually indicate the number of instances of each word in the corpus, but assume that this corresponds
+        to idf values because tweets are so short that repetitions are unlikely
      */
-    private void initializeIDFsFromTweetText(TweetVector[] tweetVectors) {
+    private void initializeIDFs(TweetVector[] tweetVectors) {
         totalDocs = tweetVectors.length;
         //go through all tweets
         for (int i = 0; i < tweetVectors.length; i++) {
@@ -220,7 +234,7 @@ public class NGramModel {
             while (matchmaker.find()) {
                 String word = matchmaker.group(1).toLowerCase();
             */
-            ArrayList<String> nGrams = getNGrams(tokens, true);
+            ArrayList<String> nGrams = getNGrams(tokens, stopWords);
 
             for (String nGram: nGrams) {
                 //Increment the count of the number of documents the word appears in
@@ -252,6 +266,14 @@ public class NGramModel {
         }
     }
 
+    public Hashtable<String, Double> getTweetIDFs () {
+        return tweetIDFs;
+    }
+
+    public long getNumIDFs() {
+        return (long)tweetIDFs.size();
+    }
+
     /*
         Returns the proper text field from the given TweetVector, given the data field
      */
@@ -266,6 +288,7 @@ public class NGramModel {
     /*
         Removes stop words from strings using the given stop word guide
      */
+    /*
     public String removeStopWords(String input) throws IOException {
         StringBuilder output = new StringBuilder();
         //go through the input string and locate all word entities. Don't include stopwords in the output
@@ -285,6 +308,7 @@ public class NGramModel {
         //System.out.println(output);
         return output.toString();
     }
+    */
 
     public boolean isStopWord(String input) {
         for (String stopWord: stopWordList) {
@@ -340,15 +364,25 @@ public class NGramModel {
     }
 
     /*
-        Gets a dictionary (hash table) of all terms in the document (excluding stop words) and their tf-idf score
+        Gets a dictionary (hash table) of all n-grams in the document (excluding stop words if this model excludes stop words)
+        and their tf-idf scores
      */
-    public Hashtable<String, Double> getFeaturesForTweetTFIDFNoStopWords(CoreLabel[][] phrases) throws IOException {
+    public Hashtable<String, Double> getFeaturesForTweetTFIDF(CoreLabel[][] phrases) throws IOException {
         //collect term frequencies
-        Hashtable<String, Double> unigramFeatures = getTermFrequenciesForTweet(phrases, false);
+        Hashtable<String, Double> unigramFeatures = getTermFrequenciesForTweet(phrases, stopWords);
 
         //divide by idfs
         unigramFeatures = convertTweetByIDFs(unigramFeatures);
 
         return unigramFeatures;
     }
+
+    /*
+        Gets a dictionary (hash table) of all n-grams in the document (excluding stop words if this model excludes them)
+        and their tf scores
+     */
+    public Hashtable<String, Double> getFeaturesForTweetTF(CoreLabel[][] phrases) throws IOException {
+        return getTermFrequenciesForTweet(phrases, stopWords);
+    }
+
 }

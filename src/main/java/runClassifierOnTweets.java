@@ -36,7 +36,7 @@ public class runClassifierOnTweets {
         //non-cross-validation test
         //classifier.runNTrials(5, pathToResultsFile);
 
-        classifier.runNTrials(5, pathToResultsFile, 0.5);
+        classifier.runNTrials(5, pathToResultsFile, 0.6);
         //classifier.evaluateWithConfidenceThresholdOverNTrialsAndWrite(testInstances, .9, pathToResultsFile);
     }
 

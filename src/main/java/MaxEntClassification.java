@@ -531,6 +531,7 @@ public class MaxEntClassification {
 		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToResultsFile), false));
 		bufferedWriter.write("Using a threshold of: "+confidenceThreshold);
 		bufferedWriter.newLine();
+		bufferedWriter.close();
 		//write the averaged results
 		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
 	}

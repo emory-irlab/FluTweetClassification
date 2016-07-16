@@ -34,8 +34,8 @@ public class NGramModel {
     /*
         Initializes an n-gram model from an int specifying the number of words per gram, a
         dataset to collect idfs on, a string indicating the type of data to collect, a path to a file containing stopwords
-        to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of times
-        an n-gram must appear in the training data in order to be considered
+        to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of documents
+        an n-gram must appear in within the training data in order to be considered
      */
     public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq) throws IOException {
         N = n;
@@ -48,7 +48,7 @@ public class NGramModel {
         else {
             stopWords = true;
         }
-        initializeIDFs(tweetVectors);
+        initializeIDFsFromTweetFields(tweetVectors);
     }
 
     /*
@@ -210,11 +210,8 @@ public class NGramModel {
     /*
         Initializes idfs from tweet data fields. Only maintains a list of those that appear at least as many
         times as specified by the frequency threshold, and excludes stop words if this model is set to do so
-
-        actually indicate the number of instances of each word in the corpus, but assume that this corresponds
-        to idf values because tweets are so short that repetitions are unlikely
      */
-    private void initializeIDFs(TweetVector[] tweetVectors) {
+    private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
         totalDocs = tweetVectors.length;
         //go through all tweets
         for (int i = 0; i < tweetVectors.length; i++) {
@@ -235,6 +232,7 @@ public class NGramModel {
                 String word = matchmaker.group(1).toLowerCase();
             */
             ArrayList<String> nGrams = getNGrams(tokens, stopWords);
+            Hashtable<String, Integer> nGramsThisTweet = new Hashtable<String, Integer>();
 
             for (String nGram: nGrams) {
                 //Increment the count of the number of documents the word appears in
@@ -247,8 +245,12 @@ public class NGramModel {
                         break;
                     }
                 }
-                if (seenBefore) tweetIDFs.put(nGram, tweetIDFs.get(nGram) + 1.0);
-                else tweetIDFs.put(nGram, 1.0);
+                if (nGramsThisTweet.get(nGram) == null) { //ensures that each n-gram is only counted once per tweet
+                    if (seenBefore) tweetIDFs.put(nGram, tweetIDFs.get(nGram) + 1.0);
+                    else tweetIDFs.put(nGram, 1.0);
+                }
+
+                nGramsThisTweet.put(nGram, 1);
             }
         }
 
@@ -265,6 +267,21 @@ public class NGramModel {
             }
         }
     }
+
+    /*
+        Saves all idfs to a given path
+     *
+    private void saveIDFs(String idfPath) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(idfPath)));
+        Enumeration<String> keys = tweetIDFs.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            bufferedWriter.write(key+","+tweetIDFs.get(key));
+        }
+
+        bufferedWriter.close();
+    }
+    */
 
     public Hashtable<String, Double> getTweetIDFs () {
         return tweetIDFs;

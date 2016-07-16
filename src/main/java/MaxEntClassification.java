@@ -1,17 +1,8 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.io.BufferedWriter;
 
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
@@ -407,8 +398,7 @@ public class MaxEntClassification {
 		NOTE: Recall, and thus F1, for the "person" class may be incorrect here, as will precision, recall, and
 		F1 for the "organization" class
 
-		TODO: Change the label of all tweets with less than <threshold> confidence for the "person" class
-		to "organization". If this isn't possible, simply calculate your own trial results
+		TODO: possibly generalize to all different class names
 	 */
 	public void runNTrials(int n, String pathToResultsFile, double confidenceThreshold) throws IOException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
@@ -449,25 +439,7 @@ public class MaxEntClassification {
 				String correctLabel = instance.getLabeling().toString();
 
 				//get the label given by the classifier
-				Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
-				String experimentalLabel = "";
-
-				for (int rank = 0; rank < labeling.numLocations(); rank++) {
-					if (labeling.getLabelAtRank(rank).toString().equals("person")) {
-						if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
-							experimentalLabel = "person";
-						}
-						else {
-							experimentalLabel = "organization";
-						}
-					}
-
-					/*
-					if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
-						//trimmedTestInstances.add(testInstances.get(i));
-					}
-					*/
-				}
+				String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, "person", confidenceThreshold, "organization");
 
 				//get inferences from this data
 				if (correctLabel.equals("person")) {
@@ -536,6 +508,32 @@ public class MaxEntClassification {
 		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
 	}
 
+	/*
+		Labels a given Instance as desiredClass if the classifier's confidence rating for that class meets or exceeds
+		the confidence threshold. Otherwise, label it as altClass.
+	*/
+	public String getLabelConfThresholdForDesiredClass(Instance instance, String desiredClass, double conf, String altClass) {
+		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
+		for (int rank = 0; rank < labeling.numLocations(); rank++) {
+			if (labeling.getLabelAtRank(rank).toString().equals(desiredClass)) {
+				if (labeling.getValueAtRank(rank) >= conf) {
+					return desiredClass;
+				}
+				else {
+					return altClass;
+				}
+			}
+
+					/*
+					if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
+						//trimmedTestInstances.add(testInstances.get(i));
+					}
+					*/
+		}
+		//by default, return the alternative class
+		return altClass;
+	}
+
 
 	public Classifier loadClassifier(File serializedFile)
 			throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -544,12 +542,17 @@ public class MaxEntClassification {
 		//  for repeated use is through Java serialization.
 		// Here we load a serialized classifier from a file.
 
-		Classifier classifier;
+		Classifier classifier = null;
 
-		ObjectInputStream ois =
-				new ObjectInputStream (new FileInputStream (serializedFile));
-		classifier = (Classifier) ois.readObject();
-		ois.close();
+		try {
+			ObjectInputStream ois =
+					new ObjectInputStream(new FileInputStream(serializedFile));
+			classifier = (Classifier) ois.readObject();
+			ois.close();
+		}
+		catch(EOFException e) {
+
+		}
 
 		return classifier;
 	}

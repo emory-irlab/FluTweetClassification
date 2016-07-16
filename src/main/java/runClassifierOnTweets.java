@@ -13,9 +13,9 @@ public class runClassifierOnTweets {
     public static long endRunTime;
 
     /*
-        Trains a classifier of the specified type on the given training data
+        Trains a classifier of the specified type on the given training data, saves it
      */
-    public static void trainClassifier (ArrayList<String[]> trainingTweets, String pathToClassifier, String classifierType) throws IOException, ClassNotFoundException {
+    public static void trainAndSaveClassifier (ArrayList<String[]> trainingTweets, String pathToClassifier, String classifierType) throws IOException, ClassNotFoundException {
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
         MaxEntClassification classifier = new MaxEntClassification(pathToClassifier);
 
@@ -27,24 +27,25 @@ public class runClassifierOnTweets {
         }
         //train
         classifier.trainClassifier(classifier.instances);
+        classifier.saveClassifier(new File(pathToClassifier));
     }
 
     /*
         Trains a classifier of the specified type on the given training data, then tests on the given training data.
         Saves the classifier to the file at the given path
     */
-    public static void testClassifier (ArrayList<String[]> trainingTweets, String pathToClassifier, String classifierType, String pathToResultsFile) throws IOException, ClassNotFoundException {
-
-        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingTweets, classifierType);
+    public static void trainAndTestClassifier(ArrayList<String[]> trainingAndTestTweets, String pathToClassifier, String classifierType, String pathToResultsFile) throws IOException, ClassNotFoundException {
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(trainingAndTestTweets, classifierType);
 
         //make the classifier
         MaxEntClassification classifier = new MaxEntClassification(pathToClassifier);
-        //train the classifier
+        //get instances for the classifier
         for (int i = 0; i < tweetVectors.length; i++) {
             //add the current tweet
             TweetVector currentTweet = tweetVectors[i];
             classifier.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
         }
+       //train and test
         /*
          * Cross validation portion.
          * */
@@ -54,7 +55,31 @@ public class runClassifierOnTweets {
         //classifier.runNTrials(5, pathToResultsFile);
 
         //non-cross-validation test for "person" class of HvN with varying confidence intervals
-        classifier.runNTrials(5, pathToResultsFile, 0.8);
+        classifier.runNTrials(5, pathToResultsFile, "person", 0.8, "organization");
+    }
+
+    /*
+        Given a set of test tweets and a path to a pre-made classifier, test the accuracy, precision, recall, and
+        F1 of the classifier for the test tweets. Classify a specific desired class with a given confidence threshold.
+        Print out the results.
+     */
+    public static void testClassifier(String classifierType, ArrayList<String[]> testTweets, String pathToClassifier, String pathToResultsFile, String desiredClass, double confThreshold, String altClass)
+    throws IOException, ClassNotFoundException {
+        //get features for the test tweets, then save said tweets as test instances of a dummy classifier
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets, classifierType);
+        MaxEntClassification dummy = new MaxEntClassification("");
+        //get instances for the classifier
+        for (int i = 0; i < tweetVectors.length; i++) {
+            //add the current tweet
+            TweetVector currentTweet = tweetVectors[i];
+            dummy.addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
+        }
+
+        //load the classifier
+        MaxEntClassification classifier = new MaxEntClassification(pathToClassifier);
+
+        //evaluate the instances and print
+        classifier.writeEvaluatedToFile(classifier.evaluateWithConfidenceLevel(dummy.instances, desiredClass, confThreshold, altClass), 1, pathToResultsFile, false);
     }
 
     /*
@@ -85,6 +110,8 @@ public class runClassifierOnTweets {
 
         return outputTweets;
     }
+
+
 
     /*
         From a path to a file containing tweet ids, tweet labels, and tweet texts separated by null characters,
@@ -118,16 +145,19 @@ public class runClassifierOnTweets {
 
         //get the training tweets
         ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
-        //testClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
+        //trainAndTestClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
         //ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
-        //testClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
+        //trainAndTestClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
-        //testClassifier(trainingTweets, args[5], "SelfVsOther", args[6]);
+        //trainAndTestClassifier(trainingTweets, args[5], "SelfVsOther", args[6]);
 
         //train and run the classifier, get the tweets, write them to a file
-        trainClassifier(HvNTweets, args[1], "HumanVsNonHuman");
+        //trainAndSaveClassifier(HvNTweets, args[1], "HumanVsNonHuman");
         ArrayList<String[]> testTweets = TweetParser.getTweets(args[7]);
+        //testClassifier("HumanVsNonHuman", testTweets, "HumanVsNonHumanClassifier.txt", "data/testResults.txt", "person", 0.8, "organization");
         ArrayList<String[]> outputtedTweets =
                 runClassifierAndGetTweetsByLabel(testTweets, args[1], "HumanVsNonHuman", "person", 0.8, "organization");
+        //print out the tweets
+        util.printAllFieldsOneLinePerEntry(testTweets, args[8]);
     }
 }

@@ -39,9 +39,14 @@ public class MaxEntClassification {
 
 		classifierFile = new File(pathToClassifier);
 
+		/*
 		if (!classifierFile.exists()) {
 			classifierFile.createNewFile();
 		} else {
+			maxEntClassifier = loadClassifier(classifierFile);
+		}
+		*/
+		if (classifierFile.exists()) {
 			maxEntClassifier = loadClassifier(classifierFile);
 		}
 
@@ -116,6 +121,92 @@ public class MaxEntClassification {
 		}
 
 		return output;
+	}
+
+	/*
+		Returns a hashtable containing accuracy and performance metrics for the given test instances. For a given
+		desiredClass, instances are only classified as that class if they are classified with at least <threshold> confidence
+		for that class. Instances classified as desiredClass with a confidence level below the threshold are instead
+		classified as altClass.
+	 */
+	public Hashtable<String, Hashtable<String, Double>> evaluateWithConfidenceLevel(InstanceList testInstances, String desiredClass, double confidenceThreshold, String altClass) throws IOException {
+		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
+
+		int desiredInstances = 0;
+		int altInstances = 0;
+		int classifiedAsDesired = 0;
+		int classifiedAsAlt = 0;
+		int correctlyClassifiedAsDesired = 0;
+		int correctlyClassifiedAsAlt = 0;
+
+		//if the confidence with which an instance is classified as "person" meets or exceeds the threshold,
+		//label it as "person". Otherwise, label it as "organization". Calculate the accuracy, recall, precision, and
+		//F1 of the trial from this data
+		for (int j = 0; j < testInstances.size(); j++) {
+			Instance instance = testInstances.get(j);
+
+			//get the correct label
+			String correctLabel = instance.getLabeling().toString();
+
+			//get the label given by the classifier
+			String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, desiredClass, confidenceThreshold, altClass);
+
+			//get inferences from this data
+			if (correctLabel.equals(desiredClass)) {
+				desiredInstances++;
+
+				if (experimentalLabel.equals(desiredClass)) {
+					correctlyClassifiedAsDesired++;
+					classifiedAsDesired++;
+				}
+				else {
+					classifiedAsAlt++;
+				}
+			}
+			else if (correctLabel.equals(altClass)) {
+				altInstances++;
+
+				if (experimentalLabel.equals(altClass)) {
+					correctlyClassifiedAsAlt++;
+					classifiedAsAlt++;
+				}
+				else {
+					classifiedAsDesired++;
+				}
+			}
+		}
+		//calculate the actual figures
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
+		results.put("Accuracy", accuracy);
+
+		Hashtable<String, Double> desired = new Hashtable<String, Double>();
+		double desPrecision = ((double)correctlyClassifiedAsDesired)/classifiedAsDesired;
+		double desRecall = ((double)correctlyClassifiedAsDesired)/desiredInstances;
+		double desF1 = (2 * desPrecision * desRecall)/(desPrecision + desRecall);
+		desired.put("Precision", desPrecision);
+		desired.put("Recall", desRecall);
+		desired.put("F1", desF1);
+		results.put(desiredClass, desired);
+
+		Hashtable<String, Double> alt = new Hashtable<String, Double>();
+		double altPrecision = ((double)correctlyClassifiedAsAlt)/classifiedAsAlt;
+		double altRecall = ((double)correctlyClassifiedAsAlt)/altInstances;
+		double altF1 = (2 * altPrecision * altRecall)/(altPrecision + altRecall);
+		alt.put("Precision", altPrecision);
+		alt.put("Recall", altRecall);
+		alt.put("F1", altF1);
+		results.put(altClass, alt);
+
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//evaluate using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = evaluate(trimmedTestInstances);
+			evaluate(trimmedTestInstances);
+			*/
+		return results;
 	}
 
 	/*
@@ -268,7 +359,7 @@ public class MaxEntClassification {
 	 *  NOTE: Recall, and thus F1, for the "person" class may be incorrect here, as will precision, recall, and
 		F1 for the "organization" class
 	 * */
-
+	/*
 	public void evaluateWithConfidenceThreshold(InstanceList testInstances, double threshold) throws IOException {
 
 		System.out.println("For threshold: " + threshold);
@@ -315,6 +406,7 @@ public class MaxEntClassification {
 
 		p.close();
 	}
+	*/
 
 	public void getAreaUnderCurve(Trial t) {
 
@@ -393,14 +485,12 @@ public class MaxEntClassification {
 	}
 
 	/*
-		Runs n trials on the data at a given threshold of confidence for the "person" class
-
-		NOTE: Recall, and thus F1, for the "person" class may be incorrect here, as will precision, recall, and
-		F1 for the "organization" class
+		Runs n trials on the data at a given threshold of confidence for the desired class. Any instance that is not
+		classified as the desired class with a confidence at or above the threshold is classified as the altClass.
 
 		TODO: possibly generalize to all different class names
 	 */
-	public void runNTrials(int n, String pathToResultsFile, double confidenceThreshold) throws IOException {
+	public void runNTrials(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
 		//save the instances the classifier started out with
 		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
@@ -421,81 +511,7 @@ public class MaxEntClassification {
 			trainClassifier(instances);
 			saveClassifier(classifierFile);
 
-			Hashtable<String, Hashtable<String, Double>> resultsForTrial = new Hashtable<String, Hashtable<String, Double>>();
-			int personInstances = 0;
-			int organizationInstances = 0;
-			int classifiedAsPerson = 0;
-			int classifiedAsOrganization = 0;
-			int correctlyClassifiedAsPerson = 0;
-			int correctlyClassifiedAsOrganization = 0;
-
-			//if the confidence with which an instance is classified as "person" meets or exceeds the threshold,
-			//label it as "person". Otherwise, label it as "organization". Calculate the accuracy, recall, precision, and
-			//F1 of the trial from this data
-			for (int j = 0; j < testInstances.size(); j++) {
-				Instance instance = testInstances.get(j);
-
-				//get the correct label
-				String correctLabel = instance.getLabeling().toString();
-
-				//get the label given by the classifier
-				String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, "person", confidenceThreshold, "organization");
-
-				//get inferences from this data
-				if (correctLabel.equals("person")) {
-					personInstances++;
-
-					if (experimentalLabel.equals("person")) {
-						correctlyClassifiedAsPerson++;
-						classifiedAsPerson++;
-					}
-					else {
-						classifiedAsOrganization++;
-					}
-				}
-				else if (correctLabel.equals("organization")) {
-					organizationInstances++;
-
-					if (experimentalLabel.equals("organization")) {
-						correctlyClassifiedAsOrganization++;
-						classifiedAsOrganization++;
-					}
-					else {
-						classifiedAsPerson++;
-					}
-				}
-			}
-			//calculate the actual figures
-			Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-			accuracy.put("Accuracy", (((double)correctlyClassifiedAsPerson) + correctlyClassifiedAsOrganization)/testInstances.size());
-			resultsForTrial.put("Accuracy", accuracy);
-
-			Hashtable<String, Double> person = new Hashtable<String, Double>();
-			double perPrecision = ((double)correctlyClassifiedAsPerson)/classifiedAsPerson;
-			double perRecall = ((double)correctlyClassifiedAsPerson)/personInstances;
-			double perF1 = (2 * perPrecision * perRecall)/(perPrecision + perRecall);
-			person.put("Precision", perPrecision);
-			person.put("Recall", perRecall);
-			person.put("F1", perF1);
-			resultsForTrial.put("person", person);
-
-			Hashtable<String, Double> organization = new Hashtable<String, Double>();
-			double orgPrecision = ((double)correctlyClassifiedAsOrganization)/classifiedAsOrganization;
-			double orgRecall = ((double)correctlyClassifiedAsOrganization)/organizationInstances;
-			double orgF1 = (2 * orgPrecision * orgRecall)/(orgPrecision + orgRecall);
-			organization.put("Precision", orgPrecision);
-			organization.put("Recall", orgRecall);
-			organization.put("F1", orgF1);
-			resultsForTrial.put("organization", organization);
-
-
-			/*
-			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
-
-			//evaluate using the trimmed instance list
-			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = evaluate(trimmedTestInstances);
-			evaluate(trimmedTestInstances);
-			*/
+			Hashtable<String, Hashtable<String, Double>> resultsForTrial = evaluateWithConfidenceLevel(testInstances, desiredClass, confidenceThreshold, altClass);
 			resultsOverTrials.add(resultsForTrial);
 		}
 		clearInstances();
@@ -510,17 +526,26 @@ public class MaxEntClassification {
 
 	/*
 		Labels a given Instance as desiredClass if the classifier's confidence rating for that class meets or exceeds
-		the confidence threshold. Otherwise, label it as altClass.
+		the confidence threshold. If the confidence rating for desiredClass is below the threshold but the Instance
+		is labeled as desiredClass, label the Instance with altClass. If neither of these conditions applies,
+		label the Instance with the label returned by the classifier.
 	*/
 	public String getLabelConfThresholdForDesiredClass(Instance instance, String desiredClass, double conf, String altClass) {
 		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
 		for (int rank = 0; rank < labeling.numLocations(); rank++) {
+			//find the confidence level for desiredClass
 			if (labeling.getLabelAtRank(rank).toString().equals(desiredClass)) {
+				//if it exceeds the threshold, label the instance as the desired class
 				if (labeling.getValueAtRank(rank) >= conf) {
 					return desiredClass;
 				}
-				else {
+				//if it doesn't meet the threshold but is classified as the desired class anyway, label the instance
+				//with the altClass
+				else if (rank == 0){
 					return altClass;
+				}
+				else {
+					return labeling.getLabelAtRank(0).toString();
 				}
 			}
 
@@ -530,8 +555,8 @@ public class MaxEntClassification {
 					}
 					*/
 		}
-		//by default, return the alternative class
-		return altClass;
+		//by default, return the label returned by the classifier
+		return labeling.getLabelAtRank(0).toString();
 	}
 
 

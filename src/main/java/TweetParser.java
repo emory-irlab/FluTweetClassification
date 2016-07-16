@@ -53,6 +53,30 @@ public class TweetParser {
         return tweets;
     }
 
+    public static ArrayList<String[]> getTweetsTimExamples(String pathToTweetFile) throws FileNotFoundException, IOException {
+        ArrayList<String[]> tweets = new ArrayList<String[]>();
+        BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));
+
+        String currentLine;
+        while ((currentLine = in.readLine()) != null) {
+            String[] fields = currentLine.split(" {2,}");
+            String[] tweetFields = new String[6];
+            if (fields.length != 8) {
+                System.out.println("LENGTH NOT 8");
+            }
+            else {
+                tweetFields[0] = "";
+                tweetFields[1] = fields[6];
+                tweetFields[2] = fields[5];
+                tweetFields[3] = fields[7];
+                tweetFields[4] = fields[0];
+                tweetFields[5] = "";
+            }
+            tweets.add(tweetFields);
+        }
+        return tweets;
+    }
+
     /*
         Get profile pic links, usernames, names, descriptions, and tweets from a tsv file
     */

@@ -19,7 +19,7 @@ public class featureTestCases {
         corpus) and check if the idf values are correct
             Expected idf values:
             -this - 5
-            -be - 5/3
+            -be - 2.5
             -a - 5/3
             -test - 2.5
             -for - 5
@@ -31,7 +31,7 @@ public class featureTestCases {
             -fail - 5/3
             -the - 5
             -i - 5
-            -can - 5/3
+            -can - 2.5
             -Disneyland - 5
             -steal - 5
             -that - 5
@@ -40,7 +40,7 @@ public class featureTestCases {
             -not - 2.5
             -ideal - 5
             -or - 5
-            -it - 2.5
+            -it - 5.0
             - -lrb- - 5
             - -rrb- - 5
             -Can - 5
@@ -61,18 +61,9 @@ public class featureTestCases {
         }
         NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1);
 
-
         //--------------
         //TESTING
         //--------------
-
-        //annotator
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-        //get the test data into phrase form so tf features can be extracted
-        ArrayList<String[]> testingTweets = TweetParser.getTweets("data/testData/5MoreExampleTweetTexts.txt");
 
         System.out.println("Testing IDF values with a frequency threshold of 1 and stop words...");
         try {
@@ -80,7 +71,7 @@ public class featureTestCases {
 
             //check the idfs
             if (idfs.get("this") != 5.0 ||
-                    idfs.get("be") != ((double) 5) / 3 ||
+                    idfs.get("be") != 2.5 ||
                     idfs.get("a") != ((double) 5) / 3 ||
                     idfs.get("test") != 2.5 ||
                     idfs.get("for") != 5.0 ||
@@ -92,7 +83,7 @@ public class featureTestCases {
                     idfs.get("fail") != ((double) 5) / 3 ||
                     idfs.get("the") != 5.0 ||
                     idfs.get("i") != 5.0 ||
-                    idfs.get("can") != ((double) 5) / 3 ||
+                    idfs.get("can") != 2.5 ||
                     idfs.get("Disneyland") != 5.0 ||
                     idfs.get("steal") != 5.0 ||
                     idfs.get("that") != 5.0 ||
@@ -101,7 +92,7 @@ public class featureTestCases {
                     idfs.get("not") != 2.5 ||
                     idfs.get("ideal") != 5.0 ||
                     idfs.get("or") != 5.0 ||
-                    idfs.get("it") != 2.5 ||
+                    idfs.get("it") != 5.0 ||
                     idfs.get("-lrb-") != 5 ||
                     idfs.get("-rrb-") != 5 ||
                     idfs.get("Can") != 5) {
@@ -128,21 +119,21 @@ public class featureTestCases {
     Expected tf-idf values:
     First tweet:
         -test - 2.5
-        -be - 5/3
+        -be - 2.5
 
     Second tweet:
         -a - 10/3
         -test - 5
-        -be - 5/3
+        -be - 2.5
 
     Third:
         -Can - 5
         -you - 5
-        -can - 5/3
+        -can - 2.5
         -i - 5
 
     Fourth:
-        -be - 5/3
+        -be - 2.5
         -you - 2.5
         -Disneyland - 5
 
@@ -202,7 +193,7 @@ public class featureTestCases {
             //check the tf-idf values
             //tweet 1
             if (firstTweet.get("test") != 2.5 ||
-                    firstTweet.get("be") != ((double)5)/3) {
+                    firstTweet.get("be") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 2) {
@@ -212,7 +203,7 @@ public class featureTestCases {
             //tweet 2
             else if (secondTweet.get("a") != ((double)10)/3 ||
                     secondTweet.get("test") != 5.0 ||
-                    secondTweet.get("be") != ((double)5)/3) {
+                    secondTweet.get("be") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 3) {
@@ -220,7 +211,7 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("can") != ((double)5)/3 ||
+            else if (thirdTweet.get("can") != 2.5 ||
                     thirdTweet.get("you") != 5.0 ||
                     thirdTweet.get("Can") != 5.0 ||
                     thirdTweet.get("i") != 5.0) {
@@ -231,7 +222,7 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("be") != ((double)5)/3 ||
+            else if (fourthTweet.get("be") != 2.5 ||
                     fourthTweet.get("you") != 2.5 ||
                     fourthTweet.get("Disneyland") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
@@ -251,7 +242,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
     }
 
@@ -262,19 +253,19 @@ public class featureTestCases {
         Expected tf-idf values:
         First tweet:
             -test - 2.5
-            -be - 5/3
+            -be - 2.5
 
         Second tweet:
             -a - 10/3
             -test - 5
-            -be - 5/3
+            -be - 2.5
 
         Third:
             -you - 5
-            -can - 5/3
+            -can - 2.5
 
         Fourth:
-            -be - 5/3
+            -be - 2.5
             -you - 2.5
 
         Fifth:
@@ -333,7 +324,7 @@ public class featureTestCases {
             //check the tf-idf values
             //tweet 1
             if (firstTweet.get("test") != 2.5 ||
-                    firstTweet.get("be") != ((double)5)/3) {
+                    firstTweet.get("be") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 2) {
@@ -343,7 +334,7 @@ public class featureTestCases {
             //tweet 2
             else if (secondTweet.get("a") != ((double)10)/3 ||
                     secondTweet.get("test") != 5.0 ||
-                    secondTweet.get("be") != ((double)5)/3) {
+                    secondTweet.get("be") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 3) {
@@ -351,7 +342,7 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("can") != ((double)5)/3 ||
+            else if (thirdTweet.get("can") != 2.5 ||
                     thirdTweet.get("you") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
@@ -360,7 +351,7 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("be") != ((double)5)/3 ||
+            else if (fourthTweet.get("be") != 2.5 ||
                     fourthTweet.get("you") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
@@ -379,7 +370,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
     }
 
@@ -495,7 +486,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
     }
 
@@ -628,7 +619,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
     }
 
@@ -768,7 +759,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
-            System.out.println(e.getMessage());
+            System.out.println(e.toString());
         }
     }
 

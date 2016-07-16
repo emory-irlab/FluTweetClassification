@@ -70,4 +70,16 @@ public class util {
         }
         return true;
     }
+
+    public static void printAllFieldsOneLinePerEntry(ArrayList<String[]> input, String pathToOutputFile) throws IOException {
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToOutputFile)));
+        for (String[] entry: input) {
+            for (String en : entry) {
+                bufferedWriter.write(en + ",");
+            }
+            bufferedWriter.newLine();
+        }
+
+        bufferedWriter.close();
+    }
 }

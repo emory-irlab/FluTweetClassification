@@ -144,7 +144,7 @@ public class runClassifierOnTweets {
 //        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_100k_random.csv", true);
 
         //get the training tweets
-        ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
+        //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
         //trainAndTestClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
         //ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
         //trainAndTestClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
@@ -154,10 +154,10 @@ public class runClassifierOnTweets {
         //train and run the classifier, get the tweets, write them to a file
         //trainAndSaveClassifier(HvNTweets, args[1], "HumanVsNonHuman");
         ArrayList<String[]> testTweets = TweetParser.getTweets(args[7]);
-        //testClassifier("HumanVsNonHuman", testTweets, "HumanVsNonHumanClassifier.txt", "data/testResults.txt", "person", 0.8, "organization");
+        testClassifier("HumanVsNonHuman", testTweets, "HumanVsNonHumanClassifier.txt", "data/testResults.txt", "person", 0.8, "organization");
         ArrayList<String[]> outputtedTweets =
                 runClassifierAndGetTweetsByLabel(testTweets, args[1], "HumanVsNonHuman", "person", 0.8, "organization");
         //print out the tweets
-        util.printAllFieldsOneLinePerEntry(testTweets, args[8]);
+        util.printAllFieldsOneLinePerEntry(outputtedTweets, args[8]);
     }
 }

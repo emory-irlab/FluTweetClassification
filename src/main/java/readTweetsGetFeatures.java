@@ -76,7 +76,9 @@ public class readTweetsGetFeatures {
 
         //get features
         for (int i = 0; i < tweets.size(); i++) {
+            long tweetBeginTime = System.currentTimeMillis();
             getVectorModelForTweet(tweetVectors[i], pipeline, classifierType);
+            System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
         return tweetVectors;
     }
@@ -231,17 +233,17 @@ public class readTweetsGetFeatures {
         if (tweetTextUnigramModel == null) {
             tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
         }
-        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
+        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
+        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least twice to be considered
         /*
         if (tweetTextBigramModel == null) {
             tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 2);
         }
+        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         */
-        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
         //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases));
 

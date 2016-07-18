@@ -49,13 +49,13 @@ public class runClassifierOnTweets {
         /*
          * Cross validation portion.
          * */
-        //classifier.crossValidate(5, pathToResultsFile);
+        classifier.crossValidate(5, pathToResultsFile);
 
         //non-cross-validation test
         //classifier.runNTrials(5, pathToResultsFile);
 
         //non-cross-validation test for "person" class of HvN with varying confidence intervals
-        classifier.runNTrials(5, pathToResultsFile, "person", 0.8, "organization");
+        //classifier.runNTrials(5, pathToResultsFile, "person", 0.8, "organization");
     }
 
     /*
@@ -146,18 +146,18 @@ public class runClassifierOnTweets {
         //get the training tweets
         //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
         //trainAndTestClassifier(HvNTweets, args[1], "HumanVsNonHuman", args[6]);
-        //ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
-        //trainAndTestClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
+        ArrayList<String[]> EvNETweets = TweetParser.getTweets(args[2]);
+        trainAndTestClassifier(EvNETweets, args[3], "EventVsNonEvent", args[6]);
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
         //trainAndTestClassifier(trainingTweets, args[5], "SelfVsOther", args[6]);
 
         //train and run the classifier, get the tweets, write them to a file
         //trainAndSaveClassifier(HvNTweets, args[1], "HumanVsNonHuman");
-        ArrayList<String[]> testTweets = TweetParser.getTweets(args[7]);
-        testClassifier("HumanVsNonHuman", testTweets, "HumanVsNonHumanClassifier.txt", "data/testResults.txt", "person", 0.8, "organization");
-        ArrayList<String[]> outputtedTweets =
-                runClassifierAndGetTweetsByLabel(testTweets, args[1], "HumanVsNonHuman", "person", 0.8, "organization");
+        //ArrayList<String[]> testTweets = TweetParser.getTweets(args[7]);
+        //testClassifier("HumanVsNonHuman", testTweets, "HumanVsNonHumanClassifier.txt", "data/testResults.txt", "person", 0.8, "organization");
+        //ArrayList<String[]> outputtedTweets =
+                //runClassifierAndGetTweetsByLabel(testTweets, args[1], "HumanVsNonHuman", "person", 0.8, "organization");
         //print out the tweets
-        util.printAllFieldsOneLinePerEntry(outputtedTweets, args[8]);
+        //util.printAllFieldsOneLinePerEntry(outputtedTweets, args[8]);
     }
 }

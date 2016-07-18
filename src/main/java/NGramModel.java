@@ -366,7 +366,6 @@ public class NGramModel {
             //get the word's idf. If it is the default value of 0
             // (i.e. it has not appeared in enough documents to be stored), the word will not be in the output
             double idf = 0.0;
-            Enumeration<String> idfKeys = tweetIDFs.keys();
             if (tweetIDFs.get(tfKey) != null) {
                 idf = tweetIDFs.get(tfKey);
             }

@@ -1,0 +1,110 @@
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.7396121883656509
+--------------------
+
+Metrics for class none_of_the_above
+Recall: 0.7409411347491481
+Precision: 0.7444634177241347
+F1: 0.7418094308778855
+
+Metrics for class wedding
+Recall: 0.8
+Precision: 0.8166666666666668
+F1: 0.7847619047619048
+
+Metrics for class pregnancy
+Recall: 0.5488095238095239
+Precision: 0.7133333333333333
+F1: 0.5481318681318681
+
+Metrics for class relocation
+Recall: 0.2121345029239766
+Precision: 0.2884965034965035
+F1: 0.2343492063492063
+
+Metrics for class retirement
+Recall: 0.5
+Precision: 0.7
+F1: 0.4666666666666666
+
+Metrics for class breakup_separation
+Recall: 0.31666666666666665
+Precision: 0.3232798573975044
+F1: 0.21083099906629318
+
+Metrics for class falling_in_love
+Recall: 0.43200799200799206
+Precision: 0.250071415096882
+F1: 0.3107422789398172
+
+Metrics for class major_accident
+Recall: 0.6333333333333333
+Precision: 0.7666666666666666
+F1: 0.6599999999999999
+
+Metrics for class birth
+Recall: 0.22704545454545455
+Precision: 0.2969264069264069
+F1: 0.2390168895432053
+
+Metrics for class fight
+Recall: 0.37676767676767675
+Precision: 0.4031746031746032
+F1: 0.35277777777777775
+
+Metrics for class job_loss
+Recall: 0.4
+Precision: 0.8
+F1: 0.4
+
+Metrics for class major_illness
+Recall: 0.5246212121212122
+Precision: 0.4495526695526696
+F1: 0.46911959497698036
+
+Metrics for class rejection_from_major_institution
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class new_job
+Recall: 0.5633333333333332
+Precision: 0.589047619047619
+F1: 0.5523076923076923
+
+Metrics for class death
+Recall: 0.3288888888888889
+Precision: 0.44666666666666666
+F1: 0.3539627039627039
+
+Metrics for class admittance_into_major_institution
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class major_trip
+Recall: 0.8214292207719291
+Precision: 0.818251494465924
+F1: 0.8197777600015396
+
+Metrics for class divorce
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class engagement
+Recall: 0.9
+Precision: 0.7533333333333332
+F1: 0.8098989898989899
+
+Metrics for class robbery
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class graduation
+Recall: 0.9259893717520837
+Precision: 0.9319050956637671
+F1: 0.9283762232086394

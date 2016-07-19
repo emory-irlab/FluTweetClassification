@@ -1,0 +1,16 @@
+Using a threshold of: 0.7
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.8843640020110609
+--------------------
+
+Metrics for class organization
+Recall: 0.9602474564151654
+Precision: 0.8430078762151639
+F1: 0.8977922295144947
+
+Metrics for class person
+Recall: 0.7990600346744081
+Precision: 0.9471310258854689
+F1: 0.866746815425335

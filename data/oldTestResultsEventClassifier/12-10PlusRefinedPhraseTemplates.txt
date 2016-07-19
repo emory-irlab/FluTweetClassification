@@ -1,0 +1,110 @@
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.7432132963988919
+--------------------
+
+Metrics for class none_of_the_above
+Recall: 0.7433261732720393
+Precision: 0.7544099652836076
+F1: 0.7483679632258023
+
+Metrics for class wedding
+Recall: 0.8
+Precision: 0.8
+F1: 0.7361904761904763
+
+Metrics for class pregnancy
+Recall: 0.45904761904761904
+Precision: 0.8533333333333333
+F1: 0.5
+
+Metrics for class relocation
+Recall: 0.2352063983488132
+Precision: 0.3261363636363636
+F1: 0.2683174603174603
+
+Metrics for class retirement
+Recall: 0.4333333333333333
+Precision: 0.8
+F1: 0.48
+
+Metrics for class breakup_separation
+Recall: 0.2
+Precision: 0.15694444444444444
+F1: 0.1482051282051282
+
+Metrics for class falling_in_love
+Recall: 0.4651282051282052
+Precision: 0.2603729150462363
+F1: 0.32759030649991916
+
+Metrics for class major_accident
+Recall: 0.5
+Precision: 0.6
+F1: 0.3933333333333333
+
+Metrics for class birth
+Recall: 0.22444444444444445
+Precision: 0.3516666666666667
+F1: 0.25695480989598635
+
+Metrics for class fight
+Recall: 0.4716666666666667
+Precision: 0.39686147186147186
+F1: 0.4113492063492064
+
+Metrics for class job_loss
+Recall: 0.6
+Precision: 0.7
+F1: 0.3333333333333333
+
+Metrics for class major_illness
+Recall: 0.6391596638655462
+Precision: 0.43167967298402077
+F1: 0.484989604989605
+
+Metrics for class rejection_from_major_institution
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class new_job
+Recall: 0.6276190476190476
+Precision: 0.5533333333333333
+F1: 0.5547619047619048
+
+Metrics for class death
+Recall: 0.21714285714285717
+Precision: 0.5333333333333333
+F1: 0.2781257631257631
+
+Metrics for class admittance_into_major_institution
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class major_trip
+Recall: 0.8239082867203953
+Precision: 0.8178786532448292
+F1: 0.8202443807251486
+
+Metrics for class divorce
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class engagement
+Recall: 0.8261904761904761
+Precision: 0.75
+F1: 0.7699999999999999
+
+Metrics for class robbery
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class graduation
+Recall: 0.931998994938143
+Precision: 0.938921633921634
+F1: 0.9351301774691863

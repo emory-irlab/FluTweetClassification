@@ -94,11 +94,11 @@ public class runClassifierOnTweets {
 
         //train + test
          //cross-validation test
-        classifier.crossValidate(5, pathToHvN, "person", 0.8, "organization");
+        classifier.crossValidate(5, pathToTestResults, "person", 0.8, "organization");
          //split multiple times test
-        //classifier.runNTrials(5, pathToEvN);
+        //classifier.runNTrials(5, pathToTestResults);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals
-        //classifier.runNTrials(5, pathToEvN, "person", 0.8, "organization");
+        //classifier.runNTrials(5, pathToTestResults, "person", 0.8, "organization");
 
         //just train
         //classifier.trainClassifier(classifier.instances);

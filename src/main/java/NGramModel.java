@@ -257,15 +257,44 @@ public class NGramModel {
         //Get idfs from totalDocs and the document count of each word that appears at least as many times
         //as the frequency threshold requires
         Enumeration<String> keys = tweetIDFs.keys();
+        int twoCounter = 0;
+        int threeCounter = 0;
+        int fiveCounter = 0;
+        int tenCounter = 0;
+        int twentyFiveCounter = 0;
+        int fiftyCounter = 0;
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
+
+            //counter tests
+            if (tweetIDFs.get(key) >= 2.0) {
+                twoCounter++;
+            }
+            if (tweetIDFs.get(key) >= 3.0) {
+                threeCounter++;
+            }
+            if (tweetIDFs.get(key) >= 5.0) {
+                fiveCounter++;
+            }
+            if (tweetIDFs.get(key) >= 10.0) {
+                tenCounter++;
+            }
+            if (tweetIDFs.get(key) >= 25.0) {
+                twentyFiveCounter++;
+            }
+            if (tweetIDFs.get(key) >= 50.0) {
+                fiftyCounter++;
+            }
+
             if (tweetIDFs.get(key) >= freqThreshold) {
                 tweetIDFs.put(key, totalDocs / tweetIDFs.get(key));
             }
             else {
                 tweetIDFs.remove(key);
             }
+
         }
+        System.out.println();
     }
 
     /*

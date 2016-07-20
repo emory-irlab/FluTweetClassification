@@ -54,6 +54,8 @@ public class MaxEntClassification {
 		targetAlphabet.startGrowth();
 
 		instances = new InstanceList(dataAlphabet, targetAlphabet);
+
+		this.nCores = nCores;
 	}
 
 	/*
@@ -180,6 +182,8 @@ public class MaxEntClassification {
 	/*
 		Performs n-fold cross-validation with the specified confidence threshold for the specified class.
 		Prints out the results
+
+		ONLY WORKS WITH BINARY CLASS DISTINCTIONS
 	 */
 	public void crossValidate(int n_folds, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
@@ -458,6 +462,7 @@ public class MaxEntClassification {
 		Runs n trials on the data at a given threshold of confidence for the desired class. Any instance that is not
 		classified as the desired class with a confidence at or above the threshold is classified as the altClass.
 
+		ONLY WORKS WITH BINARY CLASSES
 		TODO: possibly generalize to all different class names
 	 */
 	public void runNTrials(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
@@ -576,7 +581,9 @@ public class MaxEntClassification {
 		for that class. Instances classified as desiredClass with a confidence level below the threshold are instead
 		classified as altClass.
 
-		This method runs in multiple threads
+		Multithreads to improve speed
+
+		CURRENTLY ONLY WORKS WITH BINARY CLASS DISTINCTIONS
 	 */
 	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
 		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
@@ -597,11 +604,12 @@ public class MaxEntClassification {
 		for (int i = 0; i < nCores; i++) {
 			proportions[i] = coreProportion;
 		}
-		InstanceList[] sections = testInstances.split(proportions);
+		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
 
 		//create and run threads
 		for (InstanceList list: sections) {
 			MaxEntTestRunThread thread = new MaxEntTestRunThread("thread", list, this, desiredClass, confidenceThreshold, altClass);
+			threads.add(thread);
 			thread.start();
 		}
 
@@ -663,7 +671,6 @@ public class MaxEntClassification {
 		alt.put("Recall", altRecall);
 		alt.put("F1", altF1);
 		results.put(altClass, alt);
-
 
 			/*
 			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());

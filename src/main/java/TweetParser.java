@@ -61,10 +61,15 @@ public class TweetParser {
         while ((currentLine = in.readLine()) != null) {
             String[] fields = currentLine.split("\\t");
             String[] tweetFields = new String[6];
-            if (fields.length != 8) {
-                System.out.println("LENGTH NOT 8");
+            if (fields.length == 7) {
+                tweetFields[0] = "";
+                tweetFields[1] = fields[6];
+                tweetFields[2] = fields[5];
+                tweetFields[3] = "";
+                tweetFields[4] = fields[0];
+                tweetFields[5] = "";
             }
-            else {
+            else if (fields.length == 8) {
                 tweetFields[0] = "";
                 tweetFields[1] = fields[6];
                 tweetFields[2] = fields[5];

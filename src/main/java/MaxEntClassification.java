@@ -159,7 +159,7 @@ public class MaxEntClassification {
 	/*
         Performs n-fold cross-validation and prints out the results
     */
-	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException {
+	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException, InterruptedException {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
@@ -433,7 +433,7 @@ public class MaxEntClassification {
 	/*
     	Runs n trials on the data
  	*/
-	public void runNTrials(int n, String pathToResultsFile) throws IOException {
+	public void runNTrials(int n, String pathToResultsFile) throws IOException, InterruptedException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
 		//save the instances the classifier started out with
 		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
@@ -540,6 +540,7 @@ public class MaxEntClassification {
 		return instanceLists[TESTING];
 	}
 
+	/*
 	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException {
 		Hashtable<String, Hashtable<String, Double>> output = new Hashtable<String, Hashtable<String, Double>>();
 
@@ -573,6 +574,149 @@ public class MaxEntClassification {
 		}
 
 		return output;
+	}*/
+
+	/*
+    Returns a hashtable containing accuracy and performance metrics for the given test instances. Multithreads to
+    improve speed
+
+    */
+	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException, InterruptedException {
+		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
+
+		Hashtable<String, Hashtable<String, Integer>> figuresFromThreads = new Hashtable<String, Hashtable<String, Integer>>();
+
+		//split the task into several threads, each classifying a sub-section of the test instances
+		ArrayList<MulticlassMaxEntTestThread> threads = new ArrayList<MulticlassMaxEntTestThread>();
+
+		//split the InstanceList
+		double coreProportion = 1.0 / nCores;
+		double[] proportions = new double[nCores];
+		for (int i = 0; i < nCores; i++) {
+			proportions[i] = coreProportion;
+		}
+		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
+
+		//create and run threads
+		for (InstanceList list: sections) {
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", list, this);
+			threads.add(thread);
+			thread.start();
+		}
+
+		/*
+		int unit = testInstances.size() / nCores;
+		int lastStart = 0;
+		int lastEnd = unit;
+		for (int i = 0; i < nCores; i++) {
+			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
+			if (i == nCores - 1) {
+				lastEnd = testInstances.size();
+			}
+
+			//create the next thread
+			InstanceList thisThread = new InstanceList()
+
+			//set the pointers for the next thread
+			lastStart = lastEnd;
+			lastEnd += unit;
+		}
+
+		for (int i = unit; i < testInstances.size(); i += unit) {
+
+			lastStart = i;
+		}
+		*/
+
+		//run the various threads, wait for them to finish, and collect their data
+		for (MulticlassMaxEntTestThread thread: threads) {
+			thread.thread.join();
+
+			//each thread contains figures for various classes; add them to the cumulative figures in figuresFromThreads
+			Enumeration<String> classes = thread.results.keys();
+			while (classes.hasMoreElements()) {
+				//add figures from each class in the thread's figures. If the cumulative does not have this class,
+				//initialize an entry for this class's figures. Otherwise, add to the existing entry
+				String currClass = classes.nextElement();
+
+				//If the cumulative does not have this class, initialize an entry for this class's figures.
+				Hashtable<String, Integer> currClassFigures = thread.results.get(currClass);
+				if (!figuresFromThreads.contains(currClass)) {
+					figuresFromThreads.put(currClass, currClassFigures);
+				}
+				//Otherwise, add to the existing entry
+				else {
+					//get the cumulative figure for this class
+					Hashtable<String, Integer> cumulativeFiguresForCurrClass = figuresFromThreads.get(currClass);
+
+					//add all values in currClassFigures to those in cumulativeFiguresForCurrClass
+					Enumeration<String> figureNames = currClassFigures.keys();
+					while(figureNames.hasMoreElements()) {
+						String currFig = figureNames.nextElement();
+						int newCumulativeValue = cumulativeFiguresForCurrClass.get(currFig) + currClassFigures.get(currFig);
+						cumulativeFiguresForCurrClass.put(currFig, newCumulativeValue);
+					}
+				}
+			}
+		}
+
+		//calculate performance metrics from figures for each class
+		int instancesOfClass;
+		int classifiedAsClass;
+		int correctlyClassifiedAsClass;
+		double precision;
+		double recall;
+		double F1;
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+
+		//ACCURACY
+		/*
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
+		results.put("Accuracy", accuracy);
+		*/
+
+		Enumeration<String> classes = figuresFromThreads.keys();
+		while (classes.hasMoreElements()) {
+			String currClass = classes.nextElement();
+
+			//get figures
+			Hashtable<String, Integer> figuresForClass = figuresFromThreads.get(currClass);
+			instancesOfClass = figuresForClass.get("instances");
+			classifiedAsClass = figuresForClass.get("classified as");
+			correctlyClassifiedAsClass = figuresForClass.get("correctly classified as");
+
+			//update accuracy, as this takes into account all classes
+			if (accuracy.size() == 0) { //initialize if this is the first class
+				accuracy.put("Accuracy", (double)correctlyClassifiedAsClass);
+			}
+			else { //otherwise, update
+				accuracy.put("Accuracy", ((double)correctlyClassifiedAsClass) + accuracy.get("Accuracy"));
+			}
+
+			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
+			precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
+			recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
+			F1 = (2 * precision * recall) / (precision + recall);
+			metrics.put("Precision", precision);
+			metrics.put("Recall", recall);
+			metrics.put("F1", F1);
+			results.put(currClass, metrics);
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//test run using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
+			testRun(trimmedTestInstances);
+			*/
+
+		}
+		//finally get accuracy
+		accuracy.put("Accuracy", accuracy.get("Accuracy")/testInstances.size());
+		results.put("Accuracy", accuracy);
+
+		return results;
 	}
 
 	/*

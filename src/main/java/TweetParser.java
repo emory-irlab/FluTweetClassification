@@ -60,7 +60,7 @@ public class TweetParser {
         String currentLine;
         while ((currentLine = in.readLine()) != null) {
             String[] fields = currentLine.split("\\t");
-            String[] tweetFields = new String[6];
+            String[] tweetFields = new String[10];
             if (fields.length == 7) {
                 tweetFields[0] = "";
                 tweetFields[1] = fields[6];
@@ -68,6 +68,10 @@ public class TweetParser {
                 tweetFields[3] = "";
                 tweetFields[4] = fields[0];
                 tweetFields[5] = "";
+                tweetFields[6] = fields[1];
+                tweetFields[7] = fields[2];
+                tweetFields[8] = fields[3];
+                tweetFields[9] = fields[4];
             }
             else if (fields.length == 8) {
                 tweetFields[0] = "";
@@ -76,6 +80,10 @@ public class TweetParser {
                 tweetFields[3] = fields[7];
                 tweetFields[4] = fields[0];
                 tweetFields[5] = "";
+                tweetFields[6] = fields[1];
+                tweetFields[7] = fields[2];
+                tweetFields[8] = fields[3];
+                tweetFields[9] = fields[4];
             }
             tweets.add(tweetFields);
         }

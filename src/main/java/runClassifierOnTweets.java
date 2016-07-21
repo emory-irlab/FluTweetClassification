@@ -94,7 +94,7 @@ public class runClassifierOnTweets {
 
         //train + test
          //cross-validation test
-        classifier.crossValidate(5, pathToTestResults);
+        classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
         //classifier.crossValidate(5, pathToTestResults, "person", 0.8, "organization");
          //split multiple times test
         //classifier.runNTrials(5, pathToTestResults);

@@ -75,14 +75,8 @@ public class util {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToOutputFile)));
         for (String[] entry: input) {
             for (String en : entry) {
-                if (en.contains(",")) {
-                    bufferedWriter.write("\\\"");
-                }
                 bufferedWriter.write(en);
-                if (en.contains(",")) {
-                    bufferedWriter.write("\\\"");
-                }
-                bufferedWriter.write(",");
+                bufferedWriter.write("\t");
             }
             bufferedWriter.newLine();
         }

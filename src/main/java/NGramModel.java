@@ -254,6 +254,7 @@ public class NGramModel {
             }
         }
 
+        /*
         //Get idfs from totalDocs and the document count of each word that appears at least as many times
         //as the frequency threshold requires
         Enumeration<String> keys = tweetIDFs.keys();
@@ -293,8 +294,10 @@ public class NGramModel {
                 tweetIDFs.remove(key);
             }
 
+
         }
-        System.out.println();
+        */
+        //System.out.println();
     }
 
     /*

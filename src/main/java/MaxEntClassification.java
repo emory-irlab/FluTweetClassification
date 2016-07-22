@@ -577,9 +577,8 @@ public class MaxEntClassification {
 	}*/
 
 	/*
-    Returns a hashtable containing accuracy and performance metrics for the given test instances. Multithreads to
-    improve speed
-
+    	Returns a hashtable containing accuracy and performance metrics for the given test instances. Multithreads to
+    	improve speed
     */
 	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException, InterruptedException {
 		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
@@ -641,7 +640,7 @@ public class MaxEntClassification {
 
 				//If the cumulative does not have this class, initialize an entry for this class's figures.
 				Hashtable<String, Integer> currClassFigures = thread.results.get(currClass);
-				if (!figuresFromThreads.contains(currClass)) {
+				if (!figuresFromThreads.containsKey(currClass)) {
 					figuresFromThreads.put(currClass, currClassFigures);
 				}
 				//Otherwise, add to the existing entry
@@ -695,9 +694,22 @@ public class MaxEntClassification {
 			}
 
 			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
-			precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
-			recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
+			if (classifiedAsClass > 0.0) {
+				precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
+			}
+			else {
+				precision = 0.0;
+			}
+			if (instancesOfClass > 0.0) {
+				recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
+			}
+			else {
+				recall = 0.0;
+			}
 			F1 = (2 * precision * recall) / (precision + recall);
+			if (precision == 0.0 && recall == 0.0) {
+				F1 = 0.0;
+			}
 			metrics.put("Precision", precision);
 			metrics.put("Recall", recall);
 			metrics.put("F1", F1);

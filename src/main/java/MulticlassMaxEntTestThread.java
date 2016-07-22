@@ -34,17 +34,17 @@ public class MulticlassMaxEntTestThread implements Runnable {
                 //get the correct label
                 String correctLabel = instance.getLabeling().toString();
                 //get the label given by the classifier
-                String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().toString();
+                String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
 
                 //initialize fields if necessary, set all figures to 0
-                if (!results.contains(correctLabel)) {
+                if (!results.containsKey(correctLabel)) {
                     Hashtable<String, Integer> figures = new Hashtable<String, Integer>();
                     figures.put("instances", 0);
                     figures.put("classified as", 0);
                     figures.put("correctly classified as", 0);
                     results.put(correctLabel, figures);
                 }
-                if (!results.contains(experimentalLabel)) {
+                if (!results.containsKey(experimentalLabel)) {
                     Hashtable<String, Integer> figures = new Hashtable<String, Integer>();
                     figures.put("instances", 0);
                     figures.put("classified as", 0);
@@ -66,6 +66,8 @@ public class MulticlassMaxEntTestThread implements Runnable {
                     //add one "classified as" to the experimental label
                     experimentalFigures.put("classified as", experimentalFigures.get("classified as") + 1);
                 }
+                results.put(correctLabel, correctFigures);
+                results.put(experimentalLabel, experimentalFigures);
 
             }
 
@@ -76,6 +78,10 @@ public class MulticlassMaxEntTestThread implements Runnable {
         } /*catch(IOException e) {
             System.out.println("IOException");
         }*/
+        catch(Exception e) {
+            e.toString();
+            e.printStackTrace();
+        }
         System.out.println("Thread "+threadName+" exiting");
     }
 

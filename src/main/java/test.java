@@ -10,7 +10,11 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException, InterruptedException {
-
+        int x = 5;
+        int y = 4;
+        int z = 100;
+        System.out.println(((double) x)/z);
+        System.out.println(((double)x)/z);
     }
 }
 

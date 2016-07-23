@@ -11,7 +11,7 @@ public class runClassifierOnTweets {
 
     public static long startRunTime;
     public static long endRunTime;
-    private static int nCores = 4;
+    private static int nCores = Runtime.getRuntime().availableProcessors();
 
     /*
         Loads a classifier from a file and runs it on a set of tweets. Returns the ones that are labeled with the desired

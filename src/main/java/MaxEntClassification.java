@@ -299,6 +299,38 @@ public class MaxEntClassification {
 	}
 	*/
 
+	public Hashtable<String, Hashtable<String, Double>> evaluate(InstanceList testInstances) throws IOException {
+		Hashtable<String, Hashtable<String, Double>> output = new Hashtable<String, Hashtable<String, Double>>();
+		// Create an InstanceList that will contain the test data.
+		// In order to ensure compatibility, process instances
+		// with the pipe used to process the original training
+		// instances.
+		Trial trial = new Trial(maxEntClassifier, testInstances);
+
+		//getAreaUnderCurve(trial);
+
+		//printLabelings(testInstances);
+		// System.out.println();
+		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
+		// p.write("\n");
+		//((MaxEnt) maxEntClassifier).print();
+		//p.close();
+		//first entry is accuracy
+
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", trial.getAccuracy());
+		output.put("Accuracy", accuracy);
+		//other entries are figures for each class
+		for (int i = 0; i < targetAlphabet.size(); i++) {
+			Hashtable<String, Double> thisClass = new Hashtable<String, Double>();
+			thisClass.put("F1", trial.getF1(i));
+			thisClass.put("Precision", trial.getPrecision(i));
+			thisClass.put("Recall", trial.getRecall(i));
+			output.put(targetAlphabet.lookupLabel(i).toString(), thisClass);
+		}
+		return output;
+	}
+
 	public void getAreaUnderCurve(Trial t) {
 
 		AccuracyCoverage a = new AccuracyCoverage(t, "AUC", "Labelings");
@@ -694,13 +726,13 @@ public class MaxEntClassification {
 			}
 
 			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
-			if (classifiedAsClass > 0.0) {
+			if (classifiedAsClass > 0) {
 				precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
 			}
 			else {
 				precision = 0.0;
 			}
-			if (instancesOfClass > 0.0) {
+			if (instancesOfClass > 0) {
 				recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
 			}
 			else {

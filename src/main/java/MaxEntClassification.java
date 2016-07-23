@@ -58,6 +58,28 @@ public class MaxEntClassification {
 		this.nCores = nCores;
 	}
 
+	public MaxEntClassification(File classFile, int nCores) throws IOException, ClassNotFoundException {
+
+		classifierFile = classFile;
+
+		/*
+		if (!classifierFile.exists()) {
+			classifierFile.createNewFile();
+		} else {
+			maxEntClassifier = loadClassifier(classifierFile);
+		}
+		*/
+		if (classifierFile.exists()) {
+			maxEntClassifier = loadClassifier(classifierFile);
+		}
+
+		targetAlphabet.startGrowth();
+
+		instances = new InstanceList(dataAlphabet, targetAlphabet);
+
+		this.nCores = nCores;
+	}
+
 	/*
 		==============
 	    |   METHODS  |
@@ -159,7 +181,7 @@ public class MaxEntClassification {
 	/*
         Performs n-fold cross-validation and prints out the results
     */
-	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException, InterruptedException {
+	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException, InterruptedException, ClassNotFoundException {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
@@ -465,7 +487,7 @@ public class MaxEntClassification {
 	/*
     	Runs n trials on the data
  	*/
-	public void runNTrials(int n, String pathToResultsFile) throws IOException, InterruptedException {
+	public void runNTrials(int n, String pathToResultsFile) throws IOException, InterruptedException, ClassNotFoundException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
 		//save the instances the classifier started out with
 		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
@@ -612,7 +634,7 @@ public class MaxEntClassification {
     	Returns a hashtable containing accuracy and performance metrics for the given test instances. Multithreads to
     	improve speed
     */
-	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException, InterruptedException {
+	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException, InterruptedException, ClassNotFoundException {
 		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
 
 		Hashtable<String, Hashtable<String, Integer>> figuresFromThreads = new Hashtable<String, Hashtable<String, Integer>>();
@@ -630,7 +652,7 @@ public class MaxEntClassification {
 
 		//create and run threads
 		for (InstanceList list: sections) {
-			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", list, this);
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", list, new MaxEntClassification(classifierFile, nCores));
 			threads.add(thread);
 			thread.start();
 		}

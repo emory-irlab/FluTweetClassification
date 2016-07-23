@@ -10,7 +10,9 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException, InterruptedException {
-        TopicFeatures.initializeTotalWords("data/topics/countFile.txt");
+        //TopicFeatures.getNMostLikelyTopics(3, "para la bamba se necesita", "data/topics/tweet_composition.txt", "data/topics/countFile.txt", "data/topics/tweet_key.txt");
+        String[] words = {"bunnies", "airplane", "rastafarianism", "vase", "bizzdricko"};
+        TopicFeatures.getProbabilityOfWord("cat");
     }
 }
 

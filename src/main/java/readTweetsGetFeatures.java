@@ -16,6 +16,7 @@ public class readTweetsGetFeatures {
     private static int idfUpdateCounter = 0;
     private static NGramModel tweetTextUnigramModel = null;
     private static NGramModel tweetTextBigramModel = null;
+    private static NGramModel tweetTextTrigramModel = null;
 
     /*
         Get tweets from a path to a file
@@ -237,15 +238,19 @@ public class readTweetsGetFeatures {
         //tf-only test
         //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
 
-        //bigram features (tf-idf value of each word); bigrams must appear at least twice to be considered
-        /*
+        //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 2);
+            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 3);
         }
         tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
-        */
         //tf-only test
         //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases));
+
+        //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
+        if (tweetTextTrigramModel == null) {
+            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 3);
+        }
+        tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
 
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);

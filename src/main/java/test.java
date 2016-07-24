@@ -1,4 +1,8 @@
+import edu.stanford.nlp.util.Pair;
+
 import java.io.*;
+import java.util.PriorityQueue;
+import java.util.ArrayList;
 
 /**
  * Created by Alec Wolyniec on 4/17/16.
@@ -10,9 +14,7 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException, InterruptedException {
-        //TopicFeatures.getNMostLikelyTopics(3, "para la bamba se necesita", "data/topics/tweet_composition.txt", "data/topics/countFile.txt", "data/topics/tweet_key.txt");
-        String[] words = {"bunnies", "airplane", "rastafarianism", "vase", "bizzdricko"};
-        TopicFeatures.getProbabilityOfWord("cat");
+        TopicFeatures.getNMostLikelyTopics(3, "Rastafarianism bunnies airplane vase bizzdricko", "data/topics/tweet_composition.txt", "data/topics/countFile.txt", "data/topics/tweet_key.txt");
     }
 }
 

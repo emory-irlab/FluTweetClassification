@@ -487,7 +487,7 @@ public class MaxEntClassification {
 	/*
     	Runs n trials on the data
  	*/
-	public void runNTrials(int n, String pathToResultsFile) throws IOException, InterruptedException, ClassNotFoundException {
+	public void runNSplits(int n, String pathToResultsFile) throws IOException, InterruptedException, ClassNotFoundException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
 		//save the instances the classifier started out with
 		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
@@ -519,7 +519,7 @@ public class MaxEntClassification {
 		ONLY WORKS WITH BINARY CLASSES
 		TODO: possibly generalize to all different class names
 	 */
-	public void runNTrials(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
+	public void runNSplits(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
 		//save the instances the classifier started out with
 		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
@@ -652,7 +652,12 @@ public class MaxEntClassification {
 
 		//create and run threads
 		for (InstanceList list: sections) {
-			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", list, new MaxEntClassification(classifierFile, nCores));
+			InstanceList newList = new InstanceList(list.getDataAlphabet(), list.getTargetAlphabet());
+			for (Instance i: list) {
+				newList.add(i);
+			}
+
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", newList, new MaxEntClassification(classifierFile, nCores));
 			threads.add(thread);
 			thread.start();
 		}

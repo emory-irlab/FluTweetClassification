@@ -7,7 +7,12 @@ import edu.stanford.nlp.util.SystemUtils;
 import java.io.*;
 import java.util.Properties;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Hashtable;
+import java.util.Comparator;
+import edu.stanford.nlp.util.Pair;
+import java.util.PriorityQueue;
 
 /**
  * Created by Alec Wolyniec on 7/21/16.
@@ -16,15 +21,16 @@ public class TopicFeatures {
 
     private static StanfordCoreNLP pipeline;
     private static long totalNumWords = 0;
-    private static long numTopics = 0;
     private static File countFile;
     private static File compositionFile;
     private static File keyFile;
+    //private static ArrayList<String[]> topics;
+    private static Hashtable<Integer, Double> topicProbs = new Hashtable<Integer, Double>();
 
     /*
         Gets the probability of a given topic occurring in the text
      */
-    private static double getProbabilityOfTopic(int topic, List<CoreLabel> textTokens) throws IOException {
+    private static double getProbabilityOfTopicGivenText(int topic, List<CoreLabel> textTokens) throws IOException {
         double probability = 0.0;
 
         //for each token, get the probability of the topic given it. Add it to the total probability of the topic
@@ -32,12 +38,13 @@ public class TopicFeatures {
             //get the probability of the topic given the word
             String word = token.originalText().toLowerCase();
 
-            //the probability of the word given the topic
+            //the probability of the word given the topic (not sure if gettable)
 
             //the probability of the word
             double wordProb = getProbabilityOfWord(word);
 
             //the probability of the topic
+            double topicProb = topicProbs.get(topic);
 
             //topic given word
         }
@@ -48,7 +55,7 @@ public class TopicFeatures {
     /*
         Gets the total count of the word over the total number of words
      */
-    public static double getProbabilityOfWord(String word) throws IOException {
+    private static double getProbabilityOfWord(String word) throws IOException {
         double prob = 0.0;
         BufferedReader bufferedReader = new BufferedReader(new FileReader(countFile));
         String currentLine;
@@ -74,18 +81,33 @@ public class TopicFeatures {
         return prob;
     }
 
-    private static void initializeNumTopics() throws FileNotFoundException, IOException {
-        long total = 0;
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(countFile));
+    private static void initializeTopicProbs() throws FileNotFoundException, IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(compositionFile));
         String currentLine;
 
+        //for each topic, average the probabilities of it occurring in all documents
+        int documentCounter = 0;
         while ((currentLine = bufferedReader.readLine()) != null) {
-            String[] split = currentLine.split(" ");
-            if (split.length >= 1) {
-                total++;
+            documentCounter++;
+            String[] split = currentLine.split("\\t");
+            for (int i = 2; i < split.length; i += 2) {
+                int topicNum = Integer.parseInt(split[i]);
+                double topicProb = Double.parseDouble(split[i+1]);
+                if (topicProbs.get(topicNum) == null) {
+                    topicProbs.put(topicNum, topicProb);
+                }
+                else {
+                    topicProbs.put(topicNum, topicProbs.get(topicNum) + topicProb);
+                }
             }
         }
-        numTopics = total;
+
+        //divide by the number of documents to get the average
+        Enumeration<Integer> topics = topicProbs.keys();
+        while (topics.hasMoreElements()) {
+            int key = topics.nextElement();
+            topicProbs.put(key, topicProbs.get(key)/documentCounter);
+        }
     }
 
     /*
@@ -123,23 +145,31 @@ public class TopicFeatures {
         if (pipeline == null) {
             Properties props = new Properties();
             props.setProperty("annotators", "tokenize");
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+            pipeline = new StanfordCoreNLP(props);
         }
         if (totalNumWords == 0) {
             initializeTotalWords();
         }
-        //get the topic number
-        if (numTopics == 0) {
-            initializeNumTopics();
+        //get topic probabilities
+        if (topicProbs.size() == 0) {
+            initializeTopicProbs();
         }
 
         //annotate the text
+        Annotation annotation = new Annotation(text);
+        pipeline.annotate(annotation);
+        List<CoreLabel> tokens = annotation.get(TokensAnnotation.class);
 
-        /*
-        for (int i = 0; i < numTopics; i++) {
-            getProbabilityOfTopic(i, )
+        //get the top N topic probabilities
+        PriorityQueue<Pair<Integer, Double>> pq = new PriorityQueue<Pair<Integer, Double>>(N + 1, new intDoubleComparator());
+        //get the probability of each individual topic and add it to the pq. If it's not in the top N, remove the lowest-probability item on the pq
+        for (int i = 0; i < topicProbs.size(); i++) {
+            pq.add(new Pair<Integer, Double>(i, getProbabilityOfTopicGivenText(i, tokens)));
+
+            if (pq.size() > N) {
+                pq.poll();
+            }
         }
-        */
 
         return new int[0];
     }

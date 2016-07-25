@@ -14,7 +14,7 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException, InterruptedException {
-        TopicFeatures.getNMostLikelyTopics(3, "Rastafarianism bunnies airplane vase bizzdricko", "data/topics/tweet_composition.txt", "data/topics/countFile.txt", "data/topics/tweet_key.txt");
+        TopicFeatures.getNMostLikelyTopics(3, "stage race monday jack louis wins flag stream sunday ichoosenicki crowd ji football victory game weekend watching jerry pita", "data/topics/tweet_composition.txt", "data/topics/countFile.txt", "data/topics/tweet_key.txt");
     }
 }
 

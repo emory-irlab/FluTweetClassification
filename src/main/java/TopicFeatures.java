@@ -26,6 +26,7 @@ public class TopicFeatures {
     private static File keyFile;
     //private static ArrayList<String[]> topics;
     private static Hashtable<Integer, Double> topicProbs = new Hashtable<Integer, Double>();
+    private static double basicTopicProb;
 
     /*
         Gets the probability of a given topic occurring in the text
@@ -38,7 +39,8 @@ public class TopicFeatures {
             //get the probability of the topic given the word
             String word = token.originalText().toLowerCase();
 
-            //the probability of the word given the topic (not sure if gettable)
+            //the probability of the word given the topic (likely off by a linear factor)
+            double wordGivenTopicProb = getProbabilityOfWordGivenTopic(word, topic); //untested
 
             //the probability of the word
             double wordProb = getProbabilityOfWord(word);
@@ -46,10 +48,46 @@ public class TopicFeatures {
             //the probability of the topic
             double topicProb = topicProbs.get(topic);
 
-            //topic given word
+            //use the above fields to assemble P(topic | word)
+            probability += (wordGivenTopicProb * topicProb) / wordProb;
         }
 
         return probability;
+    }
+
+    private static double getProbabilityOfWordGivenTopic(String word, int topic) throws FileNotFoundException, IOException {
+        //get the number of instances of the word in the topic
+        int instancesInTopic = 0;
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(countFile));
+        String currentLine;
+
+        while ((currentLine = bufferedReader.readLine()) != null) {
+            String[] split = currentLine.split(" ");
+            if (split.length < 3) {
+                continue;
+            }
+
+            //check to see if this line contains the count for the provided word
+            String wordInLine = split[1];
+            if (wordInLine.equals(word)) {
+                //look through all the counts of the word in various topics
+                for (int i = 2; i < split.length; i++) {
+                    String[] topicAndCount = split[i].split(":");
+                    //if the topic number matches the input, collect the instance count
+                    if (Integer.parseInt(topicAndCount[0]) == topic) {
+                        instancesInTopic = Integer.parseInt(topicAndCount[1]);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        //get the number of instances of the topic
+        double topicInstances = topicProbs.get(topic)/basicTopicProb;
+
+        return instancesInTopic/topicInstances;
     }
 
     /*
@@ -108,6 +146,17 @@ public class TopicFeatures {
             int key = topics.nextElement();
             topicProbs.put(key, topicProbs.get(key)/documentCounter);
         }
+
+        //Get the probability representing 1 instance (100x the smallest probability in topicProbs)
+        double smallest = 1.0;
+        topics = topicProbs.keys();
+        while (topics.hasMoreElements()) {
+            double poss = topicProbs.get(topics.nextElement());
+            if (poss < smallest) {
+                smallest = poss;
+            }
+        }
+        basicTopicProb = smallest * 100;
     }
 
     /*
@@ -160,7 +209,7 @@ public class TopicFeatures {
         pipeline.annotate(annotation);
         List<CoreLabel> tokens = annotation.get(TokensAnnotation.class);
 
-        //get the top N topic probabilities
+        //get a pq of the top N topic probabilities
         PriorityQueue<Pair<Integer, Double>> pq = new PriorityQueue<Pair<Integer, Double>>(N + 1, new intDoubleComparator());
         //get the probability of each individual topic and add it to the pq. If it's not in the top N, remove the lowest-probability item on the pq
         for (int i = 0; i < topicProbs.size(); i++) {
@@ -171,7 +220,15 @@ public class TopicFeatures {
             }
         }
 
-        return new int[0];
+        //get an array of the top topics
+        int[] top = new int[N];
+        int topCounter = 0;
+        while (pq.size() > 0) {
+            top[topCounter] = pq.poll().first();
+            topCounter++;
+        }
+
+        return top;
     }
 
 }

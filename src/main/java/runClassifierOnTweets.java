@@ -11,7 +11,8 @@ public class runClassifierOnTweets {
 
     public static long startRunTime;
     public static long endRunTime;
-    private static int nCores = Runtime.getRuntime().availableProcessors();
+    //private static int nCores = Runtime.getRuntime().availableProcessors();
+    private static int nCores = 1;
 
     /*
         Loads a classifier from a file and runs it on a set of tweets. Returns the ones that are labeled with the desired
@@ -94,10 +95,10 @@ public class runClassifierOnTweets {
 
         //train + test
          //cross-validation test
-        classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
+        //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
         //classifier.crossValidate(5, pathToTestResults, "person", 0.8, "organization");
          //split multiple times test
-        //classifier.runNSplits(5, pathToTestResults);
+        classifier.runNSplits(1, pathToTestResults);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals
         //classifier.runNSplits(5, pathToTestResults, "person", 0.8, "organization");
 

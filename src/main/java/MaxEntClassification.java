@@ -506,7 +506,8 @@ public class MaxEntClassification {
 			trainClassifier(instances);
 			saveClassifier(classifierFile);
 
-			Hashtable<String, Hashtable<String, Double>> results = testRun(testInstances);
+			//Hashtable<String, Hashtable<String, Double>> results = testRun(testInstances);
+			Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
 			resultsOverTrials.add(results);
 		}
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
@@ -576,13 +577,13 @@ public class MaxEntClassification {
 		//  randomly shuffling the copy, and then allocating
 		//  instances to each sub-list based on the provided proportions.
 
-		/*InstanceList[] instanceLists =
+/*		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
-						new double[] {0.5, 0.5, 0.0}); *///better than 0.8, 0.2 split
+						new double[] {0.5, 0.5, 0.0});*/ 
+//better than 0.8, 0.2 split
 		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
 						new double[] {0.8, 0.2, 0.0});
-
 		//  The third position is for the "validation" set,
 		//  which is a set of instances not used directly
 		//  for training, but available for determining

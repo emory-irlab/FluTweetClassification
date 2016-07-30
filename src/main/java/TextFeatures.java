@@ -209,6 +209,12 @@ public class TextFeatures {
 		return 0;
 	}
 
+	public static int containsNonAlphabeticCharacters(String text) {
+		for (int i = 0; i < text.length(); i++)
+			if (!Character.isAlphabetic(text.charAt(i))) return 1;
+		return 0;
+	}
+
 	/*
 	 * Methods seeks out use of the word official
 	 * This method is primarily for twitter handle/name

@@ -378,8 +378,10 @@ public class NGramModel {
 
         for (String nGram: nGrams) {
             //create entry or increment
-            if (output.get(nGram) == null) output.put(nGram, 1.0);
-            else output.put(nGram, output.get(nGram) + 1.0);
+            if (tweetIDFs.get(nGram) != null) { //ensure that the ngram appears at least <threshold> times in the dataset
+		if (output.get(nGram) == null) output.put(nGram, 1.0);
+            	else output.put(nGram, output.get(nGram) + 1.0);
+	    }
         }
 
         return output;
@@ -401,7 +403,7 @@ public class NGramModel {
             //get the word's idf. If it is the default value of 0
             // (i.e. it has not appeared in enough documents to be stored), the word will not be in the output
             double idf = 0.0;
-            if (tweetIDFs.get(tfKey) != null) {
+            if (tweetIDFs.get(tfKey) != null) { //unnecessary check at this point
                 idf = tweetIDFs.get(tfKey);
             }
 

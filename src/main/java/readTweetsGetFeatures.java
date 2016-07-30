@@ -17,6 +17,7 @@ public class readTweetsGetFeatures {
     private static NGramModel tweetTextUnigramModel = null;
     private static NGramModel tweetTextBigramModel = null;
     private static NGramModel tweetTextTrigramModel = null;
+    private static TopicFeatureModel topicFeatureModel = null;
 
     /*
         Get tweets from a path to a file
@@ -228,37 +229,47 @@ public class readTweetsGetFeatures {
         Obtain all features for the life event vs. not life event classifier
      */
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
-        String text = tweetVector.getTweetText();
+        String text = process(tweetVector.getTweetText());
 
         //unigram features (tf-idf value of each word)
         if (tweetTextUnigramModel == null) {
             tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
         }
-        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
+        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 10);
         }
-        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
+        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases)); 
 
+/*
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModel == null) {
             tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
         }
-        tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
-
+        //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
+	tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));	
+*/
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
         for (String template: phraseTemplates) {
             tweetVector.addFeature(template, 1.0);
         }
 
-        //topics
+        //topics for tweet
+        if (topicFeatureModel == null) {
+            topicFeatureModel = new TopicFeatureModel("data/topics/countFile.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt");
+        }
+        int[] topTopics = topicFeatureModel.getNMostLikelyTopics(3, text);
+        for (int topTopic: topTopics) {
+            tweetVector.addFeature(Integer.toString(topTopic), 1.0);
+        }
+
 
         //other features
         //addition 1

@@ -70,7 +70,7 @@ public class GetAllTweetsFromUser {
         CSVParser parser = new CSVParser(inReader, CSVFormat.RFC4180);
         List<CSVRecord> records = parser.getRecords();
 
-        File writeOut = new File("data/experimental_tweets/job_loss-self-PLUS-HISTORICAL.csv");
+        File writeOut = new File("data/experimental_tweets/job_loss-self-HISTORICAL.csv");
         BufferedWriter w = new BufferedWriter(new FileWriter(writeOut));
         CSVPrinter printer = new CSVPrinter(w, CSVFormat.TDF);
 

@@ -379,9 +379,9 @@ public class NGramModel {
         for (String nGram: nGrams) {
             //create entry or increment
             if (tweetIDFs.get(nGram) != null) { //ensure that the ngram appears at least <threshold> times in the dataset
-		if (output.get(nGram) == null) output.put(nGram, 1.0);
-            	else output.put(nGram, output.get(nGram) + 1.0);
-	    }
+                if (output.get(nGram) == null) output.put(nGram, 1.0);
+                else output.put(nGram, output.get(nGram) + 1.0);
+            }
         }
 
         return output;

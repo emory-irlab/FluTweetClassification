@@ -1,0 +1,110 @@
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.9617123424684937
+--------------------
+
+Metrics for class none_of_the_above
+Recall: 0.9900664345359568
+Precision: 0.969618022056389
+F1: 0.9797335531298769
+
+Metrics for class wedding
+Recall: 0.4666666666666666
+Precision: 1.0
+F1: 0.5
+
+Metrics for class pregnancy
+Recall: 0.03333333333333333
+Precision: 1.0
+F1: 0.05714285714285714
+
+Metrics for class relocation
+Recall: 0.041880341880341884
+Precision: 0.36666666666666664
+F1: 0.0742857142857143
+
+Metrics for class retirement
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class breakup_separation
+Recall: 0.26666666666666666
+Precision: 1.0
+F1: 0.3
+
+Metrics for class falling_in_love
+Recall: 0.15008658008658007
+Precision: 0.33666666666666667
+F1: 0.2067878028404344
+
+Metrics for class major_accident
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class birth
+Recall: 0.10040404040404041
+Precision: 0.8333333333333333
+F1: 0.16759906759906756
+
+Metrics for class fight
+Recall: 0.0
+Precision: 0.4
+F1: 0.0
+
+Metrics for class job_loss
+Recall: 0.2
+Precision: 1.0
+F1: 0.2
+
+Metrics for class major_illness
+Recall: 0.0
+Precision: 0.4
+F1: 0.0
+
+Metrics for class rejection_from_major_institution
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class new_job
+Recall: 0.0
+Precision: 0.6
+F1: 0.0
+
+Metrics for class death
+Recall: 0.08857142857142856
+Precision: 1.0
+F1: 0.15303030303030302
+
+Metrics for class admittance_into_major_institution
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class major_trip
+Recall: 0.7718271645658792
+Precision: 0.8244486478102431
+F1: 0.7965900666053919
+
+Metrics for class divorce
+Recall: 0.8
+Precision: 1.0
+F1: 0.8
+
+Metrics for class engagement
+Recall: 0.04
+Precision: 1.0
+F1: 0.06666666666666668
+
+Metrics for class robbery
+Recall: 0.4
+Precision: 1.0
+F1: 0.4
+
+Metrics for class graduation
+Recall: 0.8500658816285693
+Precision: 0.9559042155509546
+F1: 0.8996720061022121

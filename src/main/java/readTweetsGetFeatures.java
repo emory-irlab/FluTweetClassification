@@ -241,20 +241,19 @@ public class readTweetsGetFeatures {
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 10);
+            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "", 5);
         }
         //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
         tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases)); 
 
-/*
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModel == null) {
-            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "", 10);
         }
         //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
-	tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));	
-*/
+	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
+
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
         for (String template: phraseTemplates) {
@@ -269,6 +268,7 @@ public class readTweetsGetFeatures {
         for (int topTopic: topTopics) {
             tweetVector.addFeature(Integer.toString(topTopic), 1.0);
         }
+
 
 
         //other features

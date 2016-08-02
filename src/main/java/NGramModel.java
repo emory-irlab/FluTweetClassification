@@ -257,6 +257,7 @@ public class NGramModel {
         //Get idfs from totalDocs and the document count of each word that appears at least as many times
         //as the frequency threshold requires
         Enumeration<String> keys = tweetIDFs.keys();
+        /*
         int twoCounter = 0;
         int threeCounter = 0;
         int fiveCounter = 0;
@@ -264,9 +265,10 @@ public class NGramModel {
         int twentyFiveCounter = 0;
         int fiftyCounter = 0;
         int hundredCounter = 0;
+        */
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-
+            /*
             //counter tests
             if (tweetIDFs.get(key) >= 2.0) {
                 twoCounter++;
@@ -289,6 +291,7 @@ public class NGramModel {
             if (tweetIDFs.get(key) >= 100.0) {
                 hundredCounter++;
             }
+            */
 
             if (tweetIDFs.get(key) >= freqThreshold) {
                 tweetIDFs.put(key, totalDocs / tweetIDFs.get(key));
@@ -330,11 +333,12 @@ public class NGramModel {
         Returns the proper text field from the given TweetVector, given the data field
      */
     public String returnAppropriateTextForm(TweetVector tweetVector) {
+        String data = "";
         switch (dataType) {
-            case textName: return tweetVector.getTweetText();
-            case descriptionName: return tweetVector.getDescription();
+            case textName: data = tweetVector.getTweetText(); break;
+            case descriptionName: data = tweetVector.getDescription(); break;
         }
-        return "";
+        return readTweetsGetFeatures.process(data);
     }
 
     /*
@@ -403,14 +407,11 @@ public class NGramModel {
             //get the word's idf. If it is the default value of 0
             // (i.e. it has not appeared in enough documents to be stored), the word will not be in the output
             double idf = 0.0;
-            if (tweetIDFs.get(tfKey) != null) { //unnecessary check at this point
-                idf = tweetIDFs.get(tfKey);
-            }
+            idf = tweetIDFs.get(tfKey);
 
             //get tf-idf value
-            if (idf > 0.0) {
-                output.put(tfKey, input.get(tfKey) * idf);
-            }
+            output.put(tfKey+"-TFIDF", input.get(tfKey) * idf); //the addition of "TFIDF" allows for separate sets
+                                                                    //of TF and TF-IDF features to be used
         }
 
         return output;

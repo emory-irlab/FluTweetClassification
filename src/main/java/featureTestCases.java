@@ -107,6 +107,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -192,8 +193,8 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("test") != 2.5 ||
-                    firstTweet.get("be") != 2.5) {
+            if (firstTweet.get("test-TFIDF") != 2.5 ||
+                    firstTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 2) {
@@ -201,9 +202,9 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("a") != ((double)10)/3 ||
-                    secondTweet.get("test") != 5.0 ||
-                    secondTweet.get("be") != 2.5) {
+            else if (secondTweet.get("a-TFIDF") != ((double)10)/3 ||
+                    secondTweet.get("test-TFIDF") != 5.0 ||
+                    secondTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 3) {
@@ -211,10 +212,10 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("can") != 2.5 ||
-                    thirdTweet.get("you") != 5.0 ||
-                    thirdTweet.get("Can") != 5.0 ||
-                    thirdTweet.get("i") != 5.0) {
+            else if (thirdTweet.get("can-TFIDF") != 2.5 ||
+                    thirdTweet.get("you-TFIDF") != 5.0 ||
+                    thirdTweet.get("Can-TFIDF") != 5.0 ||
+                    thirdTweet.get("i-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 4) {
@@ -222,9 +223,9 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("be") != 2.5 ||
-                    fourthTweet.get("you") != 2.5 ||
-                    fourthTweet.get("Disneyland") != 5.0) {
+            else if (fourthTweet.get("be-TFIDF") != 2.5 ||
+                    fourthTweet.get("you-TFIDF") != 2.5 ||
+                    fourthTweet.get("Disneyland-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 3) {
@@ -243,6 +244,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -323,8 +325,8 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("test") != 2.5 ||
-                    firstTweet.get("be") != 2.5) {
+            if (firstTweet.get("test-TFIDF") != 2.5 ||
+                    firstTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 2) {
@@ -332,9 +334,9 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("a") != ((double)10)/3 ||
-                    secondTweet.get("test") != 5.0 ||
-                    secondTweet.get("be") != 2.5) {
+            else if (secondTweet.get("a-TFIDF") != ((double)10)/3 ||
+                    secondTweet.get("test-TFIDF") != 5.0 ||
+                    secondTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 3) {
@@ -342,8 +344,8 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("can") != 2.5 ||
-                    thirdTweet.get("you") != 5.0) {
+            else if (thirdTweet.get("can-TFIDF") != 2.5 ||
+                    thirdTweet.get("you-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 2) {
@@ -351,8 +353,8 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("be") != 2.5 ||
-                    fourthTweet.get("you") != 2.5) {
+            else if (fourthTweet.get("be-TFIDF") != 2.5 ||
+                    fourthTweet.get("you-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 2) {
@@ -371,6 +373,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -444,7 +447,7 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("test") != 2.5) {
+            if (firstTweet.get("test-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 1) {
@@ -452,7 +455,7 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("test") != 5.0) {
+            else if (secondTweet.get("test-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 1) {
@@ -460,7 +463,7 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("Can") != 5.0) {
+            else if (thirdTweet.get("Can-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 1) {
@@ -468,7 +471,7 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("Disneyland") != 5.0) {
+            else if (fourthTweet.get("Disneyland-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 1) {
@@ -487,6 +490,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -565,19 +569,19 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("observe chicken") != 2.5) {
+            if (firstTweet.get("observe chicken-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("table -post-") != 5.0) {
+            else if (firstTweet.get("table -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("chicken soup") != 5.0) {
+            else if (firstTweet.get("chicken soup-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("soup table") != 5.0) {
+            else if (firstTweet.get("soup table-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- observe") != 5.0) {
+            else if (firstTweet.get("-pre- observe-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 5) {
@@ -585,7 +589,7 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("Mr. Bingley") != 5.0) {
+            else if (secondTweet.get("Mr. Bingley-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 1) {
@@ -598,7 +602,7 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("table -post-") != 5.0) {
+            else if (fourthTweet.get("table -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 1) {
@@ -606,7 +610,7 @@ public class featureTestCases {
             }
 
             //tweet 5
-            else if (fifthTweet.get("-pre- marshmallow") != 5.0) {
+            else if (fifthTweet.get("-pre- marshmallow-TFIDF") != 5.0) {
                 System.out.println("FAILED due to superfluous tf-idf values");
             }
             else if (fifthTweet.size() != 1) {
@@ -620,6 +624,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -675,22 +680,22 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("-pre- -pre- -pre- -pre- -pre- potato") != 5.0) {
+            if (firstTweet.get("-pre- -pre- -pre- -pre- -pre- potato-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- -pre- -pre- -pre- potato -post-") != 5.0) {
+            else if (firstTweet.get("-pre- -pre- -pre- -pre- potato -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- -pre- -pre- potato -post- -post-") != 5.0) {
+            else if (firstTweet.get("-pre- -pre- -pre- potato -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- -pre- potato -post- -post- -post-") != 5.0) {
+            else if (firstTweet.get("-pre- -pre- potato -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- potato -post- -post- -post- -post-") != 5.0) {
+            else if (firstTweet.get("-pre- potato -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("potato -post- -post- -post- -post- -post-") != 5.0) {
+            else if (firstTweet.get("potato -post- -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 6) {
@@ -698,37 +703,37 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("-pre- -pre- -pre- -pre- -pre- moose") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- -pre- -pre- -pre- moose-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- -pre- -pre- -pre- moose sheep") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- -pre- -pre- moose sheep-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- -pre- -pre- moose sheep cat") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- -pre- moose sheep cat-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- -pre- moose sheep cat dog") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- moose sheep cat dog-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- moose sheep cat dog goat") != 5.0) {
+            else if (secondTweet.get("-pre- moose sheep cat dog goat-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("moose sheep cat dog goat pig") != 2.5) {
+            else if (secondTweet.get("moose sheep cat dog goat pig-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("sheep cat dog goat pig -post-") != 5.0) {
+            else if (secondTweet.get("sheep cat dog goat pig -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("cat dog goat pig -post- -post-") != 5.0) {
+            else if (secondTweet.get("cat dog goat pig -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("dog goat pig -post- -post- -post-") != 5.0) {
+            else if (secondTweet.get("dog goat pig -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("goat pig -post- -post- -post- -post-") != 5.0) {
+            else if (secondTweet.get("goat pig -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("pig -post- -post- -post- -post- -post-") != 5.0) {
+            else if (secondTweet.get("pig -post- -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 11) {
@@ -736,7 +741,7 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("-pre- -pre- -pre- -pre- -pre- dance") != 5.0) {
+            else if (thirdTweet.get("-pre- -pre- -pre- -pre- -pre- dance-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 1) {
@@ -760,6 +765,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -796,6 +802,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception");
+            e.printStackTrace();
         }
     }
 
@@ -822,6 +829,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception");
+            e.printStackTrace();
         }
     }
 
@@ -856,6 +864,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
+            e.printStackTrace();
         }
 
     }
@@ -884,6 +893,7 @@ public class featureTestCases {
         }
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
+            e.printStackTrace();
         }
     }
 

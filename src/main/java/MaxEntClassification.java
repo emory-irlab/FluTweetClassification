@@ -335,7 +335,7 @@ public class MaxEntClassification {
 		// System.out.println();
 		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
 		// p.write("\n");
-		//((MaxEnt) maxEntClassifier).print();
+		((MaxEnt) maxEntClassifier).print();
 		//p.close();
 		//first entry is accuracy
 

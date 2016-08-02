@@ -56,6 +56,8 @@ public class runClassifierOnTweets {
         6 - path to a file where the results will be stored
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        //for test
+        System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("data/StdOutput.txt"))));
 
         //String dataPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\tweet_person_vs_organization.csv";
         //String classifierPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\HvNClassifierFile.txt";

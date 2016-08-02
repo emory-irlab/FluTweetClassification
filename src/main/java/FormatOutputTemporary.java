@@ -46,10 +46,11 @@ public class FormatOutputTemporary {
             }
 
             //branch point
-            if (matched) { //username isn't on the list, so just print out the line
+            if (!matched) { //username isn't on the list, so just print out the line
                 for (int i = 0; i < labeledLine.size(); i++) {
-                    System.out.println(labeledLine.get(i));
+                    printer.print(labeledLine.get(i));
                 }
+                printer.println();
             }
             //username is on the list - don't print out the line, print out all the user's missing tweets instead
             else {
@@ -59,8 +60,9 @@ public class FormatOutputTemporary {
                     if (missingUsername.equals(username)) {
                         //print out all files
                         for (int i = 0; i < missingLine.size(); i++) {
-                            System.out.println(missingLine.get(i));
+                            printer.print(missingLine.get(i));
                         }
+                        printer.println();
                     }
                 }
 
@@ -69,14 +71,31 @@ public class FormatOutputTemporary {
             }
         }
 
+        //print out all the tweets of missing-tweet users who were not yet accounted for
+        for (CSVRecord missingLine: missingData) {
+            String username = missingLine.get(0);
+            //check to see if it matches one of the usernames
+            boolean matched = false;
+            for (String name : usernames) {
+                if (name.equals(username)) {
+                    //print out all fields
+                    for (int i = 0; i < missingLine.size(); i++) {
+                        printer.print(missingLine.get(i));
+                    }
+                    printer.println();
+                }
+            }
+        }
     }
 
 
 
     public static void main(String[] args) throws IOException {
-        BufferedReader originalReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/job_loss-self-output.csv")));
-        BufferedReader allUserReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/job_loss-self-HISTORICAL.csv")));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("data/labeled_historical_tweets/second-partial-job_loss-self-labeled-historical.csv")));
+        //integrateMissingTweets();
+
+        BufferedReader originalReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/recovery_from_illness-self-output.csv")));
+        BufferedReader allUserReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/recovery_illness-self-HISTORICAL.csv")));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("data/labeled_historical_tweets/recovery_from_illness-self-labeled-historical.csv")));
 
         CSVParser originalCSV = new CSVParser(originalReader, CSVFormat.RFC4180);
         List<CSVRecord> originalData = originalCSV.getRecords();
@@ -128,5 +147,7 @@ public class FormatOutputTemporary {
         }
 
         writer.close();
+
     }
+
 }

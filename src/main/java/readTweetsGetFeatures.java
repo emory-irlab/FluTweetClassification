@@ -230,7 +230,7 @@ public class readTweetsGetFeatures {
      */
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
         String text = process(tweetVector.getTweetText());
-
+/*
         //unigram features (tf-idf value of each word)
         if (tweetTextUnigramModel == null) {
             tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
@@ -259,7 +259,7 @@ public class readTweetsGetFeatures {
         for (String template: phraseTemplates) {
             tweetVector.addFeature(template, 1.0);
         }
-
+*/
         //topics for tweet
         if (topicFeatureModel == null) {
             topicFeatureModel = new TopicFeatureModel("data/topics/countFile.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt");

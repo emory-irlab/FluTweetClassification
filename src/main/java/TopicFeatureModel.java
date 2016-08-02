@@ -152,7 +152,9 @@ public class TopicFeatureModel {
             double topicProb = topicProbs.get(topic);
 
             //use the above fields to assemble P(topic | word)
-            probability += (wordGivenTopicProb * topicProb) / wordProb;
+            if (wordProb > 0.0) {
+                probability += (wordGivenTopicProb * topicProb) / wordProb;
+            }
         }
         return probability;
     }

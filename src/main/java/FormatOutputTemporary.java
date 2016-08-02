@@ -12,18 +12,22 @@ import org.apache.commons.csv.CSVRecord;
 public class FormatOutputTemporary {
 
     public static void integrateMissingTweets() throws FileNotFoundException, IOException {
-        String[] nmz = {"X_itzPaco_", "ChristianMFH", "martelloomis", "DrewOtter", "Just_Malachi", "Origamigryphon",
-        "ChrisNPI", "coolkidfthes", "lulukohime", "MikeeGavin_MCFC", "a__butter", "deceb7", "Lorilliluvsmj", "Baelizean",
-        "baysil", "PaulHBeckwith"};
+        String[] nmz = {"Profadviser", "Zbeani", "Skoumal", "WomenWorldNews1", "TPKEveryDay", "Stephen91136409",
+        "SquiggyGee", "ItBegins2012", "ChuckShots", "mfoxontherun", "samm_reasoner", "marissameringue", "RolandReports",
+        "YallJustDontKno", "Noah_Is_182", "brobs1971", "haydengray2", "JClimactic", "okjonblair", "mattwah",
+        "RealJimIsSlim", "Big48FrankEEE", "MikeyCampbell94", "danny_taylor68", "KeithRobinson0", "EdHackler", "zc1249",
+        "scottEweinberg", "SadChinchilla", "Horseytalk", "DramaDan21", "tajhaaa", "cakemittens", "BlueChipTwit69",
+        "_chefdoyle", "wickedchilde", "JoshtheSandwich", "lostredWolf", "GDGriffin", "thisisdannyg", "ian_ido",
+        "TPrimeDirective", "jontarius"};
         ArrayList<String> usernames = new ArrayList<String>();
         for (String nm: nmz) {
             usernames.add(nm);
         }
 
         //go through the labeled file
-        BufferedReader labeledReader = new BufferedReader(new FileReader(new File("data/labeled_historical_tweets/job_loss-self-labeled-historical.csv")));
-        BufferedReader missingReader = new BufferedReader(new FileReader(new File("data/labeled_historical_tweets/job_loss-self-labeled-missing-historical.csv")));
-        BufferedWriter out = new BufferedWriter(new FileWriter(new File("data/labeled_historical_tweets/job_loss-self-labeled-historical-FULL.csv")));
+        BufferedReader labeledReader = new BufferedReader(new FileReader(new File("data/labeled_historical_tweets/job_loss-other-labeled-most.csv")));
+        BufferedReader missingReader = new BufferedReader(new FileReader(new File("data/labeled_historical_tweets/job_loss-other-HISTORICAL-missing.csv")));
+        BufferedWriter out = new BufferedWriter(new FileWriter(new File("data/labeled_historical_tweets/job_loss-other-labeled-historical-incmostmissing.csv")));
 
         CSVParser labeledCSV = new CSVParser(labeledReader, CSVFormat.RFC4180);
         List<CSVRecord> labeledData = labeledCSV.getRecords();
@@ -91,11 +95,11 @@ public class FormatOutputTemporary {
 
 
     public static void main(String[] args) throws IOException {
-        //integrateMissingTweets();
-
-        BufferedReader originalReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/recovery_from_illness-self-output.csv")));
-        BufferedReader allUserReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/recovery_illness-self-HISTORICAL.csv")));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("data/labeled_historical_tweets/recovery_from_illness-self-labeled-historical.csv")));
+        integrateMissingTweets();
+/*
+        BufferedReader originalReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/job_loss-other-output(1).csv")));
+        BufferedReader allUserReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/job_loss-other-HISTORICAL-missing.csv")));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File("data/labeled_historical_tweets/job_loss-other-HISTORICAL-missing.csv")));
 
         CSVParser originalCSV = new CSVParser(originalReader, CSVFormat.RFC4180);
         List<CSVRecord> originalData = originalCSV.getRecords();
@@ -147,7 +151,7 @@ public class FormatOutputTemporary {
         }
 
         writer.close();
-
+*/
     }
 
 }

@@ -1,33 +1,10 @@
 import edu.stanford.nlp.ling.*;
-import edu.stanford.nlp.ling.CoreAnnotations.*;
-import edu.stanford.nlp.pipeline.*;
-import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.semgraph.*;
-import edu.stanford.nlp.trees.GrammaticalRelation;
-import edu.stanford.nlp.util.Pair;
-import edu.stanford.nlp.trees.TreeCoreAnnotations;
-import edu.stanford.nlp.trees.*;
-import edu.stanford.nlp.trees.*;
-import java.util.Iterator;
 
-import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-
-
-/**
- * Created by Alec Wolyniec on 6/8/16.
- */
 
 public class AnnotationFeatures {
     /*
     Pre-defined word classes. Some entries contain special cases, rules specifying that the string to be matched to it
     is not a single word.
-
     Special cases (checked for in the listed order, cannot be combined):
      1. A single digit between 2-9 before words denotes multi-word features. The number indicates the number of words to search for.
         Note: If there is a feature for an individual word or set of words in a multi-word feature, the detection
@@ -36,64 +13,15 @@ public class AnnotationFeatures {
      2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
        word being scanned, and not the word itself
     */
-    //word class names
-    public final static String infectionWordClassName = "Infection";
-    public final static String possessionWordClassName = "Possession";
-    public final static String concernWordClassName = "Concern";
-    public final static String vaccinationWordClassName = "Vaccination";
-    public final static String pastTenseWordClassName = "Past Tense";
-    public final static String presentTenseWordClassName = "Present Tense";
-    public final static String selfWordClassName = "Self";
-    public final static String othersWordClassName = "Others";
-    public final static String plural1PPronounsWordClassName = "Plural 1P Pronouns";
-    public final static String _2PPronounsWordClassName = "2P Pronouns";
-    public final static String followMeWordClassName = "Follow Me";
-    public final static String numericalReferencesWordClassName = "Numerical References";
-    public final static String orgAccountDescriptionsWordClassName = "Org. Account Descriptions";
-    public final static String personPunctuationWordClassName = "Person Punctuation";
-    public static ArrayList<String> topicWordClassNames = new ArrayList<String>();
-    public static String topicWordClassFilePath = "data/topics/tweet_key_500.txt";
 
-    private static Hashtable<String, String[]> wordClasses = new Hashtable<String, String[]>();
     //Note: Multi-word words need to go before single-word words
-    private static String[] infectionWordClass = {"getting", "got", "recovered", "have", "having", "had", "has",
-            "catching", "catch", "cured", "infected"};
-    private static String[] possessionWordClass = {"2the flu", "bird", "flu", "sick", "epidemic"};
-    private static String[] concernWordClass = {"afraid", "worried", "scared", "fear", "worry", "nervous", "dread",
-            "dreaded", "terrified"};
-    private static String[] vaccinationWordClass = {"2nasal spray", "vaccine", "vaccines", "shot", "shots", "mist",
-            "tamiflu", "jab"};
-    private static String[] pastTenseWordClass = {"was", "did", "had", "got", "were", "V-ed"};
-    private static String[] presentTenseWordClass = {"2it 's", "is", "am", "are", "have", "has", "V-ing"}; //'s as in "is"?
-    private static String[] selfWordClass = {"2I 've", "2I 'd", "2I 'm", "im", "my", "me", "I"};
-    private static String[] othersWordClass = {"2he 's", "2she 's", "2you 're", "2they 're", "2she 'll", "2he 'll", "your",
-            "everyone", "you", "it", "its", "u", "her", "he", "she", "they", "husband", "wife", "brother",
-            "sister", "people", "kid", "kids", "children", "son", "daughter", "his", "hers", "him"};
-    private static String[] plural1PPronounsWordClass = {"we", "our", "ourselves", "ours", "us"};
-    private static String[] _2PPronounsWordClass = {"2you 're", "2y 'all", "you", "your", "yours",
-            "yall", "u", "ur", "yourself", "yourselves"};
-    private static String[] followMeWordClass = {"follow", "tweet", "visit"};
-    private static String[] numericalReferencesWordClass = {"2a couple", "2a lot", "many", "some", "all", "most",
-            "lots", "none", "much", "few"};
-    private static String[] orgAccountDescriptionsWordClass = {"official", "twitter", "account", "follow", "tweet", "us"};
-    private static String[] personPuncuationWordClass = {",", "|", "&"};
-
-    /*
     private static String[][] wordClasses = {
-            {"Infection",
-                    "getting", "got", "recovered", "have", "having", "had", "has", "catching", "catch", "cured", "infected"},
-            {"Possession",
-                    "2the flu", "bird", "flu", "sick", "epidemic"},
-            {"Concern",
-                    "afraid", "worried", "scared", "fear", "worry", "nervous", "dread", "dreaded", "terrified"},
-            {"Vaccination",
-                    "2nasal spray", "vaccine", "vaccines", "shot", "shots", "mist", "tamiflu", "jab"},
             {"Past Tense",
                     "was", "did", "had", "got", "were", "V-ed"},
             {"Present Tense",
                     "2it 's", "is", "am", "are", "have", "has", "V-ing"}, //'s as in "is"?
             {"Self",
-                    "2I 've", "2I 'd", "2I 'm", "im", "my", "me", "I"},
+                    "2I 've", "2I 'd", "2I 'm", "im", "my", "me", "I", "myself"},
             {"Others",
                     "2he 's", "2she 's", "2you 're", "2they 're", "2she 'll", "2he 'll", "your",
                     "everyone", "you", "it", "its", "u", "her", "he", "she", "they", "husband", "wife", "brother",
@@ -111,518 +39,143 @@ public class AnnotationFeatures {
             {"Person punctuation",
                     ",", "|", "&"},
     };
-    */
-
-    public static void initializeWordClasses(String pathToTopicFile) throws IOException {
-        wordClasses.put(infectionWordClassName, infectionWordClass);
-        wordClasses.put(possessionWordClassName, possessionWordClass);
-        wordClasses.put(concernWordClassName, concernWordClass);
-        wordClasses.put(vaccinationWordClassName, vaccinationWordClass);
-        wordClasses.put(pastTenseWordClassName, pastTenseWordClass);
-        wordClasses.put(presentTenseWordClassName, presentTenseWordClass);
-        wordClasses.put(selfWordClassName, selfWordClass);
-        wordClasses.put(othersWordClassName, othersWordClass);
-        wordClasses.put(plural1PPronounsWordClassName, plural1PPronounsWordClass);
-        wordClasses.put(_2PPronounsWordClassName, _2PPronounsWordClass);
-        wordClasses.put(followMeWordClassName, followMeWordClass);
-        wordClasses.put(numericalReferencesWordClassName, numericalReferencesWordClass);
-        wordClasses.put(orgAccountDescriptionsWordClassName, orgAccountDescriptionsWordClass);
-        wordClasses.put(personPunctuationWordClassName, personPuncuationWordClass);
-
-        //get topic word classes
-        Hashtable<String, String[]> topics = getTopics(pathToTopicFile);
-        Enumeration<String> topicNames = topics.keys();
-        while (topicNames.hasMoreElements()) {
-            String currentName = topicNames.nextElement();
-            topicWordClassNames.add(currentName);
-            wordClasses.put(currentName, topics.get(currentName));
+    
+    public static int countAdjectives(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+            if (phrase[0].tag().equals("JJ")) count++;
         }
+    	
+    	return count;
     }
-
-    /*
-        *********************
-        *  ACTUAL FEATURES  *
-        *********************
-     */
-
-    /*
-        Dependency parse version has est. 74% recall, 95% precision (trial of 20 tweet texts)
-
-        Return phrase templates (in the form of ArrayLists) of words filling certain semantic roles. Returns the
-        following templates for each sentence.
-
-        {subject, verb, object}
-        {subject, object}
-        {subject, verb}
-        {verb, object}
-
-        Each role is fulfilled by the following groups of words.
-        Subjects: The head noun of the subject group and all nouns depending on it
-        Verbs: Single word for the verb
-        Objects: The head noun of the object group and all nouns depending on it, and a single preposition (if it is
-        right before the object group)
-
-        The subject is the "nsubj" directly depending on the verb,
-        and the object is the "nobj" directly depending on the verb. Each word is marked with /S if it is the
-        subject, /V if it is the verb, and /O if it is the object
-     */
-    public static ArrayList<String> getPhraseTemplates(List<CoreMap> sentences) {
-        //System.out.println();
-        //System.out.println("New tweet: ");
-
-        ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
-        //look through each sentence
-        for (CoreMap sentence: sentences) {
-            //System.out.println();
-            //System.out.println("New sentence: ");
-            SemanticGraph graph = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
-
-            //check for all types of subject-verb-object templates
-            for (IndexedWord vertex : graph.vertexListSorted()) {
-
-                //for verbs
-                if (vertex.tag().charAt(0) == 'V') {
-                    //Simple case: verb has an nsubj (direct noun subject) and a dobj (direct object)
-                    ArrayList<String[]> templatesVerbs = getTemplatesForVerbs(graph, vertex);
-                    for (String[] template: templatesVerbs) phraseTemplates.add(template);
-                }
-
-                //for nouns
-                if (vertex.tag().charAt(0) == 'N') {
-                    ArrayList<String[]> templatesNouns = getTemplatesForNouns(graph, vertex);
-                    for (String[] template: templatesNouns) phraseTemplates.add(template);
-                }
-
-                //System.out.println(vertex.originalText() + "/" + vertex.tag());
-                if (vertex.tag().charAt(0) == 'V' || vertex.tag().charAt(0) == 'N') {
-                    for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
-                        //System.out.println("Child: "+pair.second().originalText()+"/"+pair.second().tag()+", Relation: "+pair.first().getShortName()+" "+pair.first().getLongName());
-                    }
-
-                    for (Pair<GrammaticalRelation, IndexedWord> pair: graph.parentPairs(vertex)) {
-                        //System.out.println("Parent: "+pair.second().originalText()+"/"+pair.second().tag()+", Relation: "+pair.first().getShortName()+" "+pair.first().getLongName());
-                    }
-                }
-            }
-
-            //full parse version
-            Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-            //ArrayList<String[]> templates = traverseForTemplates(tree, tree); //add to phraseTemplates
-
-            //tree.pennPrint();
+    
+    public static int countAdverbs(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+            if (phrase[0].tag().equals("RB")) count++;
         }
-
-        ArrayList<String> compressedPhraseTemplates = new ArrayList<String>();
-        //each phrase template is stored as an array. Instead, store it as a String
-        for (String[] template: phraseTemplates) {
-            String compressedTemplate = "(";
-            for (int i = 0; i < template.length; i++) {
-                String entry = template[i];
-                compressedTemplate += entry;
-                if (i < template.length - 1) {
-                    compressedTemplate += ", ";
-                }
-            }
-            compressedTemplate += ")";
-            compressedPhraseTemplates.add(compressedTemplate);
-        }
-
-        return compressedPhraseTemplates;
+    	return count;
     }
-
-    /*
-        Traverse the tree, extracting all subject-verb-object phrase templates
-    */
-    private static ArrayList<String[]> traverseForTemplates(Tree tree, Tree currentNode) {
-        ArrayList<String[]> templates = new ArrayList<String[]>();
-        String subject = "";
-        String verb = "";
-        String object = "";
-
-        //System.out.println(currentNode.nodeString()+", "+currentNode.label().toString());
-        String nodeValue = currentNode.value();
-        //If a verb POS tag is found, use the child as the verb, search for a subject and an object
-        if (nodeValue.charAt(0) == 'V' && isPOSTag(currentNode)) {
-            //If this verb is part of a chain of verbs directly dominating each other,
-            //use the lowest verb in the chain as the verb
-            verb = currentNode.firstChild().nodeString()+"/V";
-
-            //look for parent VPs with NP siblings (the siblings are NP specifiers)
-            Tree NPSpec = getNPSpecifier(tree, currentNode);
-
-            //if an NP specifier is found, look for a subject group in it
-            if (NPSpec != null) {
-                String subjectGroup = getSubjectGroup(tree, NPSpec);
-                if (subjectGroup.length() > 0) {
-                    subject = subjectGroup + "/S";
-                }
-            }
-
-            //count the number of siblings eligible to contain objects
-
-            //check the verb's first sibling
-
-            /*
-               if no subject has been found yet, and the first sibling is an NP,
-               and there are multiple siblings eligible to contain objects,
-               search the sibling for a subject group
-             */
-
-            //Otherwise, search the first sibling for an object group
-
-            //If the first sibling did not contain an object group, search the following ones
-
-            //make the actual templates
-            if (subject.length() > 0) {
-                String[] subjectVerbTemplate = {subject, verb};
-                templates.add(subjectVerbTemplate);
-
-                if (object.length() > 0) {
-                    String[] subjectObjectTemplate = {subject, object};
-                    templates.add(subjectObjectTemplate);
-
-                    String[] subjectVerbObjectTemplate = {subject, verb, object};
-                    templates.add(subjectVerbObjectTemplate);
-                }
-            }
-            if (object.length() > 0) {
-                String[] verbObjectTemplate = {verb, object};
-                templates.add(verbObjectTemplate);
-            }
-
+    
+    public static int countPersonalPronouns(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+            if (phrase[0].tag().equals("PRP")) count++;
         }
-
-        //after searching this node, search the rest of the tree
-        Tree[] children = currentNode.children();
-        for (Tree child: children) {
-            ArrayList<String[]> subTemplates = traverseForTemplates(tree, child);
-            for (String[] subTemplate: subTemplates) {
-                templates.add(subTemplate);
-            }
-        }
-        return templates;
+    	
+    	return count;
     }
-
-    /*
-        From a given point, search the tree for a specifier (ancestor's sibling) that is an NP.
-        All ancestors below the NP that mark phrase types (i.e. "VP" for verb phrase, "NP" for noun phrase,
-        "ADJP" for adjective phrase) must be VPs.
-    */
-    public static Tree getNPSpecifier(Tree tree, Tree startingNode) {
-        //go up the tree
-        Tree currentParent = startingNode.parent(tree);
-        while (currentParent != null) {
-            //check to see if the current ancestor marks a phrase
-            String parentLabel = currentParent.label().toString();
-            //stop if it's not a VP phrase marker
-            if (!isPhraseTypeMarker(currentParent) || !parentLabel.equals("VP")) {
-                break;
-            }
-
-            //Check for an NP sibling occurring right before the highlighted VP
-            Tree parentOfPossibleNP = currentParent.parent(tree);
-            Tree possibleNP = null;
-            //look through all the VP's siblings
-            for (Tree sibling: parentOfPossibleNP.children()) {
-                //if an NP is found, mark it
-                if (isPhraseTypeMarker(sibling) && sibling.label().toString().equals("NP")) {
-                    possibleNP = sibling;
-                    continue;
-                }
-                //if the previously followed NP is followed by the highlighted VP,
-                //it is the specifier. If it is not, keep looking
-                if (possibleNP != null) {
-                    if (sibling.equals(currentParent)) {
-                        return possibleNP;
-                    }
-                    else {
-                        possibleNP = null;
-                    }
-                }
-
-            }
-            currentParent = currentParent.parent(tree);
+    
+    public static int countProperNouns(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+            if (phrase[0].tag().equals("NNP") || phrase[0].tag().equals("NNPS")) count++;
         }
-        return null;
+    	
+    	return count;
     }
-
-    /*
-        Obtains the subject group (the first continuous sequence of noun/pronoun entities) of a given node.
-        Search the node's children (in reverse order) for the first group of nouns and pronouns.
-        This is the subject.
-     */
-    public static String getSubjectGroup(Tree tree, Tree startingNode) {
-        String subjectGroup = "";
-        ArrayList<String> subjectPieces = new ArrayList<String>();
-
-        System.out.println("Starting node: "+startingNode.label().toString());
-        Tree[] children = startingNode.children();
-        boolean collect = false;
-        //check the node's children for a noun group
-        for (int i = children.length - 1; i > -1; i--) {
-            Tree child = children[i];
-            System.out.println("Child: "+child.value());
-            String childValue = child.label().toString();
-
-            //the subject may be in a nested child NP, in which case it is the first noun group in that NP
-            if (isPhraseTypeMarker(child) && childValue.equals("NP")) {
-                String childSubjectGroup = getSubjectGroup(tree, child);
-                if (childSubjectGroup.length() > 0) {
-                    return childSubjectGroup;
-                }
-            }
-
-            //if one of the node's children is a noun, preposition, or existential "there", begin collecting the noun group
-            if (isPOSTag(child) && (childValue.charAt(0) == 'N' || childValue.contains("PRP") || childValue.equals("EX"))) {
-                collect = true;
-                try {
-                    subjectPieces.add(child.firstChild().value());
-                }
-                finally {
-                }
-            }
-            //If nouns have been collected before and the current entry is not a noun, the noun group is over
-            else if (collect) {
-                break;
-            }
+    
+    public static int countPluralProperNouns(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+            if (phrase[0].tag().equals("NNPS")) count++;
         }
-
-        //add the subject pieces in the reverse of the order they were collected in (since they were collected in
-        //reverse order)
-        for (int i = subjectPieces.size() - 1; i > -1; i--) {
-            subjectGroup += subjectPieces.get(i);
-            if (i != 0) {
-                subjectGroup += " ";
-            }
-        }
-
-        return subjectGroup;
+    	
+    	return count;
     }
-
-    /*
-        A node in a Tree object is a phrase type marker if both of the following conditions apply:
-         a) its label doesn't end in a hyphen and a number
-         b) it doesn't have a child whose label ends in a hyphen and a sequence of digits,
-
-         OR:
-         a) It has multiple children
-    */
-    public static boolean isPhraseTypeMarker(Tree node) {
-        //check for multple children
-        Tree[] children = node.children();
-        if (children.length > 1) {
-            return true;
+    
+    public static int countSingularProperNouns(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+            if (phrase[0].tag().equals("NNP")) count++;
         }
-
-        //check to see if its label ends in a hyphen and a sequence of digits
-        String nodeLabel = node.label().toString();
-        if (nodeLabel.contains("-") && util.isAllNumeric(nodeLabel.substring(nodeLabel.indexOf("-")))) {
-            return false;
-        }
-
-        //check to see if it has a child whose label ends in a hyphen and a sequence of digits
-        for (Tree child: children) {
-            String childNodeLabel = child.label().toString();
-            if (childNodeLabel.contains("-") && util.isAllNumeric(childNodeLabel.substring(childNodeLabel.indexOf("-")))) {
-                return false;
-            }
-        }
-
-        return true;
+    	
+    	return count;
     }
-
-    /*
-        A node in a Tree object is a POS tag if both of the following conditions apply:
-        a) its label doesn't end in a hyphen and a number
-        b) It has one child, and condition a) applies to it
-     */
-    public static boolean isPOSTag(Tree node) {
-        Tree[] children = node.children();
-        //if it has multiple children, it's not a POS tag
-        if (children.length > 1) {
-            return false;
-        }
-
-        //check to see if its label ends in a hyphen and a sequence of digits
-        String nodeLabel = node.label().toString();
-        if (nodeLabel.contains("-") && util.isAllNumeric(nodeLabel.substring(nodeLabel.indexOf("-")))) {
-            return false;
-        }
-
-        //check to see if it has a child whose label ends in a hyphen and a sequence of digits
-        for (Tree child: children) {
-            String childNodeLabel = child.label().toString();
-            if (childNodeLabel.contains("-") && util.isAllNumeric(childNodeLabel.substring(childNodeLabel.indexOf("-")+1))) {
-                return true;
-            }
-        }
-
-        return false;
+    
+    public static int isInWordClassOther(String[] wordsToCheck) {
+    	int count = 0;
+    	
+    	for (String s : wordsToCheck) {
+    		for (int i = 0; i < wordClasses[2].length; i++) {
+    			if (s.equals(wordClasses[3][i])) {
+    				count++;
+    			}
+    		}
+    	}
+    	return count;
     }
-
-    /*
-        From a root verb, get all possible phrase templates in which the verb has a direct noun or pronoun subject
-        and either a direct object (noun or pronoun) or a verb complement as its object.
-     */
-    public static ArrayList<String[]> getTemplatesForVerbs(SemanticGraph graph, IndexedWord vertex) {
-        ArrayList<String[]> templates = new ArrayList<String[]>();
-        ArrayList<String> subjects = new ArrayList<String>();
-        ArrayList<String> objects = new ArrayList<String>();
-
-        //String subject = "";
-        String verb = checkForNegs(graph, vertex) + util.lowerCaseLemmaUnlessProperNoun(vertex)+"/V";
-        //String object = "";
-        for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
-            //find subject
-            if (pair.first().getShortName().contains("nsubj")) { //use .contains() so it collects nsubj and nsubjpass
-                //subject = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S";
-                subjects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S");
-            }
-            //find direct object
-            else if (pair.first().getShortName().equals("dobj")) {
-                //object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
-                objects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O");
-            }
-            //find complementing verb/adjective object if no direct object has been found
-            else if (objects.size() == 0 && pair.first().getShortName().equals("xcomp") &&
-                    (pair.second().tag().charAt(0) == 'V' || pair.second().tag().charAt(0) == 'J')) {
-                //object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
-                objects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O");
-            }
-        }
-
-        //if the verb has no nsubj and it has an xclausal complement verb as its parent,
-        //use the parent verb's subject as the subject
-        //if (subject.length() == 0) {
-        if (subjects.size() == 0) {
-            for (Pair<GrammaticalRelation, IndexedWord> pair : graph.parentPairs(vertex)) {
-                if (pair.first().getShortName().equals("xcomp") && pair.second().tag().charAt(0) == 'V') {
-                    //if a suitable parent is found, get all of its phrase templates and check for the subject
-                    ArrayList<String[]> parentVerbTemplates = getTemplatesForVerbs(graph, pair.second());
-                    for (String[] template: parentVerbTemplates) {
-                        //if the first entry ends in "/S", that entry is the subject
-                        if (template[0].substring(template[0].length() - 2).equals("/S")) {
-                            subjects.add(template[0]);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        //make all possible templates from the given data
-        //if (subject.length() > 0) {
-        for (String subject: subjects) {
-            String[] subjectVerbTemplate = {subject, verb};
-            templates.add(subjectVerbTemplate);
-
-            //test
-            //System.out.println(subject+", "+verb);
-
-            //if (object.length() > 0) {
-            for (String object: objects) {
-                String[] subjectVerbObjectTemplate = {subject, verb, object};
-                templates.add(subjectVerbObjectTemplate);
-
-                String[] subjectObjectTemplate = {subject, object};
-                templates.add(subjectObjectTemplate);
-
-                //test
-                //System.out.println(subject+", "+verb+", "+object);
-            }
-        }
-        //if (object.length() > 0) {
-        for (String object: objects) {
-            String[] verbObjectTemplate = {verb, object};
-            templates.add(verbObjectTemplate);
-
-            //test
-            //System.out.println(verb+", "+object);
-        }
-
-        return templates;
+    
+    public static int isInWordClassSelf(String[] wordsToCheck) {
+    	int count = 0;
+    	
+    	for (String s : wordsToCheck) {
+    		for (int i = 1; i < wordClasses[2].length; i++) {
+    			if (s.equals(wordClasses[2][i])) {
+    				count++;
+    			}
+    		}
+    	}
+    	return count;
     }
-
-    /*
-        If a noun has a dependent verb with a relationship of "cop" (copula) and a dependent noun with a relationship of
-        "nsubj", that root noun is the object, the verb is the verb and the noun is the subject
-    */
-    public static ArrayList<String[]> getTemplatesForNouns(SemanticGraph graph, IndexedWord vertex) {
-        ArrayList<String> subjects = new ArrayList<String>();
-
-        //String subject = "";
-        String verb = "";
-        String object = util.lowerCaseLemmaUnlessProperNoun(vertex)+"/O";
-        ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
-
-        for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
-            //get the copula if it's there
-            if (pair.first().getShortName().equals("cop")) {
-                verb = checkForNegs(graph, vertex) + util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/V";
-            }
-
-            //get the nsubj if it's there
-            if (pair.first().getShortName().equals("nsubj")) {
-                subjects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/S");
-                //subject = util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/S";
-            }
-
+    
+    public static int numericalReferencesCount(CoreLabel[][] phrases) {
+        int counter = 0;
+        for (CoreLabel[] phrase : phrases) {
+            for (CoreLabel token : phrase) if (token.tag().equals("CD")) counter++;
         }
-
-        //construct the templates from the data
-        if (verb.length() > 0) {
-            String[] verbObjectTemplate = {verb, object};
-            phraseTemplates.add(verbObjectTemplate);
-
-            //System.out.println(verb+", "+object);
-
-            //if (subject.length() > 0) {
-            for (String subject: subjects) {
-                String[] subjectObjectTemplate = {subject, object};
-                phraseTemplates.add(subjectObjectTemplate);
-
-                String[] subjectVerbTemplate = {subject, verb};
-                phraseTemplates.add(subjectVerbTemplate);
-
-                String[] subjectVerbObjectTemplate = {subject, verb, object};
-                phraseTemplates.add(subjectVerbObjectTemplate);
-
-                //test
-                //System.out.println(subject+", "+verb+", "+object);
-            }
-        }
-
-        return phraseTemplates;
+        counter += getFeatureForWordClass(phrases, "Numerical references");
+        return counter;
     }
-
-    /*
-        Returns "not " if the given vertex has a child with a "neg" relation to it
-     */
-    public static String checkForNegs(SemanticGraph graph, IndexedWord vertex) {
-        for (Pair<GrammaticalRelation, IndexedWord> pair: graph.childPairs(vertex)) {
-            if (pair.first().getShortName().equals("neg")) {
-                return "not ";
+    
+    public static String[] pairFirstPronounLastNoun(CoreLabel[][] phrases) {
+    	
+    	String[] pronounNounPair = new String[2];
+    	boolean firstPronoun = false;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+    		
+    		String tag = phrase[0].tag();
+            
+    		if ((tag.equals("PRP") || tag.equals("PRP$")) && !firstPronoun) {
+            	pronounNounPair[0] = phrase[0].word();
+            	firstPronoun = true;
+            }
+            
+            if (tag.equals("NN") || tag.equals("NNS") ) {
+            	pronounNounPair[1] = phrase[0].word();
             }
         }
-        return "";
+    	
+    	return pronounNounPair;
     }
-
-    public static Hashtable<String, String[]> getTopics(String pathToTopicFile) throws IOException, FileNotFoundException{
-        Hashtable<String, String[]> topics = new Hashtable<String, String[]>();
-        String name;
-        String[] data;
-
-        File file = new File(pathToTopicFile);
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-
-        String currentLine = "";
-        while ((currentLine = bufferedReader.readLine()) != null) {
-            String[] lineSep = currentLine.split("\\t");
-            name = lineSep[0];
-            data = lineSep[2].split(" ");
-            topics.put(name, data);
+    
+    public static String[] pairFirstPronounOrNounLastVerb(CoreLabel[][] phrases) {
+    	
+    	String[] pronounNounVerbPair = new String[2];
+    	boolean firstNounPronoun = false;
+    	
+    	for (CoreLabel[] phrase: phrases) {
+    		
+    		String tag = phrase[0].tag();
+            
+    		if ((tag.equals("PRP") || tag.equals("PRP$")) || tag.equals("NN") || tag.equals("NNS") && !firstNounPronoun) {
+            	pronounNounVerbPair[0] = phrase[0].word();
+            	firstNounPronoun = true;
+            }
+            
+            if (tag.equals("VB") || tag.equals("VBP") || tag.equals("VBG") || tag.equals("VBN")) {
+            	pronounNounVerbPair[1] = phrase[0].word();
+            }
         }
-        return topics;
+    	
+    	return pronounNounVerbPair;
     }
 
     public static int phrasesBeginningWithVerb(CoreLabel[][] phrases) {
@@ -641,14 +194,26 @@ public class AnnotationFeatures {
         }
         return counter;
     }
-
-    public static int numericalReferencesCount(CoreLabel[][] phrases) throws IOException {
-        int counter = 0;
-        for (CoreLabel[] phrase : phrases) {
-            for (CoreLabel token : phrase) if (token.tag().equals("CD")) counter++;
-        }
-        counter += getFeatureForWordClass(phrases, "Numerical references");
-        return counter;
+    
+    public static int properNounsFollowedByVerb(CoreLabel[][] phrases) {
+    	int count = 0;
+    	
+    	for (int i = 0; i < phrases.length - 1; i++) {
+    		
+    		CoreLabel[] phrase = phrases[i];
+    		
+    		String currentTag = phrase[0].tag();
+    		if (currentTag.equals("NNP") || currentTag.equals("NNPS")) {
+    			
+    			CoreLabel[] phrase2 = phrases[i+1];
+    			String nextTag = phrase2[0].tag();
+    			if (nextTag.equals("VB") || nextTag.equals("VBP") || nextTag.equals("VBG") || nextTag.equals("VBN")) {
+    				count++;
+    			}
+    		}
+    	}
+    	
+    	return count;
     }
 
     public static int verbsCount(CoreLabel[][] phrases) {
@@ -662,18 +227,13 @@ public class AnnotationFeatures {
     /*
     Count the number of words/strings in the given word class
     */
-    public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) throws IOException {
-        //initialize word classes
-        if (wordClasses.size() == 0) initializeWordClasses(topicWordClassFilePath);
-
+    public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) {
         //initialize
         int counter = 0;
         String[] relevantWordClass = new String[1];
-        Enumeration<String> wordClassNames = wordClasses.keys();
-        while (wordClassNames.hasMoreElements()) {
-            String currentClassName = wordClassNames.nextElement();
-            if (currentClassName.equals(relevantClassName)) {
-                relevantWordClass = wordClasses.get(currentClassName);
+        for (String[] aClass: wordClasses) {
+            if (aClass[0].equals(relevantClassName)) {
+                relevantWordClass = aClass;
                 break;
             }
         }
@@ -732,5 +292,23 @@ public class AnnotationFeatures {
             }
         }
         return counter;
+    }
+    
+    /*
+     * TODO: Figure out implementation of method
+     * */
+    
+    public static void createSubjectVerbObjectTuple(CoreLabel[][] phrases) {
+    	
+    	String[] subjectVerbObject = {};
+    	
+    	for (CoreLabel[] phrase : phrases) {
+    		
+    		String tag = phrase[0].tag();
+    		
+    		if (tag.equals("NN") || tag.equals("NNP") || tag.equals("NNS") || tag.equals("NNPS")) {
+    			subjectVerbObject[0] = phrase[0].toString();
+    		}
+    	}
     }
 }

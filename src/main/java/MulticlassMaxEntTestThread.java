@@ -87,10 +87,6 @@ public class MulticlassMaxEntTestThread implements Runnable {
         } /*catch(IOException e) {
             System.out.println("IOException");
         }*/
-        catch(Exception e) {
-            e.toString();
-            e.printStackTrace();
-        }
         System.out.println("Thread "+threadName+" exiting");
     }
 

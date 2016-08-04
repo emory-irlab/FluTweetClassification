@@ -203,20 +203,18 @@ public class MaxEntClassification {
 	/*
 		Performs n-fold cross-validation with the specified confidence threshold for the specified class.
 		Prints out the results
-
-		ONLY WORKS WITH BINARY CLASS DISTINCTIONS
 	 */
 	public void crossValidate(int n_folds, String pathToResultsFile, String nullClass, double confidenceThreshold) throws IOException, InterruptedException, ClassNotFoundException {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
-		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
 		while (crossValidationIterator.hasNext()) {
 			InstanceList[] split = crossValidationIterator.next();
 			InstanceList training = split[0];
 			InstanceList testing = split[1];
 
 			trainClassifier(training);
+			saveClassifier(classifierFile);
 			System.out.println();
 			System.out.println("NEW TEST:");
 
@@ -721,13 +719,14 @@ public class MaxEntClassification {
 		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
 
 		//create and run threads
+		int counter = 0;
 		for (InstanceList list: sections) {
 			InstanceList newList = new InstanceList(list.getDataAlphabet(), list.getTargetAlphabet());
 			for (Instance i: list) {
 				newList.add(i);
 			}
-
-			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", newList, new MaxEntClassification(classifierFile, nCores), nullClass, confThreshold);
+			counter++;
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread"+counter, newList, new MaxEntClassification(classifierFile, nCores), nullClass, confThreshold);
 			threads.add(thread);
 			thread.start();
 		}

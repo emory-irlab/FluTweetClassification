@@ -100,7 +100,7 @@ public class runClassifierOnTweets {
         //train + test
          //cross-validation test
         //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
-        classifier.crossValidate(5, pathToTestResults, "null_class", 0.8);
+        classifier.crossValidate(5, pathToTestResults, "null_class", 0.5);
          //split multiple times test
         //classifier.runNSplits(1, pathToTestResults, "null_class", 0.9);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals

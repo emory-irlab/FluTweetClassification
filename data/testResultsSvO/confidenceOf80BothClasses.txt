@@ -1,0 +1,138 @@
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.4662756598240469
+--------------------
+
+Metrics for class other
+Precision: 0.9322033898305084
+F1: 0.674846625766871
+Recall: 0.5288461538461539
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class self
+Precision: 0.875
+F1: 0.5185185185185185
+Recall: 0.3684210526315789
+
+Metrics for class Accuracy
+Accuracy: 0.4662756598240469
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.4574780058651026
+--------------------
+
+Metrics for class other
+Precision: 0.9137931034482759
+F1: 0.6523076923076923
+Recall: 0.507177033492823
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class self
+Precision: 0.8333333333333334
+F1: 0.5208333333333334
+Recall: 0.3787878787878788
+
+Metrics for class Accuracy
+Accuracy: 0.4574780058651026
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.5088235294117647
+--------------------
+
+Metrics for class other
+Precision: 0.9224806201550387
+F1: 0.7147147147147147
+Recall: 0.5833333333333334
+
+Metrics for class self
+Precision: 0.8571428571428571
+F1: 0.5427135678391959
+Recall: 0.39705882352941174
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class Accuracy
+Accuracy: 0.5088235294117647
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.4897360703812317
+--------------------
+
+Metrics for class other
+Precision: 0.912
+F1: 0.7169811320754716
+Recall: 0.5906735751295337
+
+Metrics for class self
+Precision: 0.8688524590163934
+F1: 0.5071770334928228
+Recall: 0.3581081081081081
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class Accuracy
+Accuracy: 0.4897360703812317
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.44574780058651026
+--------------------
+
+Metrics for class other
+Precision: 0.9047619047619048
+F1: 0.7192429022082019
+Recall: 0.5968586387434555
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class self
+Precision: 0.8837209302325582
+F1: 0.39378238341968913
+Recall: 0.25333333333333335
+
+Metrics for class Accuracy
+Accuracy: 0.44574780058651026
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.47361221321373126
+--------------------
+
+Metrics for class other
+Recall: 0.56137774690906
+Precision: 0.9170478036391456
+F1: 0.6956186134145903
+
+Metrics for class self
+Recall: 0.3511418392780622
+Precision: 0.8636099159450283
+F1: 0.4966049673207119
+
+Metrics for class null_class
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class Accuracy
+Accuracy: 0.47361221321373126

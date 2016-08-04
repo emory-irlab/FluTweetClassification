@@ -1,0 +1,108 @@
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.7859237536656891
+--------------------
+
+Metrics for class other
+Precision: 0.785
+F1: 0.8113695090439277
+Recall: 0.839572192513369
+
+Metrics for class self
+Precision: 0.7872340425531915
+F1: 0.752542372881356
+Recall: 0.7207792207792207
+
+Metrics for class Accuracy
+Accuracy: 0.7859237536656891
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.7976539589442815
+--------------------
+
+Metrics for class other
+Precision: 0.8114035087719298
+F1: 0.8428246013667426
+Recall: 0.8767772511848341
+
+Metrics for class self
+Precision: 0.7699115044247787
+F1: 0.7160493827160493
+Recall: 0.6692307692307692
+
+Metrics for class Accuracy
+Accuracy: 0.7976539589442815
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.7382352941176471
+--------------------
+
+Metrics for class other
+Precision: 0.7410714285714286
+F1: 0.7885985748218528
+Recall: 0.8426395939086294
+
+Metrics for class self
+Precision: 0.7327586206896551
+F1: 0.6563706563706564
+Recall: 0.5944055944055944
+
+Metrics for class Accuracy
+Accuracy: 0.7382352941176471
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8005865102639296
+--------------------
+
+Metrics for class other
+Precision: 0.8714285714285714
+F1: 0.8433179723502304
+Recall: 0.8169642857142857
+
+Metrics for class self
+Precision: 0.6870229007633588
+F1: 0.7258064516129032
+Recall: 0.7692307692307693
+
+Metrics for class Accuracy
+Accuracy: 0.8005865102639296
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8035190615835777
+--------------------
+
+Metrics for class other
+Precision: 0.7989949748743719
+F1: 0.825974025974026
+Recall: 0.8548387096774194
+
+Metrics for class self
+Precision: 0.8098591549295775
+F1: 0.7744107744107744
+Recall: 0.7419354838709677
+
+Metrics for class Accuracy
+Accuracy: 0.8035190615835777
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.785183715715025
+--------------------
+
+Metrics for class other
+Recall: 0.8461584065997074
+Precision: 0.8015796967292605
+F1: 0.8224169367113559
+
+Metrics for class self
+Recall: 0.6991163675034644
+Precision: 0.7573572446721124
+F1: 0.7250359275983478
+
+Metrics for class Accuracy
+Accuracy: 0.785183715715025

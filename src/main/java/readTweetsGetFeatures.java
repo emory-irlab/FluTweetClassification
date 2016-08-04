@@ -60,7 +60,7 @@ public class readTweetsGetFeatures {
         Each input tweet is formatted as follows:
         {profile pic, username, name, description, tweet, label}
      */
-    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException{
+    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException, InterruptedException {
         ArrayList<String> labelSet = new ArrayList<String>(0);
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
@@ -92,7 +92,7 @@ public class readTweetsGetFeatures {
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
      */
-    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType) throws IOException {
+    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType) throws IOException, InterruptedException {
         //annotate fields with Stanford CoreNLP
         String processedTweet = process(tweetVector.getTweetText());
 
@@ -231,7 +231,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
+    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException, InterruptedException {
         String text = process(tweetVector.getTweetText());
 
         //unigram features (tf-idf value of each word)
@@ -241,10 +241,9 @@ public class readTweetsGetFeatures {
         //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
         tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
-        /*
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 5);
+            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7);
         }
         //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
@@ -252,11 +251,11 @@ public class readTweetsGetFeatures {
 
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModel == null) {
-            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 10);
+            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7);
         }
         //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
 	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
-*/
+
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
         for (String template: phraseTemplates) {
@@ -265,13 +264,12 @@ public class readTweetsGetFeatures {
 
         //topics for tweet
         if (topicFeatureModel == null) {
-            topicFeatureModel = new TopicFeatureModel("data/topics/countFile.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt");
+            topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", 4); //change 4 to whatever nproc is on this machine
         }
         int[] topTopics = topicFeatureModel.getNMostLikelyTopics(3, text);
         for (int topTopic: topTopics) {
             tweetVector.addFeature(Integer.toString(topTopic), 1.0);
         }
-
 
         //other features
         //addition 1

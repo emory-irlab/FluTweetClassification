@@ -25,7 +25,22 @@ public class test {
         System.out.println(readTweetsGetFeatures.process("Death to false stoners @ Sleepy Hollow Cemetery https://t.co/mDrlAsKCfg"));
         */
 
-        TopicFeatureModel topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusTwos.txt", "data/topics/tweet_composition.txt", "");
+        //add "duck" at position 6
+        //ad "poomie" at position 0
+        //add "wel" at position 1
+        //add "fork" at position 4
+        ArrayList<String> the = new ArrayList<String>(7);
+        for (int i = 0; i < 7; i++) {
+            the.add("");
+        }
+        the.set(6, "duck");
+        the.set(0, "poomie");
+        the.set(1, "wel");
+        the.set(4, "fork");
+        the.add(12, "mad");
+
+        /*
+        TopicFeatureModel topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "", 1);
         ArrayList<String[]> tweets = TweetParser.getTweets("data/tweets/tweet_event.csv");
         double average = 0.0;
         int tweetNum = 0;
@@ -71,6 +86,6 @@ public class test {
         startTime = System.currentTimeMillis();
         most = topicFeatureModel.getNMostLikelyTopics(3, "beautiful travel wanderlust borabora aintgotnothingonthis animal lovely vsco vscocam vscophoto");
         System.out.println(((double)System.currentTimeMillis() - startTime)/1000+" seconds to get");
-
+        */
     }
 }

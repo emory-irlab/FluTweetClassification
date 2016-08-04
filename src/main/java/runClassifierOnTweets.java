@@ -19,7 +19,7 @@ public class runClassifierOnTweets {
         class, according to the specified confidence threshold
      */
     public static ArrayList<String[]> runClassifierAndGetTweetsByLabel(ArrayList<String[]> testTweets, String pathToClassifier, String classifierType, String desiredClass, double confidenceThreshold)
-    throws IOException, ClassNotFoundException {
+    throws IOException, ClassNotFoundException, InterruptedException {
         //classifier and output variables
         MaxEntClassification classifier = new MaxEntClassification(pathToClassifier, nCores);
         ArrayList<String[]> outputTweets = new ArrayList<String[]>();
@@ -102,7 +102,7 @@ public class runClassifierOnTweets {
         //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
         //classifier.crossValidate(5, pathToTestResults, "person", 0.8, "organization");
          //split multiple times test
-        classifier.runNSplits(1, pathToTestResults, "major_trip", 0.5);
+        classifier.runNSplits(1, pathToTestResults, "null_class", 0.0);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals
         //classifier.runNSplits(5, pathToTestResults, "person", 0.8, "organization");
 

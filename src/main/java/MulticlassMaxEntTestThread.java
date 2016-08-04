@@ -15,16 +15,16 @@ public class MulticlassMaxEntTestThread implements Runnable {
     MaxEntClassification classifier;
     //results
     Hashtable<String, Hashtable<String, Integer>> results;
-    String specifiedClass;
+    String nullClass;
     double confThreshold;
 
-    MulticlassMaxEntTestThread(String name, InstanceList test, MaxEntClassification classy, String spec, double conf) {
+    MulticlassMaxEntTestThread(String name, InstanceList test, MaxEntClassification classy, String nullC, double conf) {
         threadName = name;
         testInstances = test;
         classifier = classy;
         //System.out.println("Creating thread "+threadName);
         results = new Hashtable<String, Hashtable<String, Integer>>();
-        specifiedClass = spec;
+        nullClass = nullC;
         confThreshold = conf;
     }
 
@@ -43,7 +43,7 @@ public class MulticlassMaxEntTestThread implements Runnable {
                 //the label is not the specified class, but the confidence for the specified class is above the threshold
                 //(in which case the label is the specified class)
                 //String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
-                String experimentalLabel = classifier.getLabelConfThresholdForDesiredClass(instance, specifiedClass, confThreshold);
+                String experimentalLabel = classifier.getLabelConfThresholdForDesiredClass(instance, nullClass, confThreshold);
 
                 //initialize fields if necessary, set all figures to 0
                 if (!results.containsKey(correctLabel)) {

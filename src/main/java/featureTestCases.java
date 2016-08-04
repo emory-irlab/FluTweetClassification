@@ -776,7 +776,7 @@ public class featureTestCases {
         String pathToCountFile = "data/topics/countFile.txt";
         String pathToCompositionFile = "data/topics/tweet_composition.txt";
         try {
-            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt");
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
 
             if (model.getProbabilityOfWord("canadian") != ((double)5246)/103277747 ) {
                 System.out.println("FAILED due to improper values");
@@ -812,7 +812,7 @@ public class featureTestCases {
         String pathToCountFile = "data/topics/countFile.txt";
         String pathToCompositionFile = "data/topics/tweet_composition.txt";
         try {
-            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt");
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
 
             if (model.getProbabilityOfWord("flag") != ((double)20078)/103277747 ) {
                 System.out.println("FAILED due to improper values");
@@ -844,7 +844,7 @@ public class featureTestCases {
             //set up the topic model with the given files
             String pathToCountFile = "data/topics/countFile.txt";
             String pathToCompositionFile = "data/topics/tweet_composition.txt";
-            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt");
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
 
             if (Math.abs(model.getProbabilityOfWordGivenTopic("monday", 38) - 334.347136) > 0.0001) {
                 System.out.println("FAILED. Incorrect value for word \"monday\" given topic 38");
@@ -876,7 +876,35 @@ public class featureTestCases {
         String pathToCountFile = "data/topics/countFile.txt";
         String pathToCompositionFile = "data/topics/tweet_composition.txt";
         try {
-            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt");
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
+
+            if (Math.abs(model.getProbabilityOfWordGivenTopic("flag", 38) - 247.360892) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"flag\" given topic 38");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("chicago", 59) - 134.075720) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"chicago\" given topic 59");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("donut", 39) - 221.1675998) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"donut\" given topic 39");
+            }
+            else {
+                System.out.println("PASSED.");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("FAILED due to exception.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void testGetProbabilityOfWordGivenTopicWith10kMostCommonMultithreaded() {
+        System.out.println();
+        System.out.println("Testing get probability of word given topic method, using some of the 10k most common words and 4-core multithreading...");
+        //set up the topic model with the given files
+        String pathToCountFile = "data/topics/countFile.txt";
+        String pathToCompositionFile = "data/topics/tweet_composition.txt";
+        try {
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 4);
 
             if (Math.abs(model.getProbabilityOfWordGivenTopic("flag", 38) - 247.360892) > 0.0001) {
                 System.out.println("FAILED. Incorrect value for word \"flag\" given topic 38");
@@ -930,6 +958,8 @@ public class featureTestCases {
 
         testGetProbabilityOfWordGivenTopic();
         testGetProbabilityOfWordGivenTopicWith10kMostCommon();
+
+        testGetProbabilityOfWordGivenTopicWith10kMostCommonMultithreaded();
 
         //testGetNMostLikelyTopics();
 

@@ -73,7 +73,9 @@ public class TopicFeatureModel {
 
         //initialize stopwords
         stopWordFilePath = sWordFilePath;
-        getStopWordList(sWordFilePath);
+        if (stopWordFilePath.length() > 0) {
+            getStopWordList(sWordFilePath);
+        }
     }
 
     /*

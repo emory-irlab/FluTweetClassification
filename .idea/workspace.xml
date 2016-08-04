@@ -2,11 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/defunctCode.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/79-TF_1topic-smallData_countFileMinusOnes.txt" afterPath="$PROJECT_DIR$/data/testResultsEventClassifier/79-TF_1topic-event_advanced_countFileMinusOnes.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/80-TF_3topic-smallData_countFileMinusOnes.txt" afterPath="$PROJECT_DIR$/data/testResultsEventClassifier/80-TF_3topic-event_advanced_countFileMinusOnes.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/81-TF_1topic-smallData_countFileMinusTwos.txt" afterPath="$PROJECT_DIR$/data/testResultsEventClassifier/81-TF_1topic-event_advanced_countFileMinusTwos.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/82-TF_3topic-smallData_countFileMinusTwos.txt" afterPath="$PROJECT_DIR$/data/testResultsEventClassifier/82-TF_3topic-event_advanced_countFileMinusTwos.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/AnnotationFeatures.class" afterPath="$PROJECT_DIR$/target/classes/AnnotationFeatures.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/TextFeatures.class" afterPath="$PROJECT_DIR$/target/classes/TextFeatures.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/test.class" afterPath="$PROJECT_DIR$/target/classes/test.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java" afterPath="$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntTestRunThread.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntTestRunThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MulticlassMaxEntTestThread.java" afterPath="$PROJECT_DIR$/src/main/java/MulticlassMaxEntTestThread.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TextFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/TextFeatures.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" afterPath="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/test.java" afterPath="$PROJECT_DIR$/src/main/java/test.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
@@ -37,31 +53,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="FormatOutputTemporary.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java">
+      <file leaf-file-name="testResultsTF.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/testResultsTF.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="9" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
+              <caret line="94" column="7" selection-start-line="94" selection-start-column="7" selection-end-line="94" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="crawl_users.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/crawl_users.py">
+      <file leaf-file-name="81-TF_1topic-event_advanced_countFileMinusTwos.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/81-TF_1topic-event_advanced_countFileMinusTwos.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.92518705">
-              <caret line="85" column="47" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tweet_key.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/data/topics/tweet_key.txt">
+      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.444445">
-              <caret line="89" column="42" selection-start-line="89" selection-start-column="42" selection-end-line="89" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.4064838">
+              <caret line="250" column="5" selection-start-line="250" selection-start-column="5" selection-end-line="250" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="82-TF_3topic-event_advanced_countFileMinusTwos.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/82-TF_3topic-event_advanced_countFileMinusTwos.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -100,12 +128,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/data/tweets/tweet_event.csv" />
-        <option value="$PROJECT_DIR$/data/tweets/tweet_event_plus_20k_random.csv" />
-        <option value="$PROJECT_DIR$/data/testData/10ExampleTweetTexts.txt" />
-        <option value="$PROJECT_DIR$/data/testResultsEventClassifier/1-TF_IDF.txt" />
-        <option value="$PROJECT_DIR$/data/testResultsEventClassifier/2-TF_IDF_crossValidated.txt" />
-        <option value="$PROJECT_DIR$/data/testResultsEventClassifier/5-TF_IDF_crossValidatedUnigramThresholdOf2.txt" />
         <option value="$PROJECT_DIR$/data/testResultsEventClassifier/6-TF_crossValidated_TF_bigrams.txt" />
         <option value="$PROJECT_DIR$/data/testData/5ExampleTweetTexts.txt" />
         <option value="$PROJECT_DIR$/data/testResultsEventClassifier/0-TF_crossValidated.txt" />
@@ -124,10 +146,7 @@
         <option value="$PROJECT_DIR$/src/main/java/ClassifierThreads.java" />
         <option value="$PROJECT_DIR$/src/main/java/CrossValidationThread.java" />
         <option value="$PROJECT_DIR$/src/main/java/MaxEntTestRunThreadNoConf.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TweetParser.java" />
         <option value="$PROJECT_DIR$/src/main/java/util.java" />
-        <option value="$PROJECT_DIR$/src/main/java/MaxEntTestRunThread.java" />
-        <option value="$PROJECT_DIR$/src/main/java/MulticlassMaxEntTestThread.java" />
         <option value="$PROJECT_DIR$/data/topics/tweet_composition.txt" />
         <option value="$PROJECT_DIR$/data/topics/tweet_key.txt" />
         <option value="$PROJECT_DIR$/src/main/java/intDoubleComparator.java" />
@@ -135,22 +154,31 @@
         <option value="$PROJECT_DIR$/src/main/java/MostCommonWordsComparator.java" />
         <option value="$PROJECT_DIR$/data/stopwords.txt" />
         <option value="$PROJECT_DIR$/src/main/java/GetAllTweetsFromUser.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TextFeatures.java" />
         <option value="$PROJECT_DIR$/data/job_loss-historical/major-illness-allusertweet.csv" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-self-PLUS-HISTORICAL.csv" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-self-HISTORICAL-missingtweets.csv" />
         <option value="$PROJECT_DIR$/src/main/java/featureTestCases.java" />
-        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
-        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
-        <option value="$PROJECT_DIR$/data/StdOutput.txt" />
         <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
         <option value="$PROJECT_DIR$/data/stopwords_smaller.txt" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-other-output(1).csv" />
-        <option value="$PROJECT_DIR$/src/main/java/test.java" />
-        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
+        <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-other-HISTORICAL-missing2.csv" />
         <option value="$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java" />
+        <option value="$PROJECT_DIR$/data/experimental_tweets/getting_a_new_job-self-output.csv" />
+        <option value="$PROJECT_DIR$/data/tweets/tweet_event_plus.csv" />
+        <option value="$PROJECT_DIR$/data/StdOutput.txt" />
+        <option value="$PROJECT_DIR$/src/main/java/TweetParser.java" />
+        <option value="$PROJECT_DIR$/data/topics/countFileMinusTwos.txt" />
+        <option value="$PROJECT_DIR$/src/main/java/test.java" />
+        <option value="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MulticlassMaxEntTestThread.java" />
         <option value="$PROJECT_DIR$/crawl_users.py" />
+        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MaxEntTestRunThread.java" />
+        <option value="$PROJECT_DIR$/src/main/java/defunctCode.java" />
+        <option value="$PROJECT_DIR$/src/main/java/TextFeatures.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+        <option value="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" />
+        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
       </list>
     </option>
   </component>
@@ -172,8 +200,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
-    <option name="y" value="63" />
+    <option name="x" value="6" />
+    <option name="y" value="49" />
     <option name="width" value="1280" />
     <option name="height" value="718" />
   </component>
@@ -202,6 +230,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane">
+        <subPane />
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Project Files" />
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -270,6 +304,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="tweets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="topics" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -288,35 +340,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="labeled_historical_tweets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="FluTweetsFeatureExtraction" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="FluTweetsFeatureExtraction" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="experimental_tweets" />
+              <option name="myItemId" value="testResultsEventClassifier" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files" />
-      </pane>
-      <pane id="PackagesPane">
-        <subPane />
       </pane>
       <pane id="Scratches" />
     </panes>
@@ -342,129 +370,14 @@
       <recent name="$PROJECT_DIR$/data/oldTestResultsEventClassifier" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/tweets" />
+      <recent name="$PROJECT_DIR$/data/experimental_tweets" />
       <recent name="$PROJECT_DIR$/data/experimental_tweets/works_in_progress" />
       <recent name="$PROJECT_DIR$/data/labeled_historical_tweets" />
-      <recent name="$PROJECT_DIR$/data/experimental_tweets" />
-      <recent name="$PROJECT_DIR$/data/tweets" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/69-TF_TFbithr5_5</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/70-TF_TFbithr10_5</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/71-TF_TFtrithr5_5</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/72-TF_TFtrithr5stopwords_5</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/73-TF_TFbithr5stopwords_5</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/74-TF_TFbithr5stopwords_TFtrithr10stopwords_5</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
-  </component>
-  <component name="RunManager" selected="Application.format">
+  <component name="RunManager" selected="Application.test suite">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
       <module name="" />
       <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
@@ -1223,7 +1136,13 @@
       <option name="project" value="LOCAL" />
       <updated>1470105967847</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="fixed topic model">
+      <created>1470167409321</created>
+      <option name="number" value="00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1470167409321</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1236,15 +1155,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="63" width="1280" height="718" extended-state="0" />
+    <frame x="6" y="49" width="1280" height="718" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290735" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32165605" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32108626" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31230283" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31948882" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3146965" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32580644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1333,45 +1252,45 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>109</line>
+          <line>110</line>
           <properties />
           <option name="timeStamp" value="99" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>736</line>
+          <line>742</line>
           <properties />
           <option name="timeStamp" value="172" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>774</line>
+          <line>780</line>
           <properties />
           <option name="timeStamp" value="175" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>738</line>
+          <line>744</line>
           <properties />
           <option name="timeStamp" value="180" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/NGramModel.java</url>
-          <line>430</line>
-          <properties />
-          <option name="timeStamp" value="215" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java</url>
-          <line>333</line>
+          <line>335</line>
           <properties />
           <option name="timeStamp" value="219" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/NGramModel.java</url>
+          <line>390</line>
+          <properties />
+          <option name="timeStamp" value="223" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="222" />
+      <option name="time" value="224" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1380,226 +1299,214 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
+    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/job_loss-other-HISTORICAL-missing2.csv">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.11221945">
-          <caret line="337" column="8" selection-start-line="337" selection-start-column="8" selection-end-line="337" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/major-illness-other-HISTORICAL.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/major_illness-other-output.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/recovery_from_illness-other-HISTORICAL.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/labeled_historical_tweets/recovery_from_illness-other-labeled-HISTORICAL-most.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/labeled_historical_tweets/recovery_from_illness-other-labeled-HISTORICAL-missing.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-43.425133">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event_plus_20k_random.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/getting_a_new_job-other-output.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3645485">
+          <caret line="88" column="243" selection-start-line="88" selection-start-column="238" selection-end-line="88" selection-end-column="243" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/getting_a_new_job-self-output.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event_advanced.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7755611">
+          <caret line="5311" column="243" selection-start-line="5311" selection-start-column="243" selection-end-line="5311" selection-end-column="243" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event_advanced_plus_50k_random.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-197.89027">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/events.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.982906">
+          <caret line="29" column="51" selection-start-line="29" selection-start-column="51" selection-end-line="29" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResults.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/0-TF_crossValidated.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/stopwords_smaller.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/TF_20k.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.025">
-          <caret line="12" column="6" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="6" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/TweetParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5117057">
-          <caret line="37" column="61" selection-start-line="37" selection-start-column="61" selection-end-line="37" selection-end-column="61" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="106" column="66" selection-start-line="106" selection-start-column="66" selection-end-line="106" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/49-TFbithr3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3729097">
-          <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/54-TFtrithr10.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3478261">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/53-TFtrithr5.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3478261">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/50-TFtrithr3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.909699">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/29-TF_TFIDFbigrams_thr3_TFIDFtrigrams_thr3.txt">
+    <entry file="file://$PROJECT_DIR$/data/StdOutput.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/28-TF_TFIDFbigrams_thr5_TFIDFtrigrams_thr5.txt">
+    <entry file="file://$PROJECT_DIR$/data/topics/countFileMinusOnes.txt">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/topics/countFileMinusTwos.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.006689">
-          <caret line="16" column="27" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="27" />
+        <state vertical-scroll-proportion="0.7593583">
+          <caret line="605319" column="19" selection-start-line="605319" selection-start-column="19" selection-end-line="605319" selection-end-column="19" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/25-TF_TFIDFbigrams_thr2.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/TF_IDF.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.4799331">
+        <state vertical-scroll-proportion="-2.3665836">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/27-TF_TFIDFtrigrams_threshold_2.txt">
+    <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47658864">
-          <caret line="19" column="7" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
+        <state vertical-scroll-proportion="0.8977556">
+          <caret line="282" column="0" selection-start-line="282" selection-start-column="0" selection-end-line="282" selection-end-column="0" />
+          <folding>
+            <element signature="e#9818#9866#0" expanded="false" />
+            <element signature="e#10485#10493#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/56-TFbithr3_TFIDFtrithr5.txt">
+    <entry file="file://$PROJECT_DIR$/src/main/java/test.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.5334448">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.8977556">
+          <caret line="31" column="38" selection-start-line="31" selection-start-column="38" selection-end-line="31" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/57-TFbithr3_TFtrithr5_TFIDFtrithr10.txt">
+    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1511" column="277" selection-start-line="1511" selection-start-column="267" selection-end-line="1511" selection-end-column="277" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MostCommonWordsComparator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18703242">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/topics/countFile.txt">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/topics/tweet_key.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.40149626">
+          <caret line="89" column="42" selection-start-line="89" selection-start-column="42" selection-end-line="89" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsHumanVsNonHumanClassifier/5-confidenceOf90.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/58-TFbithr3_TFtrithr5_TFIDFtrithr25.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsHumanVsNonHumanClassifier/3-confidenceOf70.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/30-TF_TFbigramsthr3_TFtrigramsthr3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.3076923">
-          <caret line="92" column="11" selection-start-line="92" selection-start-column="11" selection-end-line="92" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/31-TF_TFbigramsthr5_TFtrigramsthr5.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.4832776">
-          <caret line="99" column="7" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/59-TFbithr3_TFtrithr5_5trials.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19732441">
-          <caret line="84" column="7" selection-start-line="84" selection-start-column="7" selection-end-line="84" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/61-TFtrithr3_5trials.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/62-TFbithr3_1topic.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.2006689">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/62-TFbithr3_1topic_5trials.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.7090302">
-          <caret line="8" column="29" selection-start-line="8" selection-start-column="29" selection-end-line="8" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/63-TFbithr3_3topic_5trials.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.909699">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/60-TFbithr3_5trials.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.2040133">
-          <caret line="93" column="14" selection-start-line="93" selection-start-column="14" selection-end-line="93" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/64-TF_stopwords_excPersonalPronouns.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsHumanVsNonHumanClassifier/2-confidenceOf60.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/55-TF20k_5trials.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsHumanVsNonHumanClassifier/4-confidenceOf80.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/65-TF_TFbithr5stopwords.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3729097">
-          <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/52-TFbithr10.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.909699">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/51-TFbithr5.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.29765886">
-          <caret line="88" column="29" selection-start-line="88" selection-start-column="29" selection-end-line="88" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/66-TF_TFbithr10stopwords.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/67-TFbithr5_smallerStopwordsPossibly.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.909699">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/68-TF_TFbithr4incPerProns.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/recovery_from_illness-self-output.csv">
+    <entry file="file://$PROJECT_DIR$/data/testResultsHumanVsNonHumanClassifier/1-confidenceOf50.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1608,134 +1515,195 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/9-TF_20k.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="23" selection-start-line="39" selection-start-column="23" selection-end-line="39" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.66334164">
+          <caret line="87" column="14" selection-start-line="87" selection-start-column="14" selection-end-line="87" selection-end-column="14" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/job_loss-other-output(1).csv">
+    <entry file="file://$PROJECT_DIR$/crawl_users.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.27182046">
+          <caret line="69" column="14" selection-start-line="69" selection-start-column="14" selection-end-line="69" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MulticlassMaxEntTestThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.25083613">
+          <caret line="27" column="29" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntTestRunThread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="549" column="18" selection-start-line="549" selection-start-column="18" selection-end-line="549" selection-end-column="18" />
+          <caret line="47" column="57" selection-start-line="47" selection-start-column="57" selection-end-line="47" selection-end-column="57" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/topics/tweet_composition.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35117057">
-          <caret line="14" column="83" selection-start-line="14" selection-start-column="83" selection-end-line="14" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/topics/tweet_key_10.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25083613">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/topics/tweet_key_500.txt">
+    <entry file="file://$PROJECT_DIR$/src/main/java/defunctCode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/topics/tweet_key_100.txt">
+    <entry file="file://$PROJECT_DIR$/src/main/java/TextFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.27005348">
+          <caret line="608" column="38" selection-start-line="608" selection-start-column="25" selection-end-line="608" selection-end-column="38" />
+          <folding>
+            <element signature="e#12282#12290#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.563591">
+          <caret line="573" column="5" selection-start-line="573" selection-start-column="5" selection-end-line="573" selection-end-column="5" />
+          <folding>
+            <element signature="e#7349#7395#0" expanded="true" />
+            <element signature="e#7463#7484#0" expanded="true" />
+            <element signature="e#11713#11748#0" expanded="true" />
+            <element signature="e#12316#12332#0" expanded="true" />
+            <element signature="e#12572#12588#0" expanded="true" />
+            <element signature="e#17465#17511#0" expanded="true" />
+            <element signature="e#18980#19026#0" expanded="true" />
+            <element signature="e#23647#23682#0" expanded="true" />
+            <element signature="e#23769#23805#0" expanded="true" />
+            <element signature="e#23967#23995#0" expanded="true" />
+            <element signature="e#27055#27071#0" expanded="true" />
+            <element signature="e#28154#28170#0" expanded="true" />
+            <element signature="e#29903#29938#0" expanded="true" />
+            <element signature="e#30280#30301#0" expanded="true" />
+            <element signature="e#31943#31959#0" expanded="true" />
+            <element signature="e#32170#32186#0" expanded="true" />
+            <element signature="e#32620#32636#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59850377">
+          <caret line="545" column="28" selection-start-line="545" selection-start-column="28" selection-end-line="545" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2706#2714#0" expanded="true" />
+            <element signature="e#2876#2894#0" expanded="true" />
+            <element signature="e#15476#15486#0" expanded="true" />
+            <element signature="e#17741#17749#0" expanded="true" />
+            <element signature="e#18739#18747#0" expanded="true" />
+            <element signature="e#18944#18954#0" expanded="true" />
+            <element signature="e#20832#20842#0" expanded="true" />
+            <element signature="e#20896#20904#0" expanded="true" />
+            <element signature="e#20957#20965#0" expanded="true" />
+            <element signature="e#24649#24667#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/76-TF_3topic-smallData_countFileMinusOnes.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="172" selection-start-line="43" selection-start-column="172" selection-end-line="43" selection-end-column="192" />
+          <caret line="92" column="11" selection-start-line="92" selection-start-column="11" selection-end-line="92" selection-end-column="11" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/topics/tweet_key_50.txt">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/78-TF_3topic-smallData_countFileMinusTwos.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.080213904">
-          <caret line="2" column="83" selection-start-line="2" selection-start-column="83" selection-end-line="2" selection-end-column="103" />
+        <state vertical-scroll-proportion="0.43890274">
+          <caret line="96" column="28" selection-start-line="96" selection-start-column="28" selection-end-line="96" selection-end-column="28" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/69-TF_TFbithr5_5">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/77-TF_1topic-smallData_countFileMinusTwos.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.258794">
+        <state vertical-scroll-proportion="0.40149626">
+          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/75-TF_1topic-smallData_countFileMinusOnes.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.8603491">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/test.java">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/79-TF_1topic-event_advanced_countFileMinusOnes.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.03768844">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.47630924">
+          <caret line="61" column="26" selection-start-line="61" selection-start-column="26" selection-end-line="61" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/80-TF_3topic-event_advanced_countFileMinusOnes.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.965812">
-          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        <state vertical-scroll-proportion="1.7206982">
+          <caret line="99" column="7" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/testResultsTF.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="94" column="7" selection-start-line="94" selection-start-column="7" selection-end-line="94" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/82-TF_3topic-event_advanced_countFileMinusTwos.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/81-TF_1topic-event_advanced_countFileMinusTwos.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="7" selection-start-line="24" selection-start-column="7" selection-end-line="24" selection-end-column="7" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.042735044">
-          <caret line="53" column="45" selection-start-line="53" selection-start-column="45" selection-end-line="53" selection-end-column="45" />
+        <state vertical-scroll-proportion="0.7107232">
+          <caret line="104" column="69" selection-start-line="104" selection-start-column="69" selection-end-line="104" selection-end-column="69" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/topics/tweet_key.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.444445">
-          <caret line="89" column="42" selection-start-line="89" selection-start-column="42" selection-end-line="89" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/experimental_tweets/job_loss-other-HISTORICAL.csv">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/labeled_historical_tweets/job_loss-other-labeled-most.csv">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/labeled_historical_tweets/job_loss-other-HISTORICAL-missing.csv">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/labeled_historical_tweets/job_loss-other-labeled-historical-incmostmissing.csv">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="11.034913">
-          <caret line="344" column="24" selection-start-line="344" selection-start-column="24" selection-end-line="344" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="9" selection-start-line="24" selection-start-column="9" selection-end-line="24" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/crawl_users.py">
+    <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.92518705">
-          <caret line="85" column="47" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
+          <caret line="440" column="0" selection-start-line="440" selection-start-column="0" selection-end-line="440" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4064838">
+          <caret line="250" column="5" selection-start-line="250" selection-start-column="5" selection-end-line="250" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

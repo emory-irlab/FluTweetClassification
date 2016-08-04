@@ -18,7 +18,7 @@ public class runClassifierOnTweets {
         Loads a classifier from a file and runs it on a set of tweets. Returns the ones that are labeled with the desired
         class, according to the specified confidence threshold
      */
-    public static ArrayList<String[]> runClassifierAndGetTweetsByLabel(ArrayList<String[]> testTweets, String pathToClassifier, String classifierType, String desiredClass, double confidenceThreshold, String altClass)
+    public static ArrayList<String[]> runClassifierAndGetTweetsByLabel(ArrayList<String[]> testTweets, String pathToClassifier, String classifierType, String desiredClass, double confidenceThreshold)
     throws IOException, ClassNotFoundException {
         //classifier and output variables
         MaxEntClassification classifier = new MaxEntClassification(pathToClassifier, nCores);
@@ -35,7 +35,7 @@ public class runClassifierOnTweets {
         //to the output
         InstanceList instances = dummy.instances;
         for (int i = 0; i < instances.size(); i++) {
-            if (classifier.getLabelConfThresholdForDesiredClass(instances.get(i), desiredClass, confidenceThreshold, altClass).equals(desiredClass)) {
+            if (classifier.getLabelConfThresholdForDesiredClass(instances.get(i), desiredClass, confidenceThreshold).equals(desiredClass)) {
                 outputTweets.add(testTweets.get(i));
             }
         }
@@ -57,7 +57,7 @@ public class runClassifierOnTweets {
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         //for test
-        System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("data/StdOutput.txt"))));
+        //System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("data/StdOutput.txt"))));
 
         //String dataPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\tweet_person_vs_organization.csv";
         //String classifierPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\HvNClassifierFile.txt";
@@ -72,8 +72,10 @@ public class runClassifierOnTweets {
         TextFeatures.initializeHashSets();
 
         //random tweet texts for EvN dataset
-//        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_100k.csv");
-//        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_plus_100k_random.csv", true);
+        /*
+        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_100k.csv");
+        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_advanced_plus_50k_random.csv", true);
+        */
 
         String pathToHvN = args[1];
         String pathToEvN = args[3];
@@ -100,7 +102,7 @@ public class runClassifierOnTweets {
         //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
         //classifier.crossValidate(5, pathToTestResults, "person", 0.8, "organization");
          //split multiple times test
-        classifier.runNSplits(1, pathToTestResults);
+        classifier.runNSplits(1, pathToTestResults, "major_trip", 0.5);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals
         //classifier.runNSplits(5, pathToTestResults, "person", 0.8, "organization");
 
@@ -118,5 +120,6 @@ public class runClassifierOnTweets {
                 //runClassifierAndGetTweetsByLabel(toBeClassified, pathToHvN, "HumanVsNonHuman", "person", 0.8, "organization");
         //print out the classified tweets
         //util.printAllFieldsOneLinePerEntry(outputtedTweets, pathToPrintClassifiedTweets);
+
     }
 }

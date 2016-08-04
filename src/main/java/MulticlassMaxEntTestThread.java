@@ -1,5 +1,6 @@
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.Labeling;
 import java.util.Hashtable;
 
 /**
@@ -14,13 +15,17 @@ public class MulticlassMaxEntTestThread implements Runnable {
     MaxEntClassification classifier;
     //results
     Hashtable<String, Hashtable<String, Integer>> results;
+    String specifiedClass;
+    double confThreshold;
 
-    MulticlassMaxEntTestThread(String name, InstanceList test, MaxEntClassification classy) {
+    MulticlassMaxEntTestThread(String name, InstanceList test, MaxEntClassification classy, String spec, double conf) {
         threadName = name;
         testInstances = test;
         classifier = classy;
         //System.out.println("Creating thread "+threadName);
         results = new Hashtable<String, Hashtable<String, Integer>>();
+        specifiedClass = spec;
+        confThreshold = conf;
     }
 
     public void run() {
@@ -33,8 +38,12 @@ public class MulticlassMaxEntTestThread implements Runnable {
 
                 //get the correct label
                 String correctLabel = instance.getLabeling().toString();
-                //get the label given by the classifier
-                String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
+                //get the label given by the classifier, unless the label is the specified class and its confidence
+                //is below the threshold (in which case the label with the second highest confidence is chosen), or
+                //the label is not the specified class, but the confidence for the specified class is above the threshold
+                //(in which case the label is the specified class)
+                //String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
+                String experimentalLabel = classifier.getLabelConfThresholdForDesiredClass(instance, specifiedClass, confThreshold);
 
                 //initialize fields if necessary, set all figures to 0
                 if (!results.containsKey(correctLabel)) {

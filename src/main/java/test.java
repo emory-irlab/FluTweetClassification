@@ -1,3 +1,9 @@
+import edu.stanford.nlp.util.Pair;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
+
 import java.io.*;
 import java.util.*;
 
@@ -11,13 +17,16 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException, InterruptedException {
+        //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));
+        /*
         System.out.println(readTweetsGetFeatures.process("@Riteishd &amp; Wishing u a beautiful day Hopes and dreams I`m sending your way May all be good On this very special day for new born baby"));
         System.out.println(readTweetsGetFeatures.process("@Andre_Allegiant @CarlaCantare @1happynerd @ActorJoshPrice @lauralong08 Well that's the thing, he has not \"moved on\" at all, actually..."));
         System.out.println(readTweetsGetFeatures.process("I found a dolphin :( but it had died. #dolphin #prestatyn #onthebeach #thebeach #beach #sea https://t.co/4B5WRzIFoY"));
         System.out.println(readTweetsGetFeatures.process("Death to false stoners @ Sleepy Hollow Cemetery https://t.co/mDrlAsKCfg"));
-        /*
-        TopicFeatureModel topicFeatureModel = new TopicFeatureModel("data/topics/countFile.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt");
-        ArrayList<String[]> tweets = TweetParser.getTweets("data/tweets/tweet_event_plus_20k_random.csv");
+        */
+
+        TopicFeatureModel topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusTwos.txt", "data/topics/tweet_composition.txt", "");
+        ArrayList<String[]> tweets = TweetParser.getTweets("data/tweets/tweet_event.csv");
         double average = 0.0;
         int tweetNum = 0;
         for (String[] tweet: tweets) {
@@ -62,6 +71,6 @@ public class test {
         startTime = System.currentTimeMillis();
         most = topicFeatureModel.getNMostLikelyTopics(3, "beautiful travel wanderlust borabora aintgotnothingonthis animal lovely vsco vscocam vscophoto");
         System.out.println(((double)System.currentTimeMillis() - startTime)/1000+" seconds to get");
-        */
+
     }
 }

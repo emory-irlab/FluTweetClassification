@@ -206,7 +206,7 @@ public class MaxEntClassification {
 
 		ONLY WORKS WITH BINARY CLASS DISTINCTIONS
 	 */
-	public void crossValidate(int n_folds, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
+	public void crossValidate(int n_folds, String pathToResultsFile, String nullClass, double confidenceThreshold) throws IOException, InterruptedException, ClassNotFoundException {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
@@ -220,10 +220,11 @@ public class MaxEntClassification {
 			System.out.println();
 			System.out.println("NEW TEST:");
 
-			resultsOverTrials.add(testRun(testing, desiredClass, confidenceThreshold, altClass));
+			resultsOverTrials.add(testRunConfThresholdVersion(testing, nullClass, confidenceThreshold));
+			writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, true);
 		}
 		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
-		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, false);
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
 	}
 
 	/*
@@ -520,15 +521,12 @@ public class MaxEntClassification {
 			trainClassifier(instances);
 			saveClassifier(classifierFile);
 
-			/* TEMPORARY DELETION
 			Hashtable<String, Hashtable<String, Double>> results = testRunConfThresholdVersion(testInstances, nullClass, confThreshold);
 			//Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
 			resultsOverTrials.add(results);
-			*/
+
 		}
-		/* TEMPORARY DELETION
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
-		*/
 	}
 
 	/*
@@ -654,7 +652,9 @@ public class MaxEntClassification {
 			for (int i = cutoffPt; i < arr.size(); i++) {
 				//print all ints from arr at the cutoff pt, these are the test indices
 				writeOutTestInstanceIndices.write(Integer.toString(arr.get(i)));
+				writeOutTestInstanceIndices.newLine();
 			}
+			writeOutTestInstanceIndices.close();
 			return instanceLists[TESTING];
 		} catch(Exception e) {
 			e.printStackTrace();

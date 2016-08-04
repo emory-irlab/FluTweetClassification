@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Hashtable;
 import java.util.Comparator;
 import edu.stanford.nlp.util.Pair;
-import org.apache.derby.impl.store.access.sort.Scan;
 
 import java.util.PriorityQueue;
 import java.util.regex.Matcher;

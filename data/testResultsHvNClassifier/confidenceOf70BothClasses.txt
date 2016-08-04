@@ -98,3 +98,141 @@ Metrics for class person
 Precision: 0.9411764705882353
 F1: 0.8512696493349455
 Recall: 0.7770419426048565
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8255404725992961
+--------------------
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class organization
+Precision: 0.9658965896589659
+F1: 0.8945491594498216
+Recall: 0.8330170777988615
+
+Metrics for class person
+Precision: 0.9514321295143213
+F1: 0.8791714614499425
+Recall: 0.8171122994652407
+
+Metrics for class Accuracy
+Accuracy: 0.8255404725992961
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8174044265593562
+--------------------
+
+Metrics for class organization
+Precision: 0.9727582292849035
+F1: 0.8857881136950904
+Recall: 0.8130929791271347
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class person
+Precision: 0.9552238805970149
+F1: 0.8837744533947064
+Recall: 0.8222698072805139
+
+Metrics for class Accuracy
+Accuracy: 0.8174044265593562
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8024132730015083
+--------------------
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class organization
+Precision: 0.9622222222222222
+F1: 0.8791878172588833
+Recall: 0.8093457943925234
+
+Metrics for class person
+Precision: 0.9407216494845361
+F1: 0.8613569321533923
+Recall: 0.794341675734494
+
+Metrics for class Accuracy
+Accuracy: 0.8024132730015083
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8083501006036218
+--------------------
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class organization
+Precision: 0.9607182940516273
+F1: 0.879301489470981
+Recall: 0.8106060606060606
+
+Metrics for class person
+Precision: 0.93875
+F1: 0.8672055427251731
+Recall: 0.805793991416309
+
+Metrics for class Accuracy
+Accuracy: 0.8083501006036218
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8044243338360986
+--------------------
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class organization
+Precision: 0.9621802002224694
+F1: 0.8826530612244897
+Recall: 0.8152686145146089
+
+Metrics for class person
+Precision: 0.9483870967741935
+F1: 0.8631826189078097
+Recall: 0.7920258620689655
+
+Metrics for class Accuracy
+Accuracy: 0.8044243338360986
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.8116265213199763
+--------------------
+
+Metrics for class organization
+Recall: 0.8162661052878377
+Precision: 0.9647551070880377
+F1: 0.8842959282198531
+
+Metrics for class null_class
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class person
+Recall: 0.8063087271931046
+Precision: 0.946902951274013
+F1: 0.8709382017262047
+
+Metrics for class Accuracy
+Accuracy: 0.8116265213199763

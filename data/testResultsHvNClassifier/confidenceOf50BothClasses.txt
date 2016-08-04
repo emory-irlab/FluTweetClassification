@@ -1,0 +1,108 @@
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9089994972347913
+--------------------
+
+Metrics for class organization
+Precision: 0.9215876089060987
+F1: 0.913189448441247
+Recall: 0.9049429657794676
+
+Metrics for class person
+Precision: 0.895397489539749
+F1: 0.9043845747490755
+Recall: 0.9135538954108858
+
+Metrics for class Accuracy
+Accuracy: 0.9089994972347913
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9064386317907445
+--------------------
+
+Metrics for class organization
+Precision: 0.9376218323586745
+F1: 0.9118483412322275
+Recall: 0.8874538745387454
+
+Metrics for class person
+Precision: 0.8731808731808732
+F1: 0.9003215434083601
+Recall: 0.9292035398230089
+
+Metrics for class Accuracy
+Accuracy: 0.9064386317907445
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9120160884866767
+--------------------
+
+Metrics for class organization
+Precision: 0.9324726911618669
+F1: 0.9147588894301022
+Recall: 0.8977055449330784
+
+Metrics for class person
+Precision: 0.8910386965376782
+F1: 0.9090909090909091
+Recall: 0.9278897136797455
+
+Metrics for class Accuracy
+Accuracy: 0.9120160884866767
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9109657947686117
+--------------------
+
+Metrics for class organization
+Precision: 0.9287776708373436
+F1: 0.9159943046986236
+Recall: 0.903558052434457
+
+Metrics for class person
+Precision: 0.8914646996838778
+F1: 0.9052969502407705
+Recall: 0.9195652173913044
+
+Metrics for class Accuracy
+Accuracy: 0.9109657947686117
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9029663147310206
+--------------------
+
+Metrics for class organization
+Precision: 0.9234592445328031
+F1: 0.9058995611896635
+Recall: 0.8889952153110048
+
+Metrics for class person
+Precision: 0.8819938962360122
+F1: 0.8998443175921121
+Recall: 0.9184322033898306
+
+Metrics for class Accuracy
+Accuracy: 0.9029663147310206
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.9082772654023691
+--------------------
+
+Metrics for class organization
+Recall: 0.8965311305993506
+Precision: 0.9287838095593575
+F1: 0.9123381089983729
+
+Metrics for class person
+Recall: 0.921728913938955
+Precision: 0.886615131035638
+F1: 0.9037876590162455
+
+Metrics for class Accuracy
+Accuracy: 0.9082772654023691

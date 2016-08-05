@@ -7,14 +7,8 @@ import cc.mallet.classify.MaxEnt;
 import cc.mallet.classify.MaxEntTrainer;
 import cc.mallet.classify.Trial;
 import cc.mallet.classify.evaluate.AccuracyCoverage;
-import cc.mallet.types.CrossValidationIterator;
+import cc.mallet.types.*;
 import cc.mallet.pipe.Target2Label;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureVector;
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelAlphabet;
-import cc.mallet.types.Labeling;
 import cc.mallet.util.Randoms;
 
 public class MaxEntClassification {
@@ -223,6 +217,52 @@ public class MaxEntClassification {
 		}
 		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
+	}
+
+	/*
+    	Performs n-fold cross-validation with multiple specified confidence thresholds for the specified class.
+    	Prints out the results
+ 	*/
+	public void crossValidate(int n_folds, String pathToResultsFileBase, String nullClass, double[] confidenceThresholds) throws IOException, InterruptedException, ClassNotFoundException {
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+		ArrayList<ArrayList<Hashtable<String, Hashtable<String, Double>>>> resultsOverTrialsForAllThresholds = new ArrayList<ArrayList<Hashtable<String, Hashtable<String, Double>>>>();
+		//add base results containers for each confidence threshold
+		for (int i = 0; i < confidenceThresholds.length; i++) {
+			resultsOverTrialsForAllThresholds.add(new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds));
+		}
+
+		//run a number of trials equal to the number of folds
+		while (crossValidationIterator.hasNext()) {
+			InstanceList[] split = crossValidationIterator.next();
+			InstanceList training = split[0];
+			InstanceList testing = split[1];
+
+			trainClassifier(training);
+			saveClassifier(classifierFile);
+			System.out.println();
+			System.out.println("NEW TEST:");
+
+			//run an evaluation round for each confidence threshold
+			for (int i = 0; i < confidenceThresholds.length; i++) {
+				ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrialsThisThreshold = resultsOverTrialsForAllThresholds.get(i);
+				double thisConfidenceThreshold = confidenceThresholds[i];
+				int stoppingPoint = pathToResultsFileBase.length() - 4;
+				String thisPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + thisConfidenceThreshold + pathToResultsFileBase.substring(stoppingPoint);
+
+				resultsOverTrialsThisThreshold.add(testRunConfThresholdVersion(testing, nullClass, thisConfidenceThreshold));
+				writeTestResultsToFile(resultsOverTrialsThisThreshold.get(resultsOverTrialsThisThreshold.size() - 1), 1, thisPathToResultsFile, true);
+			}
+		}
+		//print out results for each confidence threshold
+		for (int i = 0; i < confidenceThresholds.length; i++) {
+			ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrialsThisThreshold = resultsOverTrialsForAllThresholds.get(i);
+			double thisConfidenceThreshold = confidenceThresholds[i];
+			int stoppingPoint = pathToResultsFileBase.length() - 4;
+			String thisPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + thisConfidenceThreshold + pathToResultsFileBase.substring(stoppingPoint);
+
+			//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
+			writeTestResultsToFile(averageTrialResults(resultsOverTrialsThisThreshold), n_folds, thisPathToResultsFile, true);
+		}
 	}
 
 	/*
@@ -1147,7 +1187,7 @@ public class MaxEntClassification {
 
 		bufferedWriter.write("--------------------");
 		bufferedWriter.newLine();
-		bufferedWriter.write("ACCURACY: " + input.remove("Accuracy").get("Accuracy"));
+		bufferedWriter.write("ACCURACY: " + input.get("Accuracy").get("Accuracy"));
 		bufferedWriter.newLine();
 		bufferedWriter.write("--------------------");
 		bufferedWriter.newLine();

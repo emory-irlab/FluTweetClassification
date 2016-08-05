@@ -18,6 +18,7 @@ public class runClassifierOnTweets {
         Loads a classifier from a file and runs it on a set of tweets. Returns the ones that are labeled with the desired
         class, according to the specified confidence threshold
      */
+    /*
     public static ArrayList<String[]> runClassifierAndGetTweetsByLabel(ArrayList<String[]> testTweets, String pathToClassifier, String classifierType, String desiredClass, double confidenceThreshold)
     throws IOException, ClassNotFoundException, InterruptedException {
         //classifier and output variables
@@ -42,6 +43,7 @@ public class runClassifierOnTweets {
 
         return outputTweets;
     }
+    */
 
     /*
         From a path to a file containing tweet ids, tweet labels, and tweet texts separated by null characters,
@@ -86,13 +88,16 @@ public class runClassifierOnTweets {
         String pathToPrintClassifiedTweets = args[8];
 
         //get the training tweets
-        ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
+        String pathToHvNTweets = args[0];
+        String pathToEvNTweets = args[2];
+        String pathToSvOTweets = args[4];
+        //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
         //ArrayList<String[]> EvNTweets = TweetParser.getTweets(args[2]);
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
 
         //get vectors from the training tweets and add them to the classifier's instance list
         MaxEntClassification classifier = new MaxEntClassification(pathToHvN, nCores);
-        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(HvNTweets, "HumanVsNonHuman");
+        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToHvNTweets, "HumanVsNonHuman", nCores);
         classifier.addToInstanceList(trainingTweetVectors);
 
         //VARIOUS OPTIONS FOR RUNNING THE CLASSIFIER
@@ -101,6 +106,7 @@ public class runClassifierOnTweets {
          //cross-validation test
         //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
         classifier.crossValidate(5, pathToTestResults, "null_class", 0.5);
+        //classifier.crossValidate(5, pathToTestResults, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
          //split multiple times test
         //classifier.runNSplits(1, pathToTestResults, "null_class", 0.9);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals

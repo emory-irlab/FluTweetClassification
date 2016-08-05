@@ -6,9 +6,15 @@ import edu.stanford.nlp.util.SystemUtils;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 import java.io.IOException;
+import java.io.File;
 
 /*
     Methods useful for creating a vector model from each tweet in an input set, representing all of the features
@@ -60,29 +66,43 @@ public class readTweetsGetFeatures {
         Each input tweet is formatted as follows:
         {profile pic, username, name, description, tweet, label}
      */
-    public static TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException, InterruptedException {
+    public static TweetVector[] getVectorModelsFromTweets(String pathToTweetFile, String classifierType, int nCores) throws IOException, InterruptedException {
         ArrayList<String> labelSet = new ArrayList<String>(0);
         //set up Stanford CoreNLP object for annotation
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
-        //get tweet vector model
-        TweetVector[] tweetVectors = new TweetVector[tweets.size()];
-        readTweetsGetFeatures.tweetVectors = tweetVectors;
-
-        //initialize fields
-        //String label = toBinaryLabels(tweet[5], classifierType);
-        for (int i = 0; i < tweets.size(); i++) {
-            //String label = toBinaryLabels(tweet[5], classifierType);
-            String[] tweet = tweets.get(i);
-            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
+        //get the number of tweets for the sake of initializing tweet vectors (may remove later for speed's sake)
+        int counter = 0;
+        BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToTweetFile)));
+        CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180);
+        List<CSVRecord> records = tweetCSV.getRecords();
+        for (CSVRecord record: records) {
+            if (record.size() >= 6) {
+                counter++;
+            }
         }
 
-        //get features
-        for (int i = 0; i < tweets.size(); i++) {
+
+        //get tweet vector model
+        TweetVector[] tweetVectors = new TweetVector[counter];
+        readTweetsGetFeatures.tweetVectors = tweetVectors;
+
+        //initialize fields, get features
+        //String label = toBinaryLabels(tweet[5], classifierType);
+        tweetReader = new BufferedReader(new FileReader(new File(pathToTweetFile)));
+        for (int i = 0; i < records.size(); i++) {
+            CSVRecord record = records.get(i);
+            String[] tweetFields = new String[6];
+
+            for (int j = 0; j < 6; j++) {
+                tweetFields[j] = record.get(j);
+            }
+
+            tweetVectors[i] = new TweetVector(tweetFields[0], tweetFields[1], tweetFields[2], tweetFields[3], tweetFields[4], tweetFields[5], labelSet);
             long tweetBeginTime = System.currentTimeMillis();
-            getVectorModelForTweet(tweetVectors[i], pipeline, classifierType);
+            getVectorModelForTweet(tweetVectors[i], pipeline, classifierType, nCores);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
         return tweetVectors;
@@ -92,7 +112,7 @@ public class readTweetsGetFeatures {
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
      */
-    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType) throws IOException, InterruptedException {
+    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType, int nCores) throws IOException, InterruptedException {
         //annotate fields with Stanford CoreNLP
         String processedTweet = process(tweetVector.getTweetText());
 
@@ -113,7 +133,7 @@ public class readTweetsGetFeatures {
                 collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
                 break;
             case "EventVsNonEvent":
-                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences);
+                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences, nCores);
                 break;
             case "SelfVsOther":
                 collectFeaturesSelfVsOther(tweetVector, tweetPhrases);
@@ -231,7 +251,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException, InterruptedException {
+    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
         String text = process(tweetVector.getTweetText());
 /*
         //unigram features (tf-idf value of each word)
@@ -264,7 +284,7 @@ public class readTweetsGetFeatures {
 
         //topics for tweet
         if (topicFeatureModel == null) {
-            topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", 4); //change 4 to whatever nproc is on this machine
+            topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", nCores);
         }
         int[] topTopics = topicFeatureModel.getNMostLikelyTopics(3, text);
         for (int topTopic: topTopics) {

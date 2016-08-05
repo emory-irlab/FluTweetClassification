@@ -751,9 +751,11 @@ public class MaxEntClassification {
 		ArrayList<MulticlassMaxEntTestThread> threads = new ArrayList<MulticlassMaxEntTestThread>();
 
 		//split the InstanceList
-		double coreProportion = 1.0 / nCores;
-		double[] proportions = new double[nCores];
-		for (int i = 0; i < nCores; i++) {
+		//double coreProportion = 1.0 / nCores;
+		double coreProportion = 1.0;
+		//double[] proportions = new double[nCores];
+		double[] proportions = new double[1];
+		for (int i = 0; i < proportions.length; i++) {
 			proportions[i] = coreProportion;
 		}
 		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
@@ -766,7 +768,7 @@ public class MaxEntClassification {
 				newList.add(i);
 			}
 			counter++;
-			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread"+counter, newList, new MaxEntClassification(classifierFile, nCores), nullClass, confThreshold);
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread"+counter, newList, new MaxEntClassification(classifierFile, proportions.length), nullClass, confThreshold); //might want to change proportions.length to 1
 			threads.add(thread);
 			thread.start();
 		}

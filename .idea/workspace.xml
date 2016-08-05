@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="implemented">
+    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -35,24 +33,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="runClassifierOnTweets.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runClassifierOnTweets.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5652174">
+            <state vertical-scroll-proportion="0.0">
               <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MaxEntClassification.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MaxEntClassification.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="249" column="12" selection-start-line="249" selection-start-column="12" selection-end-line="249" selection-end-column="12" />
+            <state vertical-scroll-proportion="0.84782606">
+              <caret line="913" column="30" selection-start-line="913" selection-start-column="18" selection-end-line="913" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#8414#8471#0" expanded="true" />
+                <element signature="e#28741#28769#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -167,8 +166,8 @@
         <option value="$PROJECT_DIR$/data/tweets/tweet_person_vs_organization.csv" />
         <option value="$PROJECT_DIR$/data/testResultsHvNClassifier/confidenceOf50Final.txt" />
         <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
         <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
       </list>
     </option>
   </component>
@@ -982,12 +981,6 @@
       <option name="number" value="Default" />
       <updated>1460606859814</updated>
     </task>
-    <task id="LOCAL-00004" summary="version runs with 78% accuracy on dataset of almost 10k tweets">
-      <created>1465072487176</created>
-      <option name="number" value="00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1465072487176</updated>
-    </task>
     <task id="LOCAL-00005" summary="weird git things were fixed">
       <created>1465144774589</created>
       <option name="number" value="00005" />
@@ -1276,7 +1269,13 @@
       <option name="project" value="LOCAL" />
       <updated>1470345825752</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting">
+      <created>1470365750956</created>
+      <option name="number" value="00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1470365750957</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1354,7 +1353,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="moved test results" />
     <MESSAGE value="edited results printing" />
     <MESSAGE value="Fixed performance bug, ready to test again" />
     <MESSAGE value="Fixed another performance bug, ready to test again" />
@@ -1379,7 +1377,8 @@
     <MESSAGE value="DON'T RUN - this version for getting precision-recall curves only" />
     <MESSAGE value="testing HvN curves" />
     <MESSAGE value="testing HvN curves, fixed cross-validation error" />
-    <option name="LAST_COMMIT_MESSAGE" value="testing HvN curves, fixed cross-validation error" />
+    <MESSAGE value="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1392,19 +1391,19 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>1004</line>
+          <line>1006</line>
           <properties />
           <option name="timeStamp" value="172" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>1042</line>
+          <line>1044</line>
           <properties />
           <option name="timeStamp" value="175" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>1006</line>
+          <line>1008</line>
           <properties />
           <option name="timeStamp" value="180" />
         </line-breakpoint>
@@ -1764,17 +1763,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="286" column="159" selection-start-line="286" selection-start-column="159" selection-end-line="286" selection-end-column="159" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2865#2873#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1787,22 +1775,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="249" column="12" selection-start-line="249" selection-start-column="12" selection-end-line="249" selection-end-column="12" />
+          <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="286" column="159" selection-start-line="286" selection-start-column="159" selection-end-line="286" selection-end-column="159" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#8414#8471#0" expanded="true" />
+            <element signature="e#2865#2873#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5652174">
-          <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
-          <folding />
+        <state vertical-scroll-proportion="0.84782606">
+          <caret line="913" column="30" selection-start-line="913" selection-start-column="18" selection-end-line="913" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#8414#8471#0" expanded="true" />
+            <element signature="e#28741#28769#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

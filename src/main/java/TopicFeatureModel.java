@@ -22,6 +22,21 @@ import java.util.regex.Pattern;
  */
 public class TopicFeatureModel {
 
+    private StanfordCoreNLP pipeline;
+    private long totalNumWords = 0;
+    private String countFilePath;
+    private ArrayList<String> countFileSplitPaths = new ArrayList<String>();
+    private File compositionFile;
+    private Hashtable<Integer, Double> topicProbs = new Hashtable<Integer, Double>();
+    private double basicTopicProb;
+    private Hashtable<String, ArrayList<String>> mostCommonWords;
+    private int mostCommonWordsSize = 20000;
+    private RecentWordsContainer recentWords;
+    private Hashtable<String, Integer> stopWordList = new Hashtable<String, Integer>();
+    private String stopWordFilePath;
+    private int nCores;
+
+    //size-limited container of recent words and their entries
     private class RecentWordsContainer {
         private Hashtable<String, ArrayList<String>> recentWords = new Hashtable<String, ArrayList<String>>();
         private int sizeLimit = 100; //customized for the size of a tweet
@@ -41,22 +56,6 @@ public class TopicFeatureModel {
             recentWords.put(key, object);
         }
     }
-
-    private StanfordCoreNLP pipeline;
-    private long totalNumWords = 0;
-    private String countFilePath;
-    private ArrayList<String> countFileSplitPaths = new ArrayList<String>();
-    private File compositionFile;
-    private Hashtable<Integer, Double> topicProbs = new Hashtable<Integer, Double>();
-    private double basicTopicProb;
-    private Hashtable<String, ArrayList<String>> mostCommonWords;
-    private int mostCommonWordsSize = 20000;
-    private RecentWordsContainer recentWords;
-    private Hashtable<String, Integer> stopWordList = new Hashtable<String, Integer>();
-    private String stopWordFilePath;
-    private int nCores;
-
-    //size-limited container of recent words and their entries
 
     public TopicFeatureModel(String pathToCountFile, String pathToCompositionFile, String sWordFilePath, int n) throws IOException {
         mostCommonWords = new Hashtable<String, ArrayList<String>>();

@@ -214,13 +214,13 @@ public class NGramModel {
     private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
         totalDocs = tweetVectors.length;
         //go through all tweets
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         for (int i = 0; i < tweetVectors.length; i++) {
             String text = readTweetsGetFeatures.process(returnAppropriateTextForm(tweetVectors[i]));
 
             //annotate to get lemma annotations
-            Properties props = new Properties();
-            props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
             Annotation document = new Annotation(text);
             pipeline.annotate(document);
             List<CoreLabel> tokens = document.get(TokensAnnotation.class);

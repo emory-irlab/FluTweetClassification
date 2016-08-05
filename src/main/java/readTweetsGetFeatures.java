@@ -79,7 +79,7 @@ public class readTweetsGetFeatures {
         CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180);
         List<CSVRecord> records = tweetCSV.getRecords();
         for (CSVRecord record: records) {
-            if (record.size() >= 6) {
+            if (record.size() >= 1) {
                 counter++;
             }
         }
@@ -89,9 +89,8 @@ public class readTweetsGetFeatures {
         TweetVector[] tweetVectors = new TweetVector[counter];
         readTweetsGetFeatures.tweetVectors = tweetVectors;
 
-        //initialize fields, get features
+        //initialize tweet vectors
         //String label = toBinaryLabels(tweet[5], classifierType);
-        tweetReader = new BufferedReader(new FileReader(new File(pathToTweetFile)));
         for (int i = 0; i < records.size(); i++) {
             CSVRecord record = records.get(i);
             String[] tweetFields = new String[6];
@@ -101,6 +100,10 @@ public class readTweetsGetFeatures {
             }
 
             tweetVectors[i] = new TweetVector(tweetFields[0], tweetFields[1], tweetFields[2], tweetFields[3], tweetFields[4], tweetFields[5], labelSet);
+        }
+
+        //get features for each tweet vector
+        for (int i = 0; i < records.size(); i++) {
             long tweetBeginTime = System.currentTimeMillis();
             getVectorModelForTweet(tweetVectors[i], pipeline, classifierType, nCores);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
@@ -253,7 +256,7 @@ public class readTweetsGetFeatures {
      */
     public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
         String text = process(tweetVector.getTweetText());
-/*
+
         //unigram features (tf-idf value of each word)
         if (tweetTextUnigramModel == null) {
             tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
@@ -290,7 +293,7 @@ public class readTweetsGetFeatures {
         for (int topTopic: topTopics) {
             tweetVector.addFeature(Integer.toString(topTopic), 1.0);
         }
-*/
+
         //other features
         //addition 1
         tweetVector.addFeature("Hashtag Count", TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));

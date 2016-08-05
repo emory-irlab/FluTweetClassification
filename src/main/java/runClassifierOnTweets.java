@@ -96,8 +96,8 @@ public class runClassifierOnTweets {
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
 
         //get vectors from the training tweets and add them to the classifier's instance list
-        MaxEntClassification classifier = new MaxEntClassification(pathToHvN, nCores);
-        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToHvNTweets, "HumanVsNonHuman", nCores);
+        MaxEntClassification classifier = new MaxEntClassification(pathToEvN, nCores);
+        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToEvNTweets, "EventVsNonEvent", nCores);
         classifier.addToInstanceList(trainingTweetVectors);
 
         //VARIOUS OPTIONS FOR RUNNING THE CLASSIFIER
@@ -105,8 +105,8 @@ public class runClassifierOnTweets {
         //train + test
          //cross-validation test
         //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
-        classifier.crossValidate(5, pathToTestResults, "null_class", 0.5);
-        //classifier.crossValidate(5, pathToTestResults, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
+        //classifier.crossValidate(5, pathToTestResults, "null_class", 0.5);
+        classifier.crossValidate(5, pathToTestResults, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
          //split multiple times test
         //classifier.runNSplits(1, pathToTestResults, "null_class", 0.9);
          //non-cross-validation test for "person" class of HvN with varying confidence intervals

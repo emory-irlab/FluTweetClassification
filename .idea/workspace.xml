@@ -2,8 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/NGramModel.java" afterPath="$PROJECT_DIR$/src/main/java/NGramModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" afterPath="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -37,17 +43,17 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
+              <caret line="108" column="8" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MaxEntClassification.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MaxEntClassification.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.84782606">
-              <caret line="913" column="30" selection-start-line="913" selection-start-column="18" selection-end-line="913" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="910" column="26" selection-start-line="910" selection-start-column="26" selection-end-line="910" selection-end-column="26" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#8414#8471#0" expanded="true" />
@@ -57,11 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="286" column="159" selection-start-line="286" selection-start-column="159" selection-end-line="286" selection-end-column="159" />
+            <state vertical-scroll-proportion="-5.173913">
+              <caret line="107" column="17" selection-start-line="107" selection-start-column="17" selection-end-line="107" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2865#2873#0" expanded="true" />
@@ -74,12 +80,22 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="35" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="35" />
+              <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#873#874#0" expanded="true" />
-                <element signature="e#924#925#0" expanded="true" />
+                <element signature="e#1583#1584#0" expanded="true" />
+                <element signature="e#1634#1635#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NGramModel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="218" column="62" selection-start-line="218" selection-start-column="62" selection-end-line="218" selection-end-column="62" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -142,7 +158,6 @@
         <option value="$PROJECT_DIR$/data/job_loss-historical/major-illness-allusertweet.csv" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-self-PLUS-HISTORICAL.csv" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-self-HISTORICAL-missingtweets.csv" />
-        <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
         <option value="$PROJECT_DIR$/data/stopwords_smaller.txt" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-other-output(1).csv" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/job_loss-other-HISTORICAL-missing2.csv" />
@@ -158,16 +173,17 @@
         <option value="$PROJECT_DIR$/src/main/java/AnnotationFeatures.java" />
         <option value="$PROJECT_DIR$/src/main/java/featureTestCases.java" />
         <option value="$PROJECT_DIR$/src/main/java/ScanFileForWordTopicCountsThread.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
         <option value="$PROJECT_DIR$/nohup.out" />
         <option value="$PROJECT_DIR$/data/experimental_tweets/getting_a_new_job-self-output.csv" />
         <option value="$PROJECT_DIR$/src/main/java/test.java" />
         <option value="$PROJECT_DIR$/src/main/java/MulticlassMaxEntTestThread.java" />
         <option value="$PROJECT_DIR$/data/tweets/tweet_person_vs_organization.csv" />
         <option value="$PROJECT_DIR$/data/testResultsHvNClassifier/confidenceOf50Final.txt" />
-        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
         <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
+        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
+        <option value="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
       </list>
     </option>
   </component>
@@ -294,42 +310,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tweets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="FluTweetsFeatureExtraction" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="FluTweetsFeatureExtraction" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="testResultsSvO" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="FluTweetsFeatureExtraction" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="FluTweetsFeatureExtraction" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="testResultsHvNClassifier" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -890,7 +870,7 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="runClassifierOnTweets" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv HumanVsNonHumanClassifier.txt data/tweets/tweet_event_advanced_plus_50k_random.csv EventClassifier.txt data/tweets/tweet_self_vs_other.csv SelfVsOtherClassifier.txt data/testResults.txt data/testData/deleteMe.csv thingy.txt" />
+      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv HumanVsNonHumanClassifier.txt data/tweets/tweet_event_plus_20k_random.csv EventClassifier.txt data/tweets/tweet_self_vs_other.csv SelfVsOtherClassifier.txt data/testResults.txt data/testData/deleteMe.csv thingy.txt" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -980,12 +960,6 @@
       <created>1460606859814</created>
       <option name="number" value="Default" />
       <updated>1460606859814</updated>
-    </task>
-    <task id="LOCAL-00005" summary="weird git things were fixed">
-      <created>1465144774589</created>
-      <option name="number" value="00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1465144774589</updated>
     </task>
     <task id="LOCAL-00006" summary="git test done">
       <created>1465145504937</created>
@@ -1275,7 +1249,13 @@
       <option name="project" value="LOCAL" />
       <updated>1470365750957</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="further update">
+      <created>1470365939459</created>
+      <option name="number" value="00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1470365939459</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1298,7 +1278,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31230283" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31924883" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3082942" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3082942" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32580644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22859451" sideWeight="0.4686775" order="0" side_tool="false" content_ui="combo" />
@@ -1353,7 +1333,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="edited results printing" />
     <MESSAGE value="Fixed performance bug, ready to test again" />
     <MESSAGE value="Fixed another performance bug, ready to test again" />
     <MESSAGE value="Testing revised confidence threshold method" />
@@ -1378,7 +1357,8 @@
     <MESSAGE value="testing HvN curves" />
     <MESSAGE value="testing HvN curves, fixed cross-validation error" />
     <MESSAGE value="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting" />
+    <MESSAGE value="further update" />
+    <option name="LAST_COMMIT_MESSAGE" value="further update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1409,13 +1389,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java</url>
-          <line>421</line>
+          <line>420</line>
           <properties />
           <option name="timeStamp" value="219" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java</url>
-          <line>395</line>
+          <line>394</line>
           <properties />
           <option name="timeStamp" value="224" />
         </line-breakpoint>
@@ -1441,7 +1421,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="235" />
+      <option name="time" value="237" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1747,14 +1727,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="406" column="17" selection-start-line="406" selection-start-column="14" selection-end-line="406" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
@@ -1763,14 +1735,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="35" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="35" />
+          <caret line="910" column="26" selection-start-line="910" selection-start-column="26" selection-end-line="910" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#873#874#0" expanded="true" />
-            <element signature="e#924#925#0" expanded="true" />
+            <element signature="e#8414#8471#0" expanded="true" />
+            <element signature="e#28741#28769#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1778,30 +1750,38 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="107" column="8" selection-start-line="107" selection-start-column="8" selection-end-line="107" selection-end-column="8" />
+          <caret line="108" column="8" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="218" column="62" selection-start-line="218" selection-start-column="62" selection-end-line="218" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1583#1584#0" expanded="true" />
+            <element signature="e#1634#1635#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="286" column="159" selection-start-line="286" selection-start-column="159" selection-end-line="286" selection-end-column="159" />
+        <state vertical-scroll-proportion="-5.173913">
+          <caret line="107" column="17" selection-start-line="107" selection-start-column="17" selection-end-line="107" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2865#2873#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.84782606">
-          <caret line="913" column="30" selection-start-line="913" selection-start-column="18" selection-end-line="913" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#8414#8471#0" expanded="true" />
-            <element signature="e#28741#28769#0" expanded="true" />
           </folding>
         </state>
       </provider>

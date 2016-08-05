@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/NGramModel.java" afterPath="$PROJECT_DIR$/src/main/java/NGramModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" afterPath="$PROJECT_DIR$/src/main/java/TopicFeatureModel.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -63,11 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="readTweetsGetFeatures.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.173913">
-              <caret line="107" column="17" selection-start-line="107" selection-start-column="17" selection-end-line="107" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="256" column="27" selection-start-line="256" selection-start-column="27" selection-end-line="256" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2865#2873#0" expanded="true" />
@@ -76,16 +69,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TopicFeatureModel.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
+      <file leaf-file-name="confidenceOf50BothClasses.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/data/testResultsHvNClassifier/confidenceOf50BothClasses.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1583#1584#0" expanded="true" />
-                <element signature="e#1634#1635#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="-2.768116">
+              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -205,8 +194,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="8" />
-    <option name="y" value="42" />
+    <option name="x" value="19" />
+    <option name="y" value="59" />
     <option name="width" value="1280" />
     <option name="height" value="731" />
   </component>
@@ -310,6 +299,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tweets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="testResultsHvNClassifier" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -870,7 +877,7 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="runClassifierOnTweets" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv HumanVsNonHumanClassifier.txt data/tweets/tweet_event_plus_20k_random.csv EventClassifier.txt data/tweets/tweet_self_vs_other.csv SelfVsOtherClassifier.txt data/testResults.txt data/testData/deleteMe.csv thingy.txt" />
+      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv HumanVsNonHumanClassifier.txt data/tweets/tweet_event.csv EventClassifier.txt data/tweets/tweet_self_vs_other.csv SelfVsOtherClassifier.txt data/testResults.txt data/testData/deleteMe.csv thingy.txt" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -960,12 +967,6 @@
       <created>1460606859814</created>
       <option name="number" value="Default" />
       <updated>1460606859814</updated>
-    </task>
-    <task id="LOCAL-00006" summary="git test done">
-      <created>1465145504937</created>
-      <option name="number" value="00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1465145504937</updated>
     </task>
     <task id="LOCAL-00007" summary="first names feature implemented, 85-86% accuracy">
       <created>1465156116951</created>
@@ -1255,7 +1256,13 @@
       <option name="project" value="LOCAL" />
       <updated>1470365939459</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="fixed bug, should run smoothly now">
+      <created>1470367966366</created>
+      <option name="number" value="00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1470367966366</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1268,7 +1275,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="8" y="42" width="1280" height="731" extended-state="0" />
+    <frame x="19" y="59" width="1280" height="731" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1278,7 +1285,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31230283" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31924883" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3082942" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3082942" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32580644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22859451" sideWeight="0.4686775" order="0" side_tool="false" content_ui="combo" />
@@ -1333,7 +1340,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed performance bug, ready to test again" />
     <MESSAGE value="Fixed another performance bug, ready to test again" />
     <MESSAGE value="Testing revised confidence threshold method" />
     <MESSAGE value="Testing revised confidence threshold method 2" />
@@ -1358,7 +1364,8 @@
     <MESSAGE value="testing HvN curves, fixed cross-validation error" />
     <MESSAGE value="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting" />
     <MESSAGE value="further update" />
-    <option name="LAST_COMMIT_MESSAGE" value="further update" />
+    <MESSAGE value="fixed bug, should run smoothly now" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed bug, should run smoothly now" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1631,14 +1638,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsHvNClassifier/confidenceOf50BothClasses.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36855036">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/testResultsHvNClassifier/confidenceOf80BothClasses.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1765,7 +1764,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="1.4855072">
           <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1777,12 +1776,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.173913">
-          <caret line="107" column="17" selection-start-line="107" selection-start-column="17" selection-end-line="107" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="256" column="27" selection-start-line="256" selection-start-column="27" selection-end-line="256" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2865#2873#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsHvNClassifier/confidenceOf50BothClasses.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.768116">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

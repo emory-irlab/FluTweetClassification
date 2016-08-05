@@ -30,6 +30,7 @@ public class NGramModel {
     private long totalDocs;
     private String dataType;
     private static Pattern wordPattern = Pattern.compile("((\\w+'?\\w+)|\\w)([ !\"#$%&'()*+,-./:;<=>?@_`{|}~])");
+    private int nCores;
 
     /*
         Initializes an n-gram model from an int specifying the number of words per gram, a
@@ -37,8 +38,9 @@ public class NGramModel {
         to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of documents
         an n-gram must appear in within the training data in order to be considered
      */
-    public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq) throws IOException {
+    public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq, int nCores) throws IOException {
         N = n;
+        this.nCores = nCores;
         freqThreshold = freq;
         dataType = dT;
         if (stopWordPath.length() > 0) {
@@ -268,7 +270,7 @@ public class NGramModel {
         */
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
-            /*
+/*
             //counter tests
             if (tweetIDFs.get(key) >= 2.0) {
                 twoCounter++;
@@ -291,7 +293,7 @@ public class NGramModel {
             if (tweetIDFs.get(key) >= 100.0) {
                 hundredCounter++;
             }
-            */
+*/
 
             if (tweetIDFs.get(key) >= freqThreshold) {
                 tweetIDFs.put(key, totalDocs / tweetIDFs.get(key));
@@ -305,6 +307,83 @@ public class NGramModel {
 
         System.out.println();
     }
+
+
+    /*
+    //multithreaded version
+    private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
+        totalDocs = tweetVectors.length;
+
+        //split up tweetVectors
+        int left = tweetVectors.length;
+        int unit = left / nCores;
+        int vectorsForThis = 0;
+        ArrayList<TweetVector[]> splitVectorsForThreads = new ArrayList<TweetVector[]>();
+        //add to split vector list
+        for (int i = 0; i < nCores; i++) {
+
+        }
+
+
+        //go through all tweets
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        for (int i = 0; i < tweetVectors.length; i++) {
+            String text = readTweetsGetFeatures.process(returnAppropriateTextForm(tweetVectors[i]));
+
+            //annotate to get lemma annotations
+            Annotation document = new Annotation(text);
+            pipeline.annotate(document);
+            List<CoreLabel> tokens = document.get(TokensAnnotation.class);
+
+            //go through all words in the tweet
+            ArrayList<String> nGrams = getNGrams(tokens, stopWords);
+            Hashtable<String, Integer> nGramsThisTweet = new Hashtable<String, Integer>();
+
+            for (String nGram: nGrams) {
+                //Increment the count of the number of documents the word appears in
+                Enumeration<String> keys = tweetIDFs.keys();
+                boolean seenBefore = false;
+                while (keys.hasMoreElements()) {
+                    String key = keys.nextElement();
+                    if (key.equals(nGram)) {
+                        seenBefore = true;
+                        break;
+                    }
+                }
+                if (nGramsThisTweet.get(nGram) == null) { //ensures that each n-gram is only counted once per tweet
+                    if (seenBefore) tweetIDFs.put(nGram, tweetIDFs.get(nGram) + 1.0);
+                    else tweetIDFs.put(nGram, 1.0);
+                }
+
+                nGramsThisTweet.put(nGram, 1);
+            }
+        }
+
+        //get results from thread, add them to tweetIDFs and nGramsThisTweet
+
+        //Get idfs from totalDocs and the document count of each word that appears at least as many times
+        //as the frequency threshold requires
+        Enumeration<String> keys = tweetIDFs.keys();
+
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+
+
+            if (tweetIDFs.get(key) >= freqThreshold) {
+                tweetIDFs.put(key, totalDocs / tweetIDFs.get(key));
+            }
+            else {
+                tweetIDFs.remove(key);
+            }
+
+
+        }
+
+        System.out.println();
+    }
+    */
 
     /*
         Saves all idfs to a given path

@@ -84,7 +84,6 @@ public class readTweetsGetFeatures {
             }
         }
 
-
         //get tweet vector model
         TweetVector[] tweetVectors = new TweetVector[counter];
         readTweetsGetFeatures.tweetVectors = tweetVectors;
@@ -108,6 +107,10 @@ public class readTweetsGetFeatures {
             getVectorModelForTweet(tweetVectors[i], pipeline, classifierType, nCores);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
+
+        //free up space?
+        readTweetsGetFeatures.tweetVectors = null;
+
         return tweetVectors;
     }
 
@@ -259,26 +262,27 @@ public class readTweetsGetFeatures {
 
         //unigram features (tf-idf value of each word)
         if (tweetTextUnigramModel == null) {
-            tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+            tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
         }
         //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
         tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
+
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7);
+            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7, nCores);
         }
         //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
         tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases)); 
-
+/*
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModel == null) {
-            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7);
+            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
         }
         //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
 	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
-
+*/
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
         for (String template: phraseTemplates) {
@@ -296,9 +300,9 @@ public class readTweetsGetFeatures {
 
         //other features
         //addition 1
-        tweetVector.addFeature("Hashtag Count", TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));
-        tweetVector.addFeature("User Mention Count", TextFeatures.countInstancesOf(text, TextFeatures.userMentionPattern));
-        tweetVector.addFeature("URL Count", TextFeatures.countInstancesOf(text, TextFeatures.detectURL));
+        //tweetVector.addFeature("Hashtag Count", TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));
+        //tweetVector.addFeature("User Mention Count", TextFeatures.countInstancesOf(text, TextFeatures.userMentionPattern));
+        //tweetVector.addFeature("URL Count", TextFeatures.countInstancesOf(text, TextFeatures.detectURL));
 
         //Sentiment analysis
         /*

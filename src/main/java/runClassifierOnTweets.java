@@ -100,6 +100,9 @@ public class runClassifierOnTweets {
         TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToEvNTweets, "EventVsNonEvent", nCores);
         classifier.addToInstanceList(trainingTweetVectors);
 
+        //free up space?
+        trainingTweetVectors = null;
+
         //VARIOUS OPTIONS FOR RUNNING THE CLASSIFIER
 
         //train + test

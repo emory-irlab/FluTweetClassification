@@ -30,6 +30,7 @@ public class NGramModel {
     private long totalDocs;
     private String dataType;
     private static Pattern wordPattern = Pattern.compile("((\\w+'?\\w+)|\\w)([ !\"#$%&'()*+,-./:;<=>?@_`{|}~])");
+    private int nCores;
 
     /*
         Initializes an n-gram model from an int specifying the number of words per gram, a
@@ -37,8 +38,9 @@ public class NGramModel {
         to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of documents
         an n-gram must appear in within the training data in order to be considered
      */
-    public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq) throws IOException {
+    public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq, int nCores) throws IOException {
         N = n;
+        this.nCores = nCores;
         freqThreshold = freq;
         dataType = dT;
         if (stopWordPath.length() > 0) {
@@ -214,13 +216,13 @@ public class NGramModel {
     private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
         totalDocs = tweetVectors.length;
         //go through all tweets
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         for (int i = 0; i < tweetVectors.length; i++) {
             String text = readTweetsGetFeatures.process(returnAppropriateTextForm(tweetVectors[i]));
 
             //annotate to get lemma annotations
-            Properties props = new Properties();
-            props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
             Annotation document = new Annotation(text);
             pipeline.annotate(document);
             List<CoreLabel> tokens = document.get(TokensAnnotation.class);
@@ -257,16 +259,131 @@ public class NGramModel {
         //Get idfs from totalDocs and the document count of each word that appears at least as many times
         //as the frequency threshold requires
         Enumeration<String> keys = tweetIDFs.keys();
+        /*
+        int twoCounter = 0;
+        int threeCounter = 0;
+        int fiveCounter = 0;
+        int tenCounter = 0;
+        int twentyFiveCounter = 0;
+        int fiftyCounter = 0;
+        int hundredCounter = 0;
+        */
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
+/*
+            //counter tests
+            if (tweetIDFs.get(key) >= 2.0) {
+                twoCounter++;
+            }
+            if (tweetIDFs.get(key) >= 3.0) {
+                threeCounter++;
+            }
+            if (tweetIDFs.get(key) >= 5.0) {
+                fiveCounter++;
+            }
+            if (tweetIDFs.get(key) >= 10.0) {
+                tenCounter++;
+            }
+            if (tweetIDFs.get(key) >= 25.0) {
+                twentyFiveCounter++;
+            }
+            if (tweetIDFs.get(key) >= 50.0) {
+                fiftyCounter++;
+            }
+            if (tweetIDFs.get(key) >= 100.0) {
+                hundredCounter++;
+            }
+*/
+
             if (tweetIDFs.get(key) >= freqThreshold) {
                 tweetIDFs.put(key, totalDocs / tweetIDFs.get(key));
             }
             else {
                 tweetIDFs.remove(key);
             }
+
+
         }
+
+        System.out.println();
     }
+
+
+    /*
+    //multithreaded version
+    private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
+        totalDocs = tweetVectors.length;
+
+        //split up tweetVectors
+        int left = tweetVectors.length;
+        int unit = left / nCores;
+        int vectorsForThis = 0;
+        ArrayList<TweetVector[]> splitVectorsForThreads = new ArrayList<TweetVector[]>();
+        //add to split vector list
+        for (int i = 0; i < nCores; i++) {
+
+        }
+
+
+        //go through all tweets
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        for (int i = 0; i < tweetVectors.length; i++) {
+            String text = readTweetsGetFeatures.process(returnAppropriateTextForm(tweetVectors[i]));
+
+            //annotate to get lemma annotations
+            Annotation document = new Annotation(text);
+            pipeline.annotate(document);
+            List<CoreLabel> tokens = document.get(TokensAnnotation.class);
+
+            //go through all words in the tweet
+            ArrayList<String> nGrams = getNGrams(tokens, stopWords);
+            Hashtable<String, Integer> nGramsThisTweet = new Hashtable<String, Integer>();
+
+            for (String nGram: nGrams) {
+                //Increment the count of the number of documents the word appears in
+                Enumeration<String> keys = tweetIDFs.keys();
+                boolean seenBefore = false;
+                while (keys.hasMoreElements()) {
+                    String key = keys.nextElement();
+                    if (key.equals(nGram)) {
+                        seenBefore = true;
+                        break;
+                    }
+                }
+                if (nGramsThisTweet.get(nGram) == null) { //ensures that each n-gram is only counted once per tweet
+                    if (seenBefore) tweetIDFs.put(nGram, tweetIDFs.get(nGram) + 1.0);
+                    else tweetIDFs.put(nGram, 1.0);
+                }
+
+                nGramsThisTweet.put(nGram, 1);
+            }
+        }
+
+        //get results from thread, add them to tweetIDFs and nGramsThisTweet
+
+        //Get idfs from totalDocs and the document count of each word that appears at least as many times
+        //as the frequency threshold requires
+        Enumeration<String> keys = tweetIDFs.keys();
+
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+
+
+            if (tweetIDFs.get(key) >= freqThreshold) {
+                tweetIDFs.put(key, totalDocs / tweetIDFs.get(key));
+            }
+            else {
+                tweetIDFs.remove(key);
+            }
+
+
+        }
+
+        System.out.println();
+    }
+    */
 
     /*
         Saves all idfs to a given path
@@ -295,11 +412,12 @@ public class NGramModel {
         Returns the proper text field from the given TweetVector, given the data field
      */
     public String returnAppropriateTextForm(TweetVector tweetVector) {
+        String data = "";
         switch (dataType) {
-            case textName: return tweetVector.getTweetText();
-            case descriptionName: return tweetVector.getDescription();
+            case textName: data = tweetVector.getTweetText(); break;
+            case descriptionName: data = tweetVector.getDescription(); break;
         }
-        return "";
+        return readTweetsGetFeatures.process(data);
     }
 
     /*
@@ -343,8 +461,10 @@ public class NGramModel {
 
         for (String nGram: nGrams) {
             //create entry or increment
-            if (output.get(nGram) == null) output.put(nGram, 1.0);
-            else output.put(nGram, output.get(nGram) + 1.0);
+            if (tweetIDFs.get(nGram) != null) { //ensure that the ngram appears at least <threshold> times in the dataset
+                if (output.get(nGram) == null) output.put(nGram, 1.0);
+                else output.put(nGram, output.get(nGram) + 1.0);
+            }
         }
 
         return output;
@@ -366,14 +486,11 @@ public class NGramModel {
             //get the word's idf. If it is the default value of 0
             // (i.e. it has not appeared in enough documents to be stored), the word will not be in the output
             double idf = 0.0;
-            if (tweetIDFs.get(tfKey) != null) {
-                idf = tweetIDFs.get(tfKey);
-            }
+            idf = tweetIDFs.get(tfKey);
 
             //get tf-idf value
-            if (idf > 0.0) {
-                output.put(tfKey, input.get(tfKey) * idf);
-            }
+            output.put(tfKey+"-TFIDF", input.get(tfKey) * idf); //the addition of "TFIDF" allows for separate sets
+                                                                    //of TF and TF-IDF features to be used
         }
 
         return output;

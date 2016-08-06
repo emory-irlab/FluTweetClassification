@@ -1,0 +1,115 @@
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.8295668549905838
+--------------------
+
+Metrics for class none_of_the_above
+Recall: 0.8806818181818182
+Precision: 0.7093821510297483
+F1: 0.7858048162230672
+
+Metrics for class wedding
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class recovery_from_illness
+Recall: 0.9210526315789473
+Precision: 0.9459459459459459
+F1: 0.9333333333333332
+
+Metrics for class pregnancy
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class relocation
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class retirement
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class breakup_separation
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class falling_in_love
+Recall: 0.1
+Precision: 0.25
+F1: 0.14285714285714288
+
+Metrics for class major_accident
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class birth
+Recall: 0.1
+Precision: 1.0
+F1: 0.18181818181818182
+
+Metrics for class fight
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class job_loss
+Recall: 0.9640287769784173
+Precision: 0.9852941176470589
+F1: 0.9745454545454545
+
+Metrics for class major_illness
+Recall: 0.6923076923076923
+Precision: 0.9473684210526315
+F1: 0.7999999999999999
+
+Metrics for class rejection_from_major_institution
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class new_job
+Recall: 1.0
+Precision: 0.984
+F1: 0.9919354838709677
+
+Metrics for class death
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class admittance_into_major_institution
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class major_trip
+Recall: 0.8606965174129353
+Precision: 0.8160377358490566
+F1: 0.837772397094431
+
+Metrics for class divorce
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class engagement
+Recall: 0.125
+Precision: 1.0
+F1: 0.2222222222222222
+
+Metrics for class robbery
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class graduation
+Recall: 0.8589743589743589
+Precision: 0.9571428571428572
+F1: 0.9054054054054054

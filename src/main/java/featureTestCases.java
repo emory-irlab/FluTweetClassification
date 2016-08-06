@@ -59,7 +59,7 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1);
+        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1, 1);
 
         //--------------
         //TESTING
@@ -107,6 +107,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -154,7 +155,7 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1);
+        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1, 1);
 
 
         //--------------
@@ -192,8 +193,8 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("test") != 2.5 ||
-                    firstTweet.get("be") != 2.5) {
+            if (firstTweet.get("test-TFIDF") != 2.5 ||
+                    firstTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 2) {
@@ -201,9 +202,9 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("a") != ((double)10)/3 ||
-                    secondTweet.get("test") != 5.0 ||
-                    secondTweet.get("be") != 2.5) {
+            else if (secondTweet.get("a-TFIDF") != ((double)10)/3 ||
+                    secondTweet.get("test-TFIDF") != 5.0 ||
+                    secondTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 3) {
@@ -211,10 +212,10 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("can") != 2.5 ||
-                    thirdTweet.get("you") != 5.0 ||
-                    thirdTweet.get("Can") != 5.0 ||
-                    thirdTweet.get("i") != 5.0) {
+            else if (thirdTweet.get("can-TFIDF") != 2.5 ||
+                    thirdTweet.get("you-TFIDF") != 5.0 ||
+                    thirdTweet.get("Can-TFIDF") != 5.0 ||
+                    thirdTweet.get("i-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 4) {
@@ -222,9 +223,9 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("be") != 2.5 ||
-                    fourthTweet.get("you") != 2.5 ||
-                    fourthTweet.get("Disneyland") != 5.0) {
+            else if (fourthTweet.get("be-TFIDF") != 2.5 ||
+                    fourthTweet.get("you-TFIDF") != 2.5 ||
+                    fourthTweet.get("Disneyland-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 3) {
@@ -243,6 +244,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -285,7 +287,7 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 2);
+        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 2, 1);
 
 
         //--------------
@@ -323,8 +325,8 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("test") != 2.5 ||
-                    firstTweet.get("be") != 2.5) {
+            if (firstTweet.get("test-TFIDF") != 2.5 ||
+                    firstTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 2) {
@@ -332,9 +334,9 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("a") != ((double)10)/3 ||
-                    secondTweet.get("test") != 5.0 ||
-                    secondTweet.get("be") != 2.5) {
+            else if (secondTweet.get("a-TFIDF") != ((double)10)/3 ||
+                    secondTweet.get("test-TFIDF") != 5.0 ||
+                    secondTweet.get("be-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 3) {
@@ -342,8 +344,8 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("can") != 2.5 ||
-                    thirdTweet.get("you") != 5.0) {
+            else if (thirdTweet.get("can-TFIDF") != 2.5 ||
+                    thirdTweet.get("you-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 2) {
@@ -351,8 +353,8 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("be") != 2.5 ||
-                    fourthTweet.get("you") != 2.5) {
+            else if (fourthTweet.get("be-TFIDF") != 2.5 ||
+                    fourthTweet.get("you-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 2) {
@@ -371,6 +373,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -407,7 +410,7 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1, 1);
 
 
         //--------------
@@ -444,7 +447,7 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("test") != 2.5) {
+            if (firstTweet.get("test-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 1) {
@@ -452,7 +455,7 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("test") != 5.0) {
+            else if (secondTweet.get("test-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 1) {
@@ -460,7 +463,7 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("Can") != 5.0) {
+            else if (thirdTweet.get("Can-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 1) {
@@ -468,7 +471,7 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("Disneyland") != 5.0) {
+            else if (fourthTweet.get("Disneyland-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 1) {
@@ -487,6 +490,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -527,7 +531,7 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel bigramModel = new NGramModel(2, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+        NGramModel bigramModel = new NGramModel(2, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1, 1);
 
 
         //--------------
@@ -565,19 +569,19 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("observe chicken") != 2.5) {
+            if (firstTweet.get("observe chicken-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("table -post-") != 5.0) {
+            else if (firstTweet.get("table -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("chicken soup") != 5.0) {
+            else if (firstTweet.get("chicken soup-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("soup table") != 5.0) {
+            else if (firstTweet.get("soup table-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- observe") != 5.0) {
+            else if (firstTweet.get("-pre- observe-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 5) {
@@ -585,7 +589,7 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("Mr. Bingley") != 5.0) {
+            else if (secondTweet.get("Mr. Bingley-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 1) {
@@ -598,7 +602,7 @@ public class featureTestCases {
             }
 
             //tweet 4
-            else if (fourthTweet.get("table -post-") != 5.0) {
+            else if (fourthTweet.get("table -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (fourthTweet.size() != 1) {
@@ -606,7 +610,7 @@ public class featureTestCases {
             }
 
             //tweet 5
-            else if (fifthTweet.get("-pre- marshmallow") != 5.0) {
+            else if (fifthTweet.get("-pre- marshmallow-TFIDF") != 5.0) {
                 System.out.println("FAILED due to superfluous tf-idf values");
             }
             else if (fifthTweet.size() != 1) {
@@ -620,6 +624,7 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -637,7 +642,7 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel bigramModel = new NGramModel(6, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1);
+        NGramModel bigramModel = new NGramModel(6, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1, 1);
 
 
         //--------------
@@ -675,22 +680,22 @@ public class featureTestCases {
 
             //check the tf-idf values
             //tweet 1
-            if (firstTweet.get("-pre- -pre- -pre- -pre- -pre- potato") != 5.0) {
+            if (firstTweet.get("-pre- -pre- -pre- -pre- -pre- potato-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- -pre- -pre- -pre- potato -post-") != 5.0) {
+            else if (firstTweet.get("-pre- -pre- -pre- -pre- potato -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- -pre- -pre- potato -post- -post-") != 5.0) {
+            else if (firstTweet.get("-pre- -pre- -pre- potato -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- -pre- potato -post- -post- -post-") != 5.0) {
+            else if (firstTweet.get("-pre- -pre- potato -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("-pre- potato -post- -post- -post- -post-") != 5.0) {
+            else if (firstTweet.get("-pre- potato -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (firstTweet.get("potato -post- -post- -post- -post- -post-") != 5.0) {
+            else if (firstTweet.get("potato -post- -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (firstTweet.size() != 6) {
@@ -698,37 +703,37 @@ public class featureTestCases {
             }
 
             //tweet 2
-            else if (secondTweet.get("-pre- -pre- -pre- -pre- -pre- moose") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- -pre- -pre- -pre- moose-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- -pre- -pre- -pre- moose sheep") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- -pre- -pre- moose sheep-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- -pre- -pre- moose sheep cat") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- -pre- moose sheep cat-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- -pre- moose sheep cat dog") != 5.0) {
+            else if (secondTweet.get("-pre- -pre- moose sheep cat dog-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("-pre- moose sheep cat dog goat") != 5.0) {
+            else if (secondTweet.get("-pre- moose sheep cat dog goat-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("moose sheep cat dog goat pig") != 2.5) {
+            else if (secondTweet.get("moose sheep cat dog goat pig-TFIDF") != 2.5) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("sheep cat dog goat pig -post-") != 5.0) {
+            else if (secondTweet.get("sheep cat dog goat pig -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("cat dog goat pig -post- -post-") != 5.0) {
+            else if (secondTweet.get("cat dog goat pig -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("dog goat pig -post- -post- -post-") != 5.0) {
+            else if (secondTweet.get("dog goat pig -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("goat pig -post- -post- -post- -post-") != 5.0) {
+            else if (secondTweet.get("goat pig -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
-            else if (secondTweet.get("pig -post- -post- -post- -post- -post-") != 5.0) {
+            else if (secondTweet.get("pig -post- -post- -post- -post- -post--TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (secondTweet.size() != 11) {
@@ -736,7 +741,7 @@ public class featureTestCases {
             }
 
             //tweet 3
-            else if (thirdTweet.get("-pre- -pre- -pre- -pre- -pre- dance") != 5.0) {
+            else if (thirdTweet.get("-pre- -pre- -pre- -pre- -pre- dance-TFIDF") != 5.0) {
                 System.out.println("FAILED due to incorrect tf-idf values");
             }
             else if (thirdTweet.size() != 1) {
@@ -760,6 +765,163 @@ public class featureTestCases {
         catch (Exception e) {
             System.out.println("FAILED due to exception.");
             System.out.println(e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    //topic features
+    public static void testGetProbabilityOfWord() throws IOException {
+        System.out.println();
+        System.out.println("Testing topic features' get probability of word...");
+        String pathToCountFile = "data/topics/countFile.txt";
+        String pathToCompositionFile = "data/topics/tweet_composition.txt";
+        try {
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
+
+            if (model.getProbabilityOfWord("canadian") != ((double)5246)/103277747 ) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("dillpickles") != 0.0) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("fredconcha") != ((double)3)/103277747) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("consigo") != ((double)403)/103277747) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("consiga") != ((double)37)/103277747) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("video") != ((double)239395)/103277747) {
+                System.out.println("FAILED due to improper values");
+            }
+            else {
+                System.out.println("PASSED.");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("FAILED due to exception");
+            e.printStackTrace();
+        }
+    }
+
+    public static void testGetProbabilityOfWordWith10kMostCommon() {
+        System.out.println();
+        System.out.println("Testing topic features' get probability of word using some of the 10k most common words...");
+        String pathToCountFile = "data/topics/countFile.txt";
+        String pathToCompositionFile = "data/topics/tweet_composition.txt";
+        try {
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
+
+            if (model.getProbabilityOfWord("flag") != ((double)20078)/103277747 ) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("vegan") != ((double)4168)/103277747 ) {
+                System.out.println("FAILED due to improper values");
+            }
+            else if (model.getProbabilityOfWord("nigerians") != ((double)1466)/103277747 ) {
+                System.out.println("FAILED due to improper values");
+            }
+            else {
+                System.out.println("PASSED.");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("FAILED due to exception");
+            e.printStackTrace();
+        }
+    }
+
+    public static void testGetProbabilityOfTopic() {
+
+    }
+
+    public static void testGetProbabilityOfWordGivenTopic() throws IOException {
+        System.out.println();
+        System.out.println("Testing topic features get probability of word given topic method, 4 words and 100 topics used...");
+        try {
+            //set up the topic model with the given files
+            String pathToCountFile = "data/topics/countFile.txt";
+            String pathToCompositionFile = "data/topics/tweet_composition.txt";
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
+
+            if (Math.abs(model.getProbabilityOfWordGivenTopic("monday", 38) - 334.347136) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"monday\" given topic 38");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("monday", 42) - 302.14865) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"monday\" given topic 42");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("weekend", 39) - 236.868367) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"weekend\" given topic 39");
+            }
+            else if (model.getProbabilityOfWordGivenTopic("burrito", 19) != 0.0) {
+                System.out.println("FAILED. Incorrect value for word \"burrito\" given topic 19");
+            }
+            else {
+                System.out.println("PASSED.");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("FAILED due to exception.");
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void testGetProbabilityOfWordGivenTopicWith10kMostCommon() {
+        System.out.println();
+        System.out.println("Testing get probability of word given topic method, using some of the 10k most common words...");
+        //set up the topic model with the given files
+        String pathToCountFile = "data/topics/countFile.txt";
+        String pathToCompositionFile = "data/topics/tweet_composition.txt";
+        try {
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
+
+            if (Math.abs(model.getProbabilityOfWordGivenTopic("flag", 38) - 247.360892) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"flag\" given topic 38");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("chicago", 59) - 134.075720) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"chicago\" given topic 59");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("donut", 39) - 221.1675998) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"donut\" given topic 39");
+            }
+            else {
+                System.out.println("PASSED.");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("FAILED due to exception.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void testGetProbabilityOfWordGivenTopicWith10kMostCommonMultithreaded() {
+        System.out.println();
+        System.out.println("Testing get probability of word given topic method, using some of the 10k most common words and 4-core multithreading...");
+        //set up the topic model with the given files
+        String pathToCountFile = "data/topics/countFile.txt";
+        String pathToCompositionFile = "data/topics/tweet_composition.txt";
+        try {
+            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 4);
+
+            if (Math.abs(model.getProbabilityOfWordGivenTopic("flag", 38) - 247.360892) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"flag\" given topic 38");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("chicago", 59) - 134.075720) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"chicago\" given topic 59");
+            }
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("donut", 39) - 221.1675998) > 0.0001) {
+                System.out.println("FAILED. Incorrect value for word \"donut\" given topic 39");
+            }
+            else {
+                System.out.println("PASSED.");
+            }
+        }
+        catch (Exception e) {
+            System.out.println("FAILED due to exception.");
+            e.printStackTrace();
         }
     }
 
@@ -774,7 +936,7 @@ public class featureTestCases {
          //test the combination of the unigram tf and idf methods
         testUnigramFeaturesTFIDFThresholdOf1WithStopWords();
 
-        //test a tf-idf unigram model with a higher frequency threshold than 1
+         //test a tf-idf unigram model with a higher frequency threshold than 1
         testUnigramFeaturesTFIDFThresholdOf2WithStopWords();
 
          //test a tf-idf unigram model without stopwords
@@ -786,8 +948,22 @@ public class featureTestCases {
          //test 6-grams
         test6gramFeaturesTFIDFThresholdOf1NoStopWords();
 
-
          //test phrase template model
+
+         //test topic modeling
+        testGetProbabilityOfWord();
+        testGetProbabilityOfWordWith10kMostCommon();
+
+        //testGetProbabilityOfTopic();
+
+        testGetProbabilityOfWordGivenTopic();
+        testGetProbabilityOfWordGivenTopicWith10kMostCommon();
+
+        testGetProbabilityOfWordGivenTopicWith10kMostCommonMultithreaded();
+
+        //testGetNMostLikelyTopics();
+
+         //test other features
 
     }
 }

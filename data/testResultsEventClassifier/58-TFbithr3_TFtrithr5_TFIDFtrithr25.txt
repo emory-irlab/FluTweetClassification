@@ -1,0 +1,110 @@
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9429885977195439
+--------------------
+
+Metrics for class none_of_the_above
+Recall: 0.9926038720904938
+Precision: 0.9482543640897756
+F1: 0.9699224147093208
+
+Metrics for class wedding
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class pregnancy
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class relocation
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class retirement
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class breakup_separation
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class falling_in_love
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class major_accident
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class birth
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class fight
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class job_loss
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class major_illness
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class rejection_from_major_institution
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class new_job
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class death
+Recall: 0.0
+Precision: 1.0
+F1: 0.0
+
+Metrics for class admittance_into_major_institution
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class major_trip
+Recall: 0.5603448275862069
+Precision: 0.8441558441558441
+F1: 0.6735751295336787
+
+Metrics for class divorce
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class engagement
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class robbery
+Recall: 1.0
+Precision: 1.0
+F1: 1.0
+
+Metrics for class graduation
+Recall: 0.2625
+Precision: 0.9130434782608695
+F1: 0.4077669902912621

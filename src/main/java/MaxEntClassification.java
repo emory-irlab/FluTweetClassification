@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
@@ -10,14 +7,8 @@ import cc.mallet.classify.MaxEnt;
 import cc.mallet.classify.MaxEntTrainer;
 import cc.mallet.classify.Trial;
 import cc.mallet.classify.evaluate.AccuracyCoverage;
-import cc.mallet.types.CrossValidationIterator;
+import cc.mallet.types.*;
 import cc.mallet.pipe.Target2Label;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureVector;
-import cc.mallet.types.Instance;
-import cc.mallet.types.InstanceList;
-import cc.mallet.types.LabelAlphabet;
-import cc.mallet.types.Labeling;
 import cc.mallet.util.Randoms;
 
 public class MaxEntClassification {
@@ -28,15 +19,18 @@ public class MaxEntClassification {
 	 * */
 
 	//Alphabet of features that StanCore extracted from the data
-	public Alphabet dataAlphabet = new Alphabet(8);
+	//REMEMBER YOU CHANGED new Alphabet(8);
+	public Alphabet dataAlphabet = new Alphabet();
 	//Target Labels pertinent to this classifier
 	public LabelAlphabet targetAlphabet = new LabelAlphabet();
 	public InstanceList instances;
 	public Classifier maxEntClassifier;
 	public File classifierFile;
+	private int nCores;
+	private String path;
 
-	public MaxEntClassification(String pathToClassifier) throws IOException, ClassNotFoundException {
-
+	public MaxEntClassification(String pathToClassifier, int nCores) throws IOException, ClassNotFoundException {
+		path = pathToClassifier.substring(0, pathToClassifier.length()-4)+"-testindices.txt"; //TEMPORARY
 		classifierFile = new File(pathToClassifier);
 
 		/*
@@ -53,6 +47,47 @@ public class MaxEntClassification {
 		targetAlphabet.startGrowth();
 
 		instances = new InstanceList(dataAlphabet, targetAlphabet);
+
+		this.nCores = nCores;
+	}
+
+	public MaxEntClassification(File classFile, int nCores) throws IOException, ClassNotFoundException {
+
+		classifierFile = classFile;
+
+		/*
+		if (!classifierFile.exists()) {
+			classifierFile.createNewFile();
+		} else {
+			maxEntClassifier = loadClassifier(classifierFile);
+		}
+		*/
+		if (classifierFile.exists()) {
+			maxEntClassifier = loadClassifier(classifierFile);
+		}
+
+		targetAlphabet.startGrowth();
+
+		instances = new InstanceList(dataAlphabet, targetAlphabet);
+
+		this.nCores = nCores;
+	}
+
+	/*
+		==============
+	    |   METHODS  |
+	    ==============
+	 */
+
+	/*
+		Adds a set of TweetVectors to the instance list
+	 */
+	public void addToInstanceList(TweetVector[] tweetVectors) {
+		for (int i = 0; i < tweetVectors.length; i++) {
+			//add the current tweet
+			TweetVector currentTweet = tweetVectors[i];
+			addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
+		}
 	}
 
 	/*
@@ -80,133 +115,6 @@ public class MaxEntClassification {
 
 		Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
 		instances.add(new Target2Label(this.targetAlphabet).pipe(instance));
-	}
-	/*Attempt to retain same target alphabet
-	 *but remove all current instances.
-	 * */
-	public void clearInstances() {
-		instances = new InstanceList(dataAlphabet, targetAlphabet);
-	}
-
-	public Hashtable<String, Hashtable<String, Double>> evaluate(InstanceList testInstances) throws IOException {
-		Hashtable<String, Hashtable<String, Double>> output = new Hashtable<String, Hashtable<String, Double>>();
-
-		// Create an InstanceList that will contain the test data.
-		// In order to ensure compatibility, process instances
-		// with the pipe used to process the original training
-		// instances.
-		Trial trial = new Trial(maxEntClassifier, testInstances);
-
-		//getAreaUnderCurve(trial);
-
-		//printLabelings(testInstances);
-		//System.out.println();
-		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
-		//p.write("\n");
-		//((MaxEnt) maxEntClassifier).print();
-		//p.close();
-
-		//first entry is accuracy
-		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-		accuracy.put("Accuracy", trial.getAccuracy());
-		output.put("Accuracy", accuracy);
-
-		//other entries are figures for each class
-		for (int i = 0; i < targetAlphabet.size(); i++) {
-			Hashtable<String, Double> thisClass = new Hashtable<String, Double>();
-			thisClass.put("F1", trial.getF1(i));
-			thisClass.put("Precision", trial.getPrecision(i));
-			thisClass.put("Recall", trial.getRecall(i));
-			output.put(targetAlphabet.lookupLabel(i).toString(), thisClass);
-		}
-
-		return output;
-	}
-
-	/*
-		Returns a hashtable containing accuracy and performance metrics for the given test instances. For a given
-		desiredClass, instances are only classified as that class if they are classified with at least <threshold> confidence
-		for that class. Instances classified as desiredClass with a confidence level below the threshold are instead
-		classified as altClass.
-	 */
-	public Hashtable<String, Hashtable<String, Double>> evaluateWithConfidenceLevel(InstanceList testInstances, String desiredClass, double confidenceThreshold, String altClass) throws IOException {
-		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
-
-		int desiredInstances = 0;
-		int altInstances = 0;
-		int classifiedAsDesired = 0;
-		int classifiedAsAlt = 0;
-		int correctlyClassifiedAsDesired = 0;
-		int correctlyClassifiedAsAlt = 0;
-
-		//if the confidence with which an instance is classified as "person" meets or exceeds the threshold,
-		//label it as "person". Otherwise, label it as "organization". Calculate the accuracy, recall, precision, and
-		//F1 of the trial from this data
-		for (int j = 0; j < testInstances.size(); j++) {
-			Instance instance = testInstances.get(j);
-
-			//get the correct label
-			String correctLabel = instance.getLabeling().toString();
-
-			//get the label given by the classifier
-			String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, desiredClass, confidenceThreshold, altClass);
-
-			//get inferences from this data
-			if (correctLabel.equals(desiredClass)) {
-				desiredInstances++;
-
-				if (experimentalLabel.equals(desiredClass)) {
-					correctlyClassifiedAsDesired++;
-					classifiedAsDesired++;
-				}
-				else {
-					classifiedAsAlt++;
-				}
-			}
-			else if (correctLabel.equals(altClass)) {
-				altInstances++;
-
-				if (experimentalLabel.equals(altClass)) {
-					correctlyClassifiedAsAlt++;
-					classifiedAsAlt++;
-				}
-				else {
-					classifiedAsDesired++;
-				}
-			}
-		}
-		//calculate the actual figures
-		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
-		results.put("Accuracy", accuracy);
-
-		Hashtable<String, Double> desired = new Hashtable<String, Double>();
-		double desPrecision = ((double)correctlyClassifiedAsDesired)/classifiedAsDesired;
-		double desRecall = ((double)correctlyClassifiedAsDesired)/desiredInstances;
-		double desF1 = (2 * desPrecision * desRecall)/(desPrecision + desRecall);
-		desired.put("Precision", desPrecision);
-		desired.put("Recall", desRecall);
-		desired.put("F1", desF1);
-		results.put(desiredClass, desired);
-
-		Hashtable<String, Double> alt = new Hashtable<String, Double>();
-		double altPrecision = ((double)correctlyClassifiedAsAlt)/classifiedAsAlt;
-		double altRecall = ((double)correctlyClassifiedAsAlt)/altInstances;
-		double altF1 = (2 * altPrecision * altRecall)/(altPrecision + altRecall);
-		alt.put("Precision", altPrecision);
-		alt.put("Recall", altRecall);
-		alt.put("F1", altF1);
-		results.put(altClass, alt);
-
-
-			/*
-			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
-
-			//evaluate using the trimmed instance list
-			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = evaluate(trimmedTestInstances);
-			evaluate(trimmedTestInstances);
-			*/
-		return results;
 	}
 
 	/*
@@ -256,83 +164,126 @@ public class MaxEntClassification {
 	}
 
 	/*
-        Prints the results of an evaluate calculation
-     */
-	public void printEvaluated(Hashtable<String, Hashtable<String, Double>> input, int nTrials) {
-		System.out.println();
-		System.out.println("Average results for "+nTrials+" trials:");
-
-		System.out.println("--------------------");
-		System.out.println("ACCURACY: " + input.remove("Accuracy").get("Accuracy"));
-		System.out.println("--------------------");
-
-		Enumeration<String> classes = input.keys();
-
-		while (classes.hasMoreElements()) {
-			String className = classes.nextElement();
-			Hashtable<String, Double> values = input.get(className);
-			Enumeration<String> namesOfValues = values.keys();
-			System.out.println();
-			System.out.println("Metrics for class "+className);
-			while(namesOfValues.hasMoreElements()) {
-				String currName = namesOfValues.nextElement();
-				System.out.println(currName+": "+values.get(currName));
-			}
-		}
+		Attempt to retain same target alphabet
+ 		but remove all current instances.
+    */
+	public void clearInstances() {
+		instances = new InstanceList(dataAlphabet, targetAlphabet);
 	}
 
-	public void writeEvaluatedToFile(Hashtable<String, Hashtable<String, Double>> input, int nTrials, String path, boolean append) throws IOException {
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path), append));
+	/*
+        Performs n-fold cross-validation and prints out the results
+    */
+	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException, InterruptedException, ClassNotFoundException {
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
-		bufferedWriter.newLine();
-		bufferedWriter.write("Average results for "+nTrials+" trials:");
-		bufferedWriter.newLine();
+		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
+		while (crossValidationIterator.hasNext()) {
+			InstanceList[] split = crossValidationIterator.next();
+			InstanceList training = split[0];
+			InstanceList testing = split[1];
 
-		bufferedWriter.write("--------------------");
-		bufferedWriter.newLine();
-		bufferedWriter.write("ACCURACY: " + input.remove("Accuracy").get("Accuracy"));
-		bufferedWriter.newLine();
-		bufferedWriter.write("--------------------");
-		bufferedWriter.newLine();
+			trainClassifier(training);
+			System.out.println();
+			System.out.println("NEW TEST:");
 
-		Enumeration<String> classes = input.keys();
+			resultsOverTrials.add(evaluate(testing));
+		}
+		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, false);
+	}
 
-		while (classes.hasMoreElements()) {
-			String className = classes.nextElement();
-			Hashtable<String, Double> values = input.get(className);
-			Enumeration<String> namesOfValues = values.keys();
-			bufferedWriter.newLine();
-			bufferedWriter.write("Metrics for class "+className);
-			bufferedWriter.newLine();
-			while(namesOfValues.hasMoreElements()) {
-				String currName = namesOfValues.nextElement();
-				bufferedWriter.write(currName+": "+values.get(currName));
-				bufferedWriter.newLine();
-			}
+	/*
+		Performs n-fold cross-validation with the specified confidence threshold for the specified class.
+		Prints out the results
+	 */
+	public void crossValidate(int n_folds, String pathToResultsFile, String nullClass, double confidenceThreshold) throws IOException, InterruptedException, ClassNotFoundException {
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
+
+		while (crossValidationIterator.hasNext()) {
+			InstanceList[] split = crossValidationIterator.next();
+			InstanceList training = split[0];
+			InstanceList testing = split[1];
+
+			trainClassifier(training);
+			saveClassifier(classifierFile);
+			System.out.println();
+			System.out.println("NEW TEST:");
+
+			resultsOverTrials.add(testRunConfThresholdVersion(testing, nullClass, confidenceThreshold));
+			writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, true);
+		}
+		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
+	}
+
+	/*
+    	Performs n-fold cross-validation with multiple specified confidence thresholds for the specified class.
+    	Prints out the results
+ 	*/
+	public void crossValidate(int n_folds, String pathToResultsFileBase, String nullClass, double[] confidenceThresholds) throws IOException, InterruptedException, ClassNotFoundException {
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+		ArrayList<ArrayList<Hashtable<String, Hashtable<String, Double>>>> resultsOverTrialsForAllThresholds = new ArrayList<ArrayList<Hashtable<String, Hashtable<String, Double>>>>();
+		//add base results containers for each confidence threshold
+		for (int i = 0; i < confidenceThresholds.length; i++) {
+			resultsOverTrialsForAllThresholds.add(new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds));
 		}
 
-		bufferedWriter.close();
+		//run a number of trials equal to the number of folds
+		while (crossValidationIterator.hasNext()) {
+			InstanceList[] split = crossValidationIterator.next();
+			InstanceList training = split[0];
+			InstanceList testing = split[1];
+
+			trainClassifier(training);
+			saveClassifier(classifierFile);
+			System.out.println();
+			System.out.println("NEW TEST:");
+
+			//run an evaluation round for each confidence threshold
+			for (int i = 0; i < confidenceThresholds.length; i++) {
+				ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrialsThisThreshold = resultsOverTrialsForAllThresholds.get(i);
+				double thisConfidenceThreshold = confidenceThresholds[i];
+				int stoppingPoint = pathToResultsFileBase.length() - 4;
+				String thisPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + thisConfidenceThreshold + pathToResultsFileBase.substring(stoppingPoint);
+
+				resultsOverTrialsThisThreshold.add(testRunConfThresholdVersion(testing, nullClass, thisConfidenceThreshold));
+				writeTestResultsToFile(resultsOverTrialsThisThreshold.get(resultsOverTrialsThisThreshold.size() - 1), 1, thisPathToResultsFile, true);
+			}
+		}
+		//print out results for each confidence threshold
+		for (int i = 0; i < confidenceThresholds.length; i++) {
+			ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrialsThisThreshold = resultsOverTrialsForAllThresholds.get(i);
+			double thisConfidenceThreshold = confidenceThresholds[i];
+			int stoppingPoint = pathToResultsFileBase.length() - 4;
+			String thisPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + thisConfidenceThreshold + pathToResultsFileBase.substring(stoppingPoint);
+
+			//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
+			writeTestResultsToFile(averageTrialResults(resultsOverTrialsThisThreshold), n_folds, thisPathToResultsFile, true);
+		}
 	}
 
 	/*
 	public void evaluate(InstanceList testInstances) throws IOException {
 
-        // Create an InstanceList that will contain the test data.                                         
-        // In order to ensure compatibility, process instances                                             
-        // with the pipe used to process the original training                                            
+        // Create an InstanceList that will contain the test data.
+        // In order to ensure compatibility, process instances
+        // with the pipe used to process the original training
         // instances.
-		
+
         Trial trial = new Trial(maxEntClassifier, testInstances);
-        
+
         getAreaUnderCurve(trial);
-        
+
         PrintWriter p = new PrintWriter(System.out);
     	((MaxEnt) maxEntClassifier).print(p);
     	System.out.println("--------------------");
         System.out.println("ACCURACY: " + trial.getAccuracy());
         System.out.println("--------------------");
         System.out.println();
-        
+
         for (int i = 0; i < targetAlphabet.size(); i++) {
         	System.out.println("Metrics for class " + targetAlphabet.lookupLabel(i));
         	System.out.println("F1: " + trial.getF1(i));
@@ -340,17 +291,17 @@ public class MaxEntClassification {
         	System.out.println("Recall: " + trial.getRecall(i));
         	System.out.println();
         }
-        
+
         runClassifierOnTweets.endRunTime = System.currentTimeMillis();
         System.out.println("------------------------------");
         System.out.println("FINISHED RUN TME IN " + (runClassifierOnTweets.endRunTime - runClassifierOnTweets.startRunTime)/1000 + " SECONDS.");
         System.out.println("------------------------------");
         System.out.println();
-        
+
         p.close();
     }
     */
-	
+
 	/*
 	 * Method to be used after first training the classifier.
 	 * It removes all instances in "instances" that are below
@@ -408,6 +359,38 @@ public class MaxEntClassification {
 	}
 	*/
 
+	public Hashtable<String, Hashtable<String, Double>> evaluate(InstanceList testInstances) throws IOException {
+		Hashtable<String, Hashtable<String, Double>> output = new Hashtable<String, Hashtable<String, Double>>();
+		// Create an InstanceList that will contain the test data.
+		// In order to ensure compatibility, process instances
+		// with the pipe used to process the original training
+		// instances.
+		Trial trial = new Trial(maxEntClassifier, testInstances);
+
+		//getAreaUnderCurve(trial);
+
+		//printLabelings(testInstances);
+		// System.out.println();
+		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
+		// p.write("\n");
+		((MaxEnt) maxEntClassifier).print();
+		//p.close();
+		//first entry is accuracy
+
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", trial.getAccuracy());
+		output.put("Accuracy", accuracy);
+		//other entries are figures for each class
+		for (int i = 0; i < targetAlphabet.size(); i++) {
+			Hashtable<String, Double> thisClass = new Hashtable<String, Double>();
+			thisClass.put("F1", trial.getF1(i));
+			thisClass.put("Precision", trial.getPrecision(i));
+			thisClass.put("Recall", trial.getRecall(i));
+			output.put(targetAlphabet.lookupLabel(i).toString(), thisClass);
+		}
+		return output;
+	}
+
 	public void getAreaUnderCurve(Trial t) {
 
 		AccuracyCoverage a = new AccuracyCoverage(t, "AUC", "Labelings");
@@ -415,10 +398,60 @@ public class MaxEntClassification {
 		a.displayGraph();
 		System.out.println(a.cumulativeAccuracy());
 	}
+
 	/*
-    From the given data alphabet, count the number of features in the input table that have not been
-    seen before
-    */
+    Labels a given Instance as desiredClass if the classifier's confidence rating for that class meets or exceeds
+    the confidence threshold. If the confidence rating for desiredClass is below the threshold but the Instance
+    is labeled as desiredClass, label the Instance with the highest-confidence class that isn't desiredClass.
+	*
+	public String getLabelConfThresholdForDesiredClass(Instance instance, String desiredClass, double conf) {
+		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
+		for (int rank = 0; rank < labeling.numLocations(); rank++) {
+			//find the confidence level for desiredClass
+			if (labeling.getLabelAtRank(rank).toString().equals(desiredClass)) {
+				//if it exceeds the threshold, label the instance as the desired class
+				if (labeling.getValueAtRank(rank) >= conf) {
+					return desiredClass;
+				}
+				//if it doesn't meet the threshold but is classified as the desired class anyway, label the instance
+				//with a different class
+				else if (rank == 0){
+					return labeling.getLabelAtRank(1).toString();
+				}
+				else {
+					return labeling.getLabelAtRank(0).toString();
+				}
+			}
+
+					/*
+					if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
+						//trimmedTestInstances.add(testInstances.get(i));
+					}
+					*
+		}
+		//by default, return the label returned by the classifier
+		return labeling.getLabelAtRank(0).toString();
+	}
+	*/
+
+	/*
+		Labels a given Instance. If the classifier's suggested labeling is made with a confidence
+		level below the threshold (conf), instead label the Instance as the nullClass
+	*/
+	public String getLabelConfThresholdForDesiredClass(Instance instance, String nullClass, double conf) {
+		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
+		if (labeling.getValueAtRank(0) >= conf) {
+			return labeling.getLabelAtRank(0).toString();
+		}
+		else {
+			return nullClass;
+		}
+	}
+
+	/*
+    	From the given data alphabet, count the number of features in the input table that have not been
+    	seen before
+	*/
 	public int getNumOfNewFeatures(Hashtable<String, Double> input) {
 		int newFeats = 0;
 		Enumeration<String> inputKeys = input.keys();
@@ -438,127 +471,6 @@ public class MaxEntClassification {
 
 		return newFeats;
 	}
-
-	/*
-        Performs n-fold cross-validation and prints out the results
-    */
-	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException {
-		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
-		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
-		while (crossValidationIterator.hasNext()) {
-			InstanceList[] split = crossValidationIterator.next();
-			trainClassifier(split[0]);
-			System.out.println();
-			System.out.println("NEW TEST:");
-			resultsOverTrials.add(evaluate(split[1]));
-		}
-		//printEvaluated(averageTrialResults(resultsOverTrials), n_folds);
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, false);
-	}
-
-	/*
-		Runs n trials on the data
-	 */
-	public void runNTrials(int n, String pathToResultsFile) throws IOException {
-		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
-		//save the instances the classifier started out with
-		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
-		for (Instance instance: instances) {
-			instancesCopy.add(instance);
-		}
-
-		for (int i = 0; i < n; i++) {
-			//ensure that the classifier starts each trial with the same instances it started out with
-			clearInstances();
-			for (Instance instance: instancesCopy) {
-				instances.add(instance);
-			}
-
-			InstanceList testInstances = split(instances);
-			trainClassifier(instances);
-			saveClassifier(classifierFile);
-
-			Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
-			resultsOverTrials.add(results);
-		}
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
-	}
-
-	/*
-		Runs n trials on the data at a given threshold of confidence for the desired class. Any instance that is not
-		classified as the desired class with a confidence at or above the threshold is classified as the altClass.
-
-		TODO: possibly generalize to all different class names
-	 */
-	public void runNTrials(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException {
-		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
-		//save the instances the classifier started out with
-		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
-		for (Instance instance: instances) {
-			instancesCopy.add(instance);
-		}
-
-		//run n trials
-		for (int i = 0; i < n; i++) {
-			//ensure that the classifier starts each trial with the same instances it started out with
-			clearInstances();
-			for (Instance instance: instancesCopy) {
-				instances.add(instance);
-			}
-			//train the classifier
-			InstanceList testInstances = split(instances);
-			//InstanceList trimmedTestInstances = new InstanceList(dataAlphabet, targetAlphabet); //to contain only the instances passing the test
-			trainClassifier(instances);
-			saveClassifier(classifierFile);
-
-			Hashtable<String, Hashtable<String, Double>> resultsForTrial = evaluateWithConfidenceLevel(testInstances, desiredClass, confidenceThreshold, altClass);
-			resultsOverTrials.add(resultsForTrial);
-		}
-		clearInstances();
-		//include a header to describe the confidence threshold
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToResultsFile), false));
-		bufferedWriter.write("Using a threshold of: "+confidenceThreshold);
-		bufferedWriter.newLine();
-		bufferedWriter.close();
-		//write the averaged results
-		writeEvaluatedToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
-	}
-
-	/*
-		Labels a given Instance as desiredClass if the classifier's confidence rating for that class meets or exceeds
-		the confidence threshold. If the confidence rating for desiredClass is below the threshold but the Instance
-		is labeled as desiredClass, label the Instance with altClass. If neither of these conditions applies,
-		label the Instance with the label returned by the classifier.
-	*/
-	public String getLabelConfThresholdForDesiredClass(Instance instance, String desiredClass, double conf, String altClass) {
-		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
-		for (int rank = 0; rank < labeling.numLocations(); rank++) {
-			//find the confidence level for desiredClass
-			if (labeling.getLabelAtRank(rank).toString().equals(desiredClass)) {
-				//if it exceeds the threshold, label the instance as the desired class
-				if (labeling.getValueAtRank(rank) >= conf) {
-					return desiredClass;
-				}
-				//if it doesn't meet the threshold but is classified as the desired class anyway, label the instance
-				//with the altClass
-				else if (rank == 0){
-					return altClass;
-				}
-				else {
-					return labeling.getLabelAtRank(0).toString();
-				}
-			}
-
-					/*
-					if (labeling.getValueAtRank(rank) >= confidenceThreshold) {
-						//trimmedTestInstances.add(testInstances.get(i));
-					}
-					*/
-		}
-		//by default, return the label returned by the classifier
-		return labeling.getLabelAtRank(0).toString();
-	}
-
 
 	public Classifier loadClassifier(File serializedFile)
 			throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -597,6 +509,105 @@ public class MaxEntClassification {
 		}
 	}
 
+	/*
+		Prints the results of a testRun calculation
+	*/
+	public void printTestResults(Hashtable<String, Hashtable<String, Double>> input, int nTrials) {
+		System.out.println();
+		System.out.println("Average results for "+nTrials+" trials:");
+
+		System.out.println("--------------------");
+		System.out.println("ACCURACY: " + input.remove("Accuracy").get("Accuracy"));
+		System.out.println("--------------------");
+
+		Enumeration<String> classes = input.keys();
+
+		while (classes.hasMoreElements()) {
+			String className = classes.nextElement();
+			Hashtable<String, Double> values = input.get(className);
+			Enumeration<String> namesOfValues = values.keys();
+			System.out.println();
+			System.out.println("Metrics for class "+className);
+			while(namesOfValues.hasMoreElements()) {
+				String currName = namesOfValues.nextElement();
+				System.out.println(currName+": "+values.get(currName));
+			}
+		}
+	}
+
+
+	/*
+    	Runs n trials on the data, requiring that each instance be classified at or above the threshold confidence
+    	level.
+ 	*/
+	public void runNSplits(int n, String pathToResultsFile, String nullClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
+		//save the instances the classifier started out with
+		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
+		for (Instance instance: instances) {
+			instancesCopy.add(instance);
+		}
+
+		for (int i = 0; i < n; i++) {
+			//ensure that the classifier starts each trial with the same instances it started out with
+			clearInstances();
+			for (Instance instance: instancesCopy) {
+				instances.add(instance);
+			}
+
+			InstanceList testInstances = split(instances);
+			trainClassifier(instances);
+			saveClassifier(classifierFile);
+
+			Hashtable<String, Hashtable<String, Double>> results = testRunConfThresholdVersion(testInstances, nullClass, confThreshold);
+			//Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
+			resultsOverTrials.add(results);
+
+		}
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
+	}
+
+	/*
+		Runs n trials on the data at a given threshold of confidence for the desired class. Any instance that is not
+		classified as the desired class with a confidence at or above the threshold is classified as the altClass.
+
+		ONLY WORKS WITH BINARY CLASSES
+		TODO: possibly generalize to all different class names
+	 */
+	public void runNSplits(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
+		//save the instances the classifier started out with
+		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
+		for (Instance instance: instances) {
+			instancesCopy.add(instance);
+		}
+
+		//run n trials
+		for (int i = 0; i < n; i++) {
+			//ensure that the classifier starts each trial with the same instances it started out with
+			clearInstances();
+			for (Instance instance: instancesCopy) {
+				instances.add(instance);
+			}
+			//train the classifier
+			InstanceList testInstances = split(instances);
+			//InstanceList trimmedTestInstances = new InstanceList(dataAlphabet, targetAlphabet); //to contain only the instances passing the test
+			trainClassifier(instances);
+			saveClassifier(classifierFile);
+
+			Hashtable<String, Hashtable<String, Double>> resultsForTrial = testRun(testInstances, desiredClass, confidenceThreshold, altClass);
+			resultsOverTrials.add(resultsForTrial);
+		}
+		clearInstances();
+		//include a header to describe the confidence threshold
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToResultsFile), false));
+		bufferedWriter.write("Using a threshold of: "+confidenceThreshold);
+		bufferedWriter.newLine();
+		bufferedWriter.close();
+		//write the averaged results
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
+	}
+
 	public void saveClassifier(File serializedFile)
 			throws IOException {
 
@@ -610,32 +621,552 @@ public class MaxEntClassification {
 		oos.close();
 	}
 
-	public InstanceList split(InstanceList instances) {
+	public void setTargetAlphabet(String target) {
+		targetAlphabet.lookupIndex(target, true);
+		targetAlphabet.lookupIndex("Not " + target + " class", true);
+		targetAlphabet.stopGrowth();
+	}
 
-		int TRAINING = 0;
-		int TESTING = 1;
-		int VALIDATION = 2;
+	public InstanceList split(InstanceList instances) throws IOException {
+		try {
+			int TRAINING = 0;
+			int TESTING = 1;
+			int VALIDATION = 2;
 
-		// The division takes place by creating a copy of the list,
-		//  randomly shuffling the copy, and then allocating
-		//  instances to each sub-list based on the provided proportions.
+			// The division takes place by creating a copy of the list,
+			//  randomly shuffling the copy, and then allocating
+			//  instances to each sub-list based on the provided proportions.
 
-		/*InstanceList[] instanceLists =
+/*		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
-						new double[] {0.5, 0.5, 0.0}); *///better than 0.8, 0.2 split
+						new double[] {0.5, 0.5, 0.0});*/
+//better than 0.8, 0.2 split
+			Randoms randoms = new Randoms();
+			int cutoffPt = instances.size() * 4 / 5;
+			ArrayList<Integer> arr = new ArrayList<Integer>();
+
+			java.util.Random random = new Random();
+			random.nextInt(instances.size());
+			while (arr.size() < instances.size()) {
+				int proposed = random.nextInt(instances.size());
+				int seen = 0;
+				for (Integer intY : arr) {
+					if (intY == proposed) {
+						break;
+					}
+					seen++;
+				}
+				if (seen == arr.size()) {
+					arr.add(proposed);
+				}
+			}
+
+			InstanceList newThingy = new InstanceList(dataAlphabet, targetAlphabet);
+			//add everything just because
+			for (int i = 0; i < instances.size(); i++) {
+				newThingy.add(instances.get(i));
+			}
+			for (int i = 0; i < arr.size(); i++) {
+				newThingy.set(i, instances.get(arr.get(i)));
+			}
+/*
 		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
 						new double[] {0.8, 0.2, 0.0});
+						*/
+			instances = newThingy;
+			InstanceList[] instanceLists = instances.splitInOrder(new double[]{0.8, 0.2, 0.0});
+			//  The third position is for the "validation" set,
+			//  which is a set of instances not used directly
+			//  for training, but available for determining
+			//  when to stop training and for estimating optimal
+			//  settings of nuisance parameters.
+			//  Most Mallet ClassifierTrainers can not currently take advantage
+			//  of validation sets.
+			this.instances = instanceLists[TRAINING];
 
-		//  The third position is for the "validation" set,
-		//  which is a set of instances not used directly
-		//  for training, but available for determining
-		//  when to stop training and for estimating optimal
-		//  settings of nuisance parameters.
-		//  Most Mallet ClassifierTrainers can not currently take advantage
-		//  of validation sets.
-		this.instances = instanceLists[TRAINING];
-		return instanceLists[TESTING];
+			//TEMPORARY ADDITION FOR TESTS
+			BufferedWriter writeOutTestInstanceIndices = new BufferedWriter(new FileWriter(new File(path)));
+			for (int i = cutoffPt; i < arr.size(); i++) {
+				//print all ints from arr at the cutoff pt, these are the test indices
+				writeOutTestInstanceIndices.write(Integer.toString(arr.get(i)));
+				writeOutTestInstanceIndices.newLine();
+			}
+			writeOutTestInstanceIndices.close();
+			return instanceLists[TESTING];
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException {
+		Hashtable<String, Hashtable<String, Double>> output = new Hashtable<String, Hashtable<String, Double>>();
+
+		// Create an InstanceList that will contain the test data.
+		// In order to ensure compatibility, process instances
+		// with the pipe used to process the original training
+		// instances.
+		Trial trial = new Trial(maxEntClassifier, testInstances);
+
+		//getAreaUnderCurve(trial);
+
+		//printLabelings(testInstances);
+		//System.out.println();
+		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
+		//p.write("\n");
+		//((MaxEnt) maxEntClassifier).print();
+		//p.close();
+
+		//first entry is accuracy
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", trial.getAccuracy());
+		output.put("Accuracy", accuracy);
+
+		//other entries are figures for each class
+		for (int i = 0; i < targetAlphabet.size(); i++) {
+			Hashtable<String, Double> thisClass = new Hashtable<String, Double>();
+			thisClass.put("F1", trial.getF1(i));
+			thisClass.put("Precision", trial.getPrecision(i));
+			thisClass.put("Recall", trial.getRecall(i));
+			output.put(targetAlphabet.lookupLabel(i).toString(), thisClass);
+		}
+
+		return output;
+	}*/
+
+	/*
+    	Returns a hashtable containing accuracy and performance metrics for the given test instances. Requires that each instance
+    	is classified with a confidence above the specified threshold, or else it will be classified as the nullClass.
+
+    	Multithreads to improve speed
+	*/
+	public Hashtable<String, Hashtable<String, Double>> testRunConfThresholdVersion(InstanceList testInstances, String nullClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
+		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
+
+		Hashtable<String, Hashtable<String, Integer>> figuresFromThreads = new Hashtable<String, Hashtable<String, Integer>>();
+
+		//split the task into several threads, each classifying a sub-section of the test instances
+		ArrayList<MulticlassMaxEntTestThread> threads = new ArrayList<MulticlassMaxEntTestThread>();
+
+		//split the InstanceList
+		//double coreProportion = 1.0 / nCores;
+		double coreProportion = 1.0;
+		//double[] proportions = new double[nCores];
+		double[] proportions = new double[1];
+		for (int i = 0; i < proportions.length; i++) {
+			proportions[i] = coreProportion;
+		}
+		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
+
+		//create and run threads
+		int counter = 0;
+		for (InstanceList list: sections) {
+			InstanceList newList = new InstanceList(list.getDataAlphabet(), list.getTargetAlphabet());
+			for (Instance i: list) {
+				newList.add(i);
+			}
+			counter++;
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread"+counter, newList, new MaxEntClassification(classifierFile, proportions.length), nullClass, confThreshold); //might want to change proportions.length to 1
+			threads.add(thread);
+			thread.start();
+		}
+
+		/*
+		int unit = testInstances.size() / nCores;
+		int lastStart = 0;
+		int lastEnd = unit;
+		for (int i = 0; i < nCores; i++) {
+			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
+			if (i == nCores - 1) {
+				lastEnd = testInstances.size();
+			}
+
+			//create the next thread
+			InstanceList thisThread = new InstanceList()
+
+			//set the pointers for the next thread
+			lastStart = lastEnd;
+			lastEnd += unit;
+		}
+
+		for (int i = unit; i < testInstances.size(); i += unit) {
+
+			lastStart = i;
+		}
+		*/
+
+		//run the various threads, wait for them to finish, and collect their data
+		for (MulticlassMaxEntTestThread thread: threads) {
+			thread.thread.join();
+
+			//each thread contains figures for various classes; add them to the cumulative figures in figuresFromThreads
+			Enumeration<String> classes = thread.results.keys();
+			while (classes.hasMoreElements()) {
+				//add figures from each class in the thread's figures. If the cumulative does not have this class,
+				//initialize an entry for this class's figures. Otherwise, add to the existing entry
+				String currClass = classes.nextElement();
+
+				//If the cumulative does not have this class, initialize an entry for this class's figures.
+				Hashtable<String, Integer> currClassFigures = thread.results.get(currClass);
+				if (!figuresFromThreads.containsKey(currClass)) {
+					figuresFromThreads.put(currClass, currClassFigures);
+				}
+				//Otherwise, add to the existing entry
+				else {
+					//get the cumulative figure for this class
+					Hashtable<String, Integer> cumulativeFiguresForCurrClass = figuresFromThreads.get(currClass);
+
+					//add all values in currClassFigures to those in cumulativeFiguresForCurrClass
+					Enumeration<String> figureNames = currClassFigures.keys();
+					while(figureNames.hasMoreElements()) {
+						String currFig = figureNames.nextElement();
+						int newCumulativeValue = cumulativeFiguresForCurrClass.get(currFig) + currClassFigures.get(currFig);
+						cumulativeFiguresForCurrClass.put(currFig, newCumulativeValue);
+					}
+				}
+			}
+		}
+
+		//calculate performance metrics from figures for each class
+		int instancesOfClass;
+		int classifiedAsClass;
+		int correctlyClassifiedAsClass;
+		double precision;
+		double recall;
+		double F1;
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+
+		//ACCURACY
+		/*
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
+		results.put("Accuracy", accuracy);
+		*/
+
+		Enumeration<String> classes = figuresFromThreads.keys();
+		while (classes.hasMoreElements()) {
+			String currClass = classes.nextElement();
+
+			//get figures
+			Hashtable<String, Integer> figuresForClass = figuresFromThreads.get(currClass);
+			instancesOfClass = figuresForClass.get("instances");
+			classifiedAsClass = figuresForClass.get("classified as");
+			correctlyClassifiedAsClass = figuresForClass.get("correctly classified as");
+
+			//update accuracy, as this takes into account all classes
+			if (accuracy.size() == 0) { //initialize if this is the first class
+				accuracy.put("Accuracy", (double)correctlyClassifiedAsClass);
+			}
+			else { //otherwise, update
+				accuracy.put("Accuracy", ((double)correctlyClassifiedAsClass) + accuracy.get("Accuracy"));
+			}
+
+			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
+			if (classifiedAsClass > 0) {
+				precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
+			}
+			else {
+				precision = 0.0;
+			}
+			if (instancesOfClass > 0) {
+				recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
+			}
+			else {
+				recall = 0.0;
+			}
+			F1 = (2 * precision * recall) / (precision + recall);
+			if (precision == 0.0 && recall == 0.0) {
+				F1 = 0.0;
+			}
+			metrics.put("Precision", precision);
+			metrics.put("Recall", recall);
+			metrics.put("F1", F1);
+			results.put(currClass, metrics);
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//test run using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
+			testRun(trimmedTestInstances);
+			*/
+
+		}
+		//finally get accuracy
+		accuracy.put("Accuracy", accuracy.get("Accuracy")/testInstances.size());
+		results.put("Accuracy", accuracy);
+
+		return results;
+	}
+
+	/*
+    	Returns a hashtable containing accuracy and performance metrics for the given test instances. Multithreads to
+    	improve speed
+    *
+	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances, String desiredClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
+		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
+
+		Hashtable<String, Hashtable<String, Integer>> figuresFromThreads = new Hashtable<String, Hashtable<String, Integer>>();
+
+		//split the task into several threads, each classifying a sub-section of the test instances
+		ArrayList<MulticlassMaxEntTestThread> threads = new ArrayList<MulticlassMaxEntTestThread>();
+
+		//split the InstanceList
+		double coreProportion = 1.0 / nCores;
+		double[] proportions = new double[nCores];
+		for (int i = 0; i < nCores; i++) {
+			proportions[i] = coreProportion;
+		}
+		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
+
+		//create and run threads
+		for (InstanceList list: sections) {
+			InstanceList newList = new InstanceList(list.getDataAlphabet(), list.getTargetAlphabet());
+			for (Instance i: list) {
+				newList.add(i);
+			}
+
+			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread", newList, new MaxEntClassification(classifierFile, nCores), desiredClass, confThreshold);
+			threads.add(thread);
+			thread.start();
+		}
+
+		/*
+		int unit = testInstances.size() / nCores;
+		int lastStart = 0;
+		int lastEnd = unit;
+		for (int i = 0; i < nCores; i++) {
+			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
+			if (i == nCores - 1) {
+				lastEnd = testInstances.size();
+			}
+
+			//create the next thread
+			InstanceList thisThread = new InstanceList()
+
+			//set the pointers for the next thread
+			lastStart = lastEnd;
+			lastEnd += unit;
+		}
+
+		for (int i = unit; i < testInstances.size(); i += unit) {
+
+			lastStart = i;
+		}
+		*
+
+		//run the various threads, wait for them to finish, and collect their data
+		for (MulticlassMaxEntTestThread thread: threads) {
+			thread.thread.join();
+
+			//each thread contains figures for various classes; add them to the cumulative figures in figuresFromThreads
+			Enumeration<String> classes = thread.results.keys();
+			while (classes.hasMoreElements()) {
+				//add figures from each class in the thread's figures. If the cumulative does not have this class,
+				//initialize an entry for this class's figures. Otherwise, add to the existing entry
+				String currClass = classes.nextElement();
+
+				//If the cumulative does not have this class, initialize an entry for this class's figures.
+				Hashtable<String, Integer> currClassFigures = thread.results.get(currClass);
+				if (!figuresFromThreads.containsKey(currClass)) {
+					figuresFromThreads.put(currClass, currClassFigures);
+				}
+				//Otherwise, add to the existing entry
+				else {
+					//get the cumulative figure for this class
+					Hashtable<String, Integer> cumulativeFiguresForCurrClass = figuresFromThreads.get(currClass);
+
+					//add all values in currClassFigures to those in cumulativeFiguresForCurrClass
+					Enumeration<String> figureNames = currClassFigures.keys();
+					while(figureNames.hasMoreElements()) {
+						String currFig = figureNames.nextElement();
+						int newCumulativeValue = cumulativeFiguresForCurrClass.get(currFig) + currClassFigures.get(currFig);
+						cumulativeFiguresForCurrClass.put(currFig, newCumulativeValue);
+					}
+				}
+			}
+		}
+
+		//calculate performance metrics from figures for each class
+		int instancesOfClass;
+		int classifiedAsClass;
+		int correctlyClassifiedAsClass;
+		double precision;
+		double recall;
+		double F1;
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+
+		//ACCURACY
+		/*
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
+		results.put("Accuracy", accuracy);
+		*
+
+		Enumeration<String> classes = figuresFromThreads.keys();
+		while (classes.hasMoreElements()) {
+			String currClass = classes.nextElement();
+
+			//get figures
+			Hashtable<String, Integer> figuresForClass = figuresFromThreads.get(currClass);
+			instancesOfClass = figuresForClass.get("instances");
+			classifiedAsClass = figuresForClass.get("classified as");
+			correctlyClassifiedAsClass = figuresForClass.get("correctly classified as");
+
+			//update accuracy, as this takes into account all classes
+			if (accuracy.size() == 0) { //initialize if this is the first class
+				accuracy.put("Accuracy", (double)correctlyClassifiedAsClass);
+			}
+			else { //otherwise, update
+				accuracy.put("Accuracy", ((double)correctlyClassifiedAsClass) + accuracy.get("Accuracy"));
+			}
+
+			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
+			if (classifiedAsClass > 0) {
+				precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
+			}
+			else {
+				precision = 0.0;
+			}
+			if (instancesOfClass > 0) {
+				recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
+			}
+			else {
+				recall = 0.0;
+			}
+			F1 = (2 * precision * recall) / (precision + recall);
+			if (precision == 0.0 && recall == 0.0) {
+				F1 = 0.0;
+			}
+			metrics.put("Precision", precision);
+			metrics.put("Recall", recall);
+			metrics.put("F1", F1);
+			results.put(currClass, metrics);
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//test run using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
+			testRun(trimmedTestInstances);
+			*
+
+		}
+		//finally get accuracy
+		accuracy.put("Accuracy", accuracy.get("Accuracy")/testInstances.size());
+		results.put("Accuracy", accuracy);
+
+		return results;
+	}
+	*/
+
+	/*
+		Returns a hashtable containing accuracy and performance metrics for the given test instances. For a given
+		desiredClass, instances are only classified as that class if they are classified with at least <threshold> confidence
+		for that class. Instances classified as desiredClass with a confidence level below the threshold are instead
+		classified as altClass.
+
+		Multithreads to improve speed
+
+		CURRENTLY ONLY WORKS WITH BINARY CLASS DISTINCTIONS
+	 */
+	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
+		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
+
+		int desiredInstances = 0;
+		int altInstances = 0;
+		int classifiedAsDesired = 0;
+		int classifiedAsAlt = 0;
+		int correctlyClassifiedAsDesired = 0;
+		int correctlyClassifiedAsAlt = 0;
+
+		//split the task into several threads, each classifying a sub-section of the test instances
+		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
+
+		//split the InstanceList
+		double coreProportion = 1.0 / nCores;
+		double[] proportions = new double[nCores];
+		for (int i = 0; i < nCores; i++) {
+			proportions[i] = coreProportion;
+		}
+		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
+
+		//create and run threads
+		for (InstanceList list: sections) {
+			MaxEntTestRunThread thread = new MaxEntTestRunThread("thread", list, this, desiredClass, confidenceThreshold, altClass);
+			threads.add(thread);
+			thread.start();
+		}
+
+		/*
+		int unit = testInstances.size() / nCores;
+		int lastStart = 0;
+		int lastEnd = unit;
+		for (int i = 0; i < nCores; i++) {
+			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
+			if (i == nCores - 1) {
+				lastEnd = testInstances.size();
+			}
+
+			//create the next thread
+			InstanceList thisThread = new InstanceList()
+
+			//set the pointers for the next thread
+			lastStart = lastEnd;
+			lastEnd += unit;
+		}
+
+		for (int i = unit; i < testInstances.size(); i += unit) {
+
+			lastStart = i;
+		}
+		*/
+
+		//run the various threads, wait for them to finish, and collect their data
+		for (MaxEntTestRunThread thread: threads) {
+			thread.thread.join();
+
+			desiredInstances += thread.desiredInstances;
+			altInstances += thread.altInstances;
+			classifiedAsDesired += thread.classifiedAsDesired;
+			classifiedAsAlt += thread.classifiedAsAlt;
+			correctlyClassifiedAsDesired += thread.correctlyClassifiedAsDesired;
+			correctlyClassifiedAsAlt += thread.correctlyClassifiedAsAlt;
+		}
+
+		//calculate the actual figures
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
+		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
+		results.put("Accuracy", accuracy);
+
+		Hashtable<String, Double> desired = new Hashtable<String, Double>();
+		double desPrecision = ((double)correctlyClassifiedAsDesired)/classifiedAsDesired;
+		double desRecall = ((double)correctlyClassifiedAsDesired)/desiredInstances;
+		double desF1 = (2 * desPrecision * desRecall)/(desPrecision + desRecall);
+		desired.put("Precision", desPrecision);
+		desired.put("Recall", desRecall);
+		desired.put("F1", desF1);
+		results.put(desiredClass, desired);
+
+		Hashtable<String, Double> alt = new Hashtable<String, Double>();
+		double altPrecision = ((double)correctlyClassifiedAsAlt)/classifiedAsAlt;
+		double altRecall = ((double)correctlyClassifiedAsAlt)/altInstances;
+		double altF1 = (2 * altPrecision * altRecall)/(altPrecision + altRecall);
+		alt.put("Precision", altPrecision);
+		alt.put("Recall", altRecall);
+		alt.put("F1", altF1);
+		results.put(altClass, alt);
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//test run using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
+			testRun(trimmedTestInstances);
+			*/
+		return results;
 	}
 
 	public Classifier trainClassifier(InstanceList trainingInstances) {
@@ -648,4 +1179,38 @@ public class MaxEntClassification {
 		maxEntClassifier = trainer.train(trainingInstances);
 		return maxEntClassifier;
 	}
+
+	public void writeTestResultsToFile(Hashtable<String, Hashtable<String, Double>> input, int nTrials, String path, boolean append) throws IOException {
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path), append));
+
+		bufferedWriter.newLine();
+		bufferedWriter.write("Average results for "+nTrials+" trials:");
+		bufferedWriter.newLine();
+
+		bufferedWriter.write("--------------------");
+		bufferedWriter.newLine();
+		bufferedWriter.write("ACCURACY: " + input.get("Accuracy").get("Accuracy"));
+		bufferedWriter.newLine();
+		bufferedWriter.write("--------------------");
+		bufferedWriter.newLine();
+
+		Enumeration<String> classes = input.keys();
+
+		while (classes.hasMoreElements()) {
+			String className = classes.nextElement();
+			Hashtable<String, Double> values = input.get(className);
+			Enumeration<String> namesOfValues = values.keys();
+			bufferedWriter.newLine();
+			bufferedWriter.write("Metrics for class "+className);
+			bufferedWriter.newLine();
+			while(namesOfValues.hasMoreElements()) {
+				String currName = namesOfValues.nextElement();
+				bufferedWriter.write(currName+": "+values.get(currName));
+				bufferedWriter.newLine();
+			}
+		}
+
+		bufferedWriter.close();
+	}
+
 }

@@ -44,17 +44,17 @@ public class TextFeatures {
 
 	static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
 	static Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
-	static Pattern companyNamesPattern = Pattern.compile("");
 	static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
 	//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
 	static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|](("+spaceGroup+")|$)");
 	static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
 	static Pattern firstWordExcludeThe = Pattern.compile("(?![The])(?![\\s|$])?(\\w)+(\\s|$)");
 	static Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
+	static Pattern individualQuestionMarksPattern = Pattern.compile("\\?+");
 	static Pattern lastNamePattern = Pattern.compile("[^^]"+spaceGroup+"([a-zA-Z]+)$");
 	static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
-	static Pattern multipleExclamationsPattern = Pattern.compile("(!{2,})|(\\?{2,})");
-	static Pattern numberOfExclamationsPattern = Pattern.compile("!+");
+	static Pattern multipleExclamationsOrQuestionMarksPattern = Pattern.compile("(!{2,})|(\\?{2,})");
+	static Pattern exclamationGroupPattern = Pattern.compile("!+");
 	static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
 	static Pattern retweetPattern = Pattern.compile("RT"+userMention);
 	static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
@@ -172,18 +172,12 @@ public class TextFeatures {
  	*/
 	public static int containsMultipleExclamationsQuestions(String tweet) {
 
-		generalMatcher = multipleExclamationsPattern.matcher(tweet);
+		generalMatcher = multipleExclamationsOrQuestionMarksPattern.matcher(tweet);
 		if (generalMatcher.find()) {
 			return 1;
 		}
 		return 0;
 	}
-
-	/*
-	 * Checks if the first name of the user
-	 * appears in a large list of human first names.
-	 *
-	 * */
 
 	//accuracy for containsMention is a bit lower than for containsAt
 	/*
@@ -206,6 +200,12 @@ public class TextFeatures {
 		generalMatcher = userMentionPattern.matcher(tweet);
 		if (generalMatcher.find()) return 1;
 
+		return 0;
+	}
+
+	public static int containsNonAlphabeticCharacters(String text) {
+		for (int i = 0; i < text.length(); i++)
+			if (!Character.isAlphabetic(text.charAt(i))) return 1;
 		return 0;
 	}
 
@@ -281,9 +281,8 @@ public class TextFeatures {
  	*/
 	public static int countExclamationPhrases(String tweet) {
 		int count = 0;
-		Pattern pattern = Pattern.compile("!+");
-		Matcher matcher = pattern.matcher(tweet);
-		while (matcher.find()) {
+		generalMatcher = exclamationGroupPattern.matcher(tweet);
+		while (generalMatcher.find()) {
 			count++;
 		}
 		return count;
@@ -295,6 +294,17 @@ public class TextFeatures {
 	public static int countInstancesOf(String text, Pattern pattern) {
 		int count = 0;
 		generalMatcher = pattern.matcher(text);
+		while (generalMatcher.find()) {
+			count++;
+		}
+		return count;
+	}
+
+	public static int countQuestionMarkGroups(String tweet) {
+
+		int count = 0;
+		generalMatcher = individualQuestionMarksPattern.matcher(tweet);
+
 		while (generalMatcher.find()) {
 			count++;
 		}
@@ -358,7 +368,7 @@ public class TextFeatures {
 	public static int getFeatureForMultipleExclamationsQuestions(String tweet) {
 		int count = 0;
 
-		generalMatcher = multipleExclamationsPattern.matcher(tweet);
+		generalMatcher = multipleExclamationsOrQuestionMarksPattern.matcher(tweet);
 		while (generalMatcher.find()) {
 			count++;
 		}
@@ -371,7 +381,7 @@ public class TextFeatures {
 	public static int getFeatureForNumberOfExclamationPhrases(String tweet) {
 		int count = 0;
 
-		generalMatcher = numberOfExclamationsPattern.matcher(tweet);
+		generalMatcher = exclamationGroupPattern.matcher(tweet);
 		while (generalMatcher.find()) {
 			count++;
 		}
@@ -526,10 +536,8 @@ public class TextFeatures {
 	 * */
 	/*
 	public static int numPluralPersonalPronouns(String tweet) {
-
 		generalMatcher = pluralPersonalPronounsLocator.matcher(tweet.toLowerCase());
 		int count = 0;
-
 		while (generalMatcher.find()) {
 			count++;
 		}
@@ -644,6 +652,17 @@ public class TextFeatures {
 	 * 'went to','arrived at','flew to','flying to','arriving','arrive','dumped','rejected','dump','reject','rejection']
 	 * */
 
+	public static int countHashtags(String tweet) {
+
+		int count = 0;
+		generalMatcher = hashtagPattern.matcher(tweet);
+
+		while (generalMatcher.find()) {
+			count++;
+		}
+		return count;
+	}
+
 	public static int countNegativeEmoticons(String tweet) {
 
 		if (negativeEmoticons.isEmpty()) {
@@ -675,6 +694,20 @@ public class TextFeatures {
 
 		for (String token : tokens) {
 			if (positiveEmoticons.contains(token)) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public static int countUpperCaseWords(String tweet) {
+
+		int count = 0;
+		String[] splitBySpace = tweet.split("\\s");
+
+
+		for (String s : splitBySpace) {
+			if (s.length() != 0 && Character.isUpperCase(s.charAt(0))) {
 				count++;
 			}
 		}

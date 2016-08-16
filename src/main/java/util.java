@@ -83,4 +83,17 @@ public class util {
 
         bufferedWriter.close();
     }
+
+    //shuffles an array randomly
+    public static void shuffleTweetVectors(TweetVector[] input) {
+        for (int i = 0; i < input.length * 10000; i++) {
+            int position1 = (int)(Math.random() * input.length);
+            int position2 = (int)(Math.random() * input.length);
+
+            TweetVector temp = input[position1];
+            input[position1] = input[position2];
+            input[position2] = temp;
+        }
+    }
+
 }

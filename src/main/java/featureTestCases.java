@@ -50,6 +50,7 @@ public class featureTestCases {
         //TRAINING
         //---------------
         //set up vars
+        /*
         ArrayList<String[]> trainingTweets = TweetParser.getTweets("data/testData/5ExampleTweetTexts.txt");
         ArrayList<String> trainingLabelSet = new ArrayList<String>();
         TweetVector[] trainingTweetVectors = new TweetVector[trainingTweets.size()];
@@ -59,7 +60,8 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1, 1);
+        */
+        NGramModel unigramModel = new NGramModel(1, "data/testData/5ExampleTweetTexts.txt", NGramModel.textName, "", 1, 1);
 
         //--------------
         //TESTING
@@ -146,6 +148,7 @@ public class featureTestCases {
         //TRAINING
         //---------------
         //set up vars
+        /*
         ArrayList<String[]> trainingTweets = TweetParser.getTweets("data/testData/5ExampleTweetTexts.txt");
         ArrayList<String> trainingLabelSet = new ArrayList<String>();
         TweetVector[] trainingTweetVectors = new TweetVector[trainingTweets.size()];
@@ -155,7 +158,8 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 1, 1);
+        */
+        NGramModel unigramModel = new NGramModel(1, "data/testData/5ExampleTweetTexts.txt", NGramModel.textName, "", 1, 1);
 
 
         //--------------
@@ -278,6 +282,7 @@ public class featureTestCases {
         //TRAINING
         //---------------
         //set up vars
+        /*
         ArrayList<String[]> trainingTweets = TweetParser.getTweets("data/testData/5ExampleTweetTexts.txt");
         ArrayList<String> trainingLabelSet = new ArrayList<String>();
         TweetVector[] trainingTweetVectors = new TweetVector[trainingTweets.size()];
@@ -287,7 +292,8 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "", 2, 1);
+        */
+        NGramModel unigramModel = new NGramModel(1,"data/testData/5ExampleTweetTexts.txt", NGramModel.textName, "", 2, 1);
 
 
         //--------------
@@ -401,6 +407,7 @@ public class featureTestCases {
         //TRAINING
         //---------------
         //set up vars
+        /*
         ArrayList<String[]> trainingTweets = TweetParser.getTweets("data/testData/5ExampleTweetTexts.txt");
         ArrayList<String> trainingLabelSet = new ArrayList<String>();
         TweetVector[] trainingTweetVectors = new TweetVector[trainingTweets.size()];
@@ -410,7 +417,8 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel unigramModel = new NGramModel(1, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1, 1);
+        */
+        NGramModel unigramModel = new NGramModel(1, "data/testData/5ExampleTweetTexts.txt", NGramModel.textName, "data/stopwords.txt", 1, 1);
 
 
         //--------------
@@ -522,6 +530,7 @@ public class featureTestCases {
         //TRAINING
         //---------------
         //set up vars
+        /*
         ArrayList<String[]> trainingTweets = TweetParser.getTweets("data/testData/5BigramExampleTweets.txt");
         ArrayList<String> trainingLabelSet = new ArrayList<String>();
         TweetVector[] trainingTweetVectors = new TweetVector[trainingTweets.size()];
@@ -531,7 +540,8 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel bigramModel = new NGramModel(2, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1, 1);
+        */
+        NGramModel bigramModel = new NGramModel(2, "data/testData/5BigramExampleTweets.txt", NGramModel.textName, "data/stopwords.txt", 1, 1);
 
 
         //--------------
@@ -633,6 +643,7 @@ public class featureTestCases {
         //TRAINING
         //---------------
         //set up vars
+        /*
         ArrayList<String[]> trainingTweets = TweetParser.getTweets("data/testData/5_6gramExampleTweets.txt");
         ArrayList<String> trainingLabelSet = new ArrayList<String>();
         TweetVector[] trainingTweetVectors = new TweetVector[trainingTweets.size()];
@@ -642,7 +653,8 @@ public class featureTestCases {
             String[] tweet = trainingTweets.get(i);
             trainingTweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], trainingLabelSet);
         }
-        NGramModel bigramModel = new NGramModel(6, trainingTweetVectors, NGramModel.textName, "data/stopwords.txt", 1, 1);
+        */
+        NGramModel bigramModel = new NGramModel(6, "data/testData/5_6gramExampleTweets.txt", NGramModel.textName, "data/stopwords.txt", 1, 1);
 
 
         //--------------

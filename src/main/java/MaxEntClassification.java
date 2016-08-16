@@ -10,6 +10,14 @@ import cc.mallet.classify.evaluate.AccuracyCoverage;
 import cc.mallet.types.*;
 import cc.mallet.pipe.Target2Label;
 import cc.mallet.util.Randoms;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import cc.mallet.classify.NaiveBayesEMTrainer;
+import cc.mallet.classify.NaiveBayesTrainer;
+import cc.mallet.classify.NaiveBayes;
 
 public class MaxEntClassification {
 	
@@ -20,17 +28,22 @@ public class MaxEntClassification {
 
 	//Alphabet of features that StanCore extracted from the data
 	//REMEMBER YOU CHANGED new Alphabet(8);
-	public Alphabet dataAlphabet = new Alphabet();
+	private Alphabet dataAlphabet = new Alphabet();
 	//Target Labels pertinent to this classifier
-	public LabelAlphabet targetAlphabet = new LabelAlphabet();
-	public InstanceList instances;
-	public Classifier maxEntClassifier;
-	public File classifierFile;
+	private LabelAlphabet targetAlphabet = new LabelAlphabet();
+	private InstanceList trainingInstances;
+	//public Classifier maxEntClassifier;
+	public MaxEnt maxEntClassifier = null; //perhaps it should just be a Classifier
+	//public NaiveBayes maxEntClassifier = null;
+	private File classifierFile;
 	private int nCores;
 	private String path;
+	private ArrayList<String> labelSet;
+	private ClassifierTrainer<MaxEnt> trainer;
+	//private NaiveBayesTrainer trainer;
 
 	public MaxEntClassification(String pathToClassifier, int nCores) throws IOException, ClassNotFoundException {
-		path = pathToClassifier.substring(0, pathToClassifier.length()-4)+"-testindices.txt"; //TEMPORARY
+		path = pathToClassifier.substring(0, pathToClassifier.length()-4);
 		classifierFile = new File(pathToClassifier);
 
 		/*
@@ -41,14 +54,17 @@ public class MaxEntClassification {
 		}
 		*/
 		if (classifierFile.exists()) {
-			maxEntClassifier = loadClassifier(classifierFile);
+			maxEntClassifier = (MaxEnt)loadClassifier(classifierFile);
+			//maxEntClassifier = (NaiveBayes)loadClassifier(classifierFile);
 		}
 
 		targetAlphabet.startGrowth();
 
-		instances = new InstanceList(dataAlphabet, targetAlphabet);
+		trainingInstances = new InstanceList(dataAlphabet, targetAlphabet);
 
 		this.nCores = nCores;
+
+		labelSet = new ArrayList<String>();
 	}
 
 	public MaxEntClassification(File classFile, int nCores) throws IOException, ClassNotFoundException {
@@ -63,12 +79,13 @@ public class MaxEntClassification {
 		}
 		*/
 		if (classifierFile.exists()) {
-			maxEntClassifier = loadClassifier(classifierFile);
+			maxEntClassifier = (MaxEnt)loadClassifier(classifierFile);
+			//maxEntClassifier = (NaiveBayes)loadClassifier(classifierFile);
 		}
 
 		targetAlphabet.startGrowth();
 
-		instances = new InstanceList(dataAlphabet, targetAlphabet);
+		trainingInstances = new InstanceList(dataAlphabet, targetAlphabet);
 
 		this.nCores = nCores;
 	}
@@ -82,7 +99,7 @@ public class MaxEntClassification {
 	/*
 		Adds a set of TweetVectors to the instance list
 	 */
-	public void addToInstanceList(TweetVector[] tweetVectors) {
+	private void addToInstanceList(TweetVector[] tweetVectors) {
 		for (int i = 0; i < tweetVectors.length; i++) {
 			//add the current tweet
 			TweetVector currentTweet = tweetVectors[i];
@@ -91,19 +108,20 @@ public class MaxEntClassification {
 	}
 
 	/*
+    	Adds a TweetVector to the instance list
+ 	*/
+	private void addToInstanceList(TweetVector tweetVector) {
+		addToInstanceList(tweetVector.getFeatures(), tweetVector.getName(), tweetVector.getLabel());
+	}
+
+	/*
 	 * This method takes in a Hashtable, name, and label, converts
 	 * it to an instance then adds it to the instance list.
 	 * The hashtable should have features for its keys and an
 	 * associated integer value for its features.
 	 */
-	public void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
+	private void addToInstanceList(Hashtable<String, Double> table, String name, String label) {
 		//test
-		/*
-		if (dataAlphabet.size() > 10000) {
-			System.out.print("");
-		}
-		*/
-
 		Enumeration<String> features = table.keys();
 		int numberOfNewFeatures = getNumOfNewFeatures(table);
 		double[] featureValues = new double[dataAlphabet.size() + numberOfNewFeatures];
@@ -114,7 +132,42 @@ public class MaxEntClassification {
 		}
 
 		Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
-		instances.add(new Target2Label(this.targetAlphabet).pipe(instance));
+
+		trainingInstances.add(new Target2Label(targetAlphabet).pipe(instance));
+	}
+
+	/*
+		Adds a given Instance to the InstanceList while maintaining a size of 1
+	 */
+	private void addToInstanceList(Instance instance) {
+
+		//ensures the list is always of size 1000 or fewer
+		/*
+		if (trainingInstances.size() >= 1000) {
+			for (int i = 0; i < trainingInstances.size(); i++) {
+				trainingInstances.remove(i);
+			}
+		}
+		trainingInstances.add(new Target2Label(this.targetAlphabet).pipe(instance));
+		*/
+/*
+		if (trainingInstances.size() == 0) {
+			trainingInstances.add(new Target2Label(this.targetAlphabet).pipe(instance));
+		}
+		else {
+			trainingInstances.setInstance(0, new Target2Label(this.targetAlphabet).pipe(instance));
+		}
+		*/
+
+		trainingInstances.add(new Target2Label(this.targetAlphabet).pipe(instance));
+	}
+
+	//adds a given Instance to the InstanceList. If the InstanceList exceeds the batch size, train the classifier using it
+	public void addToInstanceListAndTrainBatchwise(TweetVector tweetVector, int batchSize) {
+		addToInstanceList(tweetVector);
+		if (trainingInstances.size() >= batchSize) {
+			train();
+		}
 	}
 
 	/*
@@ -147,8 +200,22 @@ public class MaxEntClassification {
 
 					//add the current value to the running sum
 					double dataValue;
-					if (oldCumulativeDataPoint == null) dataValue = dataPoint.get(currentValueName);
-					else dataValue = oldCumulativeDataPoint.get(currentValueName) + dataPoint.get(currentValueName);
+					if (oldCumulativeDataPoint == null) {
+						if (dataPoint.get(currentValueName) == null) {
+							dataValue = 0.0;
+						}
+						else {
+							dataValue = dataPoint.get(currentValueName);
+						}
+					}
+					else {
+						if (dataPoint.get(currentValueName) == null) {
+							dataValue = oldCumulativeDataPoint.get(currentValueName);
+						}
+						else {
+							dataValue = oldCumulativeDataPoint.get(currentValueName) + dataPoint.get(currentValueName);
+						}
+					}
 
 					//get averages if it's the last trial
 					if (i == numTrials - 1) dataValue /= numTrials;
@@ -163,19 +230,29 @@ public class MaxEntClassification {
 		return averagedData;
 	}
 
+	public void clearAlphabets() {
+		dataAlphabet = new Alphabet();
+		targetAlphabet = new LabelAlphabet();
+	}
+
+	public void clearClassifier() { maxEntClassifier = null; }
+
 	/*
 		Attempt to retain same target alphabet
  		but remove all current instances.
     */
 	public void clearInstances() {
-		instances = new InstanceList(dataAlphabet, targetAlphabet);
+		trainingInstances = new InstanceList(dataAlphabet, targetAlphabet);
 	}
 
 	/*
         Performs n-fold cross-validation and prints out the results
+
+        Removed because the evaluate method doesn't mesh well with incremental training
     */
+	/*
 	public void crossValidate(int n_folds, String pathToResultsFile) throws IOException, InterruptedException, ClassNotFoundException {
-		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(trainingInstances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
 		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
@@ -184,7 +261,7 @@ public class MaxEntClassification {
 			InstanceList training = split[0];
 			InstanceList testing = split[1];
 
-			trainClassifier(training);
+			trainClassifier(training, true);
 			System.out.println();
 			System.out.println("NEW TEST:");
 
@@ -193,39 +270,266 @@ public class MaxEntClassification {
 		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, false);
 	}
+	*/
 
 	/*
-		Performs n-fold cross-validation with the specified confidence threshold for the specified class.
-		Prints out the results
-	 */
-	public void crossValidate(int n_folds, String pathToResultsFile, String nullClass, double confidenceThreshold) throws IOException, InterruptedException, ClassNotFoundException {
-		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+    Performs n-fold cross-validation with the specified confidence threshold for the specified class.
+    Prints out the results
+ */
+	public void crossValidate(int n_folds, TweetVector[] trainingTweetVectors, String pathToResultsFile, int batchSize) throws IOException, InterruptedException, ClassNotFoundException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
+		//get folds
+		double[] proportions = new double[n_folds];
+		double unit = ((double)1)/n_folds;
+		for (int i = 0; i < n_folds; i++) {
+			proportions[i] = unit;
+		}
+		ArrayList<ArrayList<TweetVector>> folds = split(trainingTweetVectors, proportions);
+
+		//give each fold a turn to be the test fold, each test fold is one trial
+		for (int i = 0; i < folds.size(); i++) {
+			//initialize training and testing tweets
+			ArrayList<TweetVector> trainingTweets = new ArrayList<TweetVector>();
+			ArrayList<TweetVector> testingTweets = folds.get(i);
+			for (int j = 0; j < folds.size(); j++) {
+				if (j != i) {
+					ArrayList<TweetVector> currentFold = folds.get(j);
+					for (TweetVector currentVector: currentFold) {
+						//make an instance and add it to the list
+						trainingTweets.add(currentVector);
+					}
+				}
+			}
+
+			//new training session, clear the classifier, initialize the alphabets (which also initializes the instances)
+			clearClassifier();
+			initializeAlphabets(trainingTweets);
+
+			//train using the training folds
+			for (int j = 0; j < trainingTweets.size(); j++) {
+				addToInstanceListAndTrainBatchwise(trainingTweets.get(j), batchSize);
+			}
+			//train any incomplete batches
+			train();
+
+/*
+			for (int j = 0; j < folds.size(); j++) {
+				//index i is the test fold, train on the others
+				if (j != i) {
+					ArrayList<TweetVector> currentFold = folds.get(j);
+					for (TweetVector currentVector: currentFold) {
+						//make an instance and add it to the list
+
+						train(makeInstance(currentVector));
+					}
+				}
+			}
+*/
+
+			//test using the testing fold
+			Hashtable<String, Hashtable<String, Double>> results = evaluateWithConfThreshold(testingTweets.toArray(new TweetVector[testingTweets.size()]), "null_class", 0.0);
+			resultsOverTrials.add(results);
+			//write out the results for the current trial
+			//ensures that the results of these trials aren't appended to any other file
+			if (i == 0) {
+				writeTestResultsToFile(results, 1, pathToResultsFile, false);
+			}
+			else {
+				writeTestResultsToFile(results, 1, pathToResultsFile, true);
+			}
+		}
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
+
+		//clear everything because this is a train-test framework
+		//clearAlphabets();
+		clearInstances();
+		clearClassifier();
+
+		/*
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(trainingInstances, n_folds, new Randoms());
 
 		while (crossValidationIterator.hasNext()) {
 			InstanceList[] split = crossValidationIterator.next();
 			InstanceList training = split[0];
 			InstanceList testing = split[1];
 
-			trainClassifier(training);
+			trainClassifier(training, true);
 			saveClassifier(classifierFile);
 			System.out.println();
 			System.out.println("NEW TEST:");
 
-			resultsOverTrials.add(testRunConfThresholdVersion(testing, nullClass, confidenceThreshold));
+			//resultsOverTrials.add(evaluateWithConfThreshold(testing, nullClass, confidenceThreshold));
 			writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, true);
 		}
 		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
+		*/
+	}
+
+	/*
+		Performs n-fold cross-validation with the specified confidence threshold for the specified class.
+		Prints out the results
+	 */
+	public void crossValidate(int n_folds, TweetVector[] trainingTweetVectors, String pathToResultsFile, String nullClass, double confidenceThreshold, int batchSize) throws IOException, InterruptedException, ClassNotFoundException {
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
+		//get folds
+		double[] proportions = new double[n_folds];
+		double unit = ((double)1)/n_folds;
+		for (int i = 0; i < n_folds; i++) {
+			proportions[i] = unit;
+		}
+		ArrayList<ArrayList<TweetVector>> folds = split(trainingTweetVectors, proportions);
+
+		//give each fold a turn to be the test fold, each test fold is one trial
+		for (int i = 0; i < folds.size(); i++) {
+			//initialize training and testing fields
+			ArrayList<TweetVector> trainingTweets = new ArrayList<TweetVector>();
+			ArrayList<TweetVector> testingTweets = folds.get(i);
+			for (int j = 0; j < folds.size(); j++) {
+				if (j != i) {
+					ArrayList<TweetVector> currentFold = folds.get(j);
+					for (TweetVector currentVector: currentFold) {
+						//make an instance and add it to the list
+						trainingTweets.add(currentVector);
+					}
+				}
+			}
+
+			//new training session, clear the classifier, initialize the alphabets (which also initializes the instances)
+			clearClassifier();
+			initializeAlphabets(trainingTweets);
+
+			//train using the training folds
+			//train using the training folds
+			for (int j = 0; j < trainingTweets.size(); j++) {
+				addToInstanceListAndTrainBatchwise(trainingTweets.get(j), batchSize);
+			}
+			//train any incomplete batches
+			train();
+
+			//test using the testing fold
+			Hashtable<String, Hashtable<String, Double>> results = evaluateWithConfThreshold(testingTweets.toArray(new TweetVector[testingTweets.size()]), nullClass, confidenceThreshold);
+			resultsOverTrials.add(results);
+			//write out the results for the current trial
+			//ensures that the results of these trials aren't appended to any other file
+			if (i == 0) {
+				writeTestResultsToFile(results, 1, pathToResultsFile, false);
+			}
+			else {
+				writeTestResultsToFile(results, 1, pathToResultsFile, true);
+			}
+		}
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
+
+		//clear everything because this is a train-test framework
+		//clearAlphabets();
+		clearClassifier();
+		clearInstances();
+
+		/*
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(trainingInstances, n_folds, new Randoms());
+
+		while (crossValidationIterator.hasNext()) {
+			InstanceList[] split = crossValidationIterator.next();
+			InstanceList training = split[0];
+			InstanceList testing = split[1];
+
+			trainClassifier(training, true);
+			saveClassifier(classifierFile);
+			System.out.println();
+			System.out.println("NEW TEST:");
+
+			//resultsOverTrials.add(evaluateWithConfThreshold(testing, nullClass, confidenceThreshold));
+			writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, true);
+		}
+		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
+		*/
 	}
 
 	/*
     	Performs n-fold cross-validation with multiple specified confidence thresholds for the specified class.
     	Prints out the results
  	*/
-	public void crossValidate(int n_folds, String pathToResultsFileBase, String nullClass, double[] confidenceThresholds) throws IOException, InterruptedException, ClassNotFoundException {
-		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
+	public void crossValidate(int n_folds, TweetVector[] trainingTweetVectors, String pathToResultsFileBase, String nullClass, double[] confidenceThresholds, int batchSize) throws IOException, InterruptedException, ClassNotFoundException {
 		ArrayList<ArrayList<Hashtable<String, Hashtable<String, Double>>>> resultsOverTrialsForAllThresholds = new ArrayList<ArrayList<Hashtable<String, Hashtable<String, Double>>>>();
+		//add base results containers for each confidence threshold
+		for (int i = 0; i < confidenceThresholds.length; i++) {
+			resultsOverTrialsForAllThresholds.add(new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds));
+		}
+
+		//get folds
+		double[] proportions = new double[n_folds];
+		double unit = ((double)1)/n_folds;
+		for (int i = 0; i < n_folds; i++) {
+			proportions[i] = unit;
+		}
+		ArrayList<ArrayList<TweetVector>> folds = split(trainingTweetVectors, proportions);
+
+		//give each fold a turn to be the test fold, each test fold is one trial
+		for (int i = 0; i < folds.size(); i++) {
+			//initialize training and testing fields
+			ArrayList<TweetVector> trainingTweets = new ArrayList<TweetVector>();
+			ArrayList<TweetVector> testingTweets = folds.get(i);
+			for (int j = 0; j < folds.size(); j++) {
+				if (j != i) {
+					ArrayList<TweetVector> currentFold = folds.get(j);
+					for (TweetVector currentVector: currentFold) {
+						//make an instance and add it to the list
+						trainingTweets.add(currentVector);
+					}
+				}
+			}
+
+			//new training session, clear the classifier, initialize the alphabets (which also initializes the instances)
+			clearClassifier();
+			initializeAlphabets(trainingTweets);
+
+			//train using the training folds
+			//train using the training folds
+			for (int j = 0; j < trainingTweets.size(); j++) {
+				addToInstanceListAndTrainBatchwise(trainingTweets.get(j), batchSize);
+			}
+			//train any incomplete batches
+			train();
+
+			//test using the testing fold, one round for each threshold
+			for (int j = 0; j < confidenceThresholds.length; j++) {
+				//get info for the current threshold
+				double currentThreshold = confidenceThresholds[j];
+				ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsAllTrialsCurrentThreshold = resultsOverTrialsForAllThresholds.get(j);
+				int stoppingPoint = pathToResultsFileBase.length() - 4;
+				String currentPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + currentThreshold + pathToResultsFileBase.substring(stoppingPoint);
+
+				//get results
+				Hashtable<String, Hashtable<String, Double>> resultsOneTrialCurrentThreshold = evaluateWithConfThreshold(testingTweets.toArray(new TweetVector[testingTweets.size()]), nullClass, currentThreshold);
+				//write out the results for the current trial for this threshold
+				if (i == 0) {
+					writeTestResultsToFile(resultsOneTrialCurrentThreshold, 1, currentPathToResultsFile, false);
+				}
+				else {
+					writeTestResultsToFile(resultsOneTrialCurrentThreshold, 1, currentPathToResultsFile, true);
+				}
+				//add to cumulative results
+				resultsAllTrialsCurrentThreshold.add(resultsOneTrialCurrentThreshold);
+			}
+
+		}
+		//write out the cumulative results for all thresholds over all trials
+		for (int j = 0; j < confidenceThresholds.length; j++) {
+			double currentThreshold = confidenceThresholds[j];
+			int stoppingPoint = pathToResultsFileBase.length() - 4;
+			String currentPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + currentThreshold + pathToResultsFileBase.substring(stoppingPoint);
+			writeTestResultsToFile(averageTrialResults(resultsOverTrialsForAllThresholds.get(j)), n_folds, currentPathToResultsFile, true);
+		}
+
+		//clear everything because this is a train-test framework
+		//clearAlphabets();
+		clearClassifier();
+		clearInstances();
+
+		/*
+		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(trainingInstances, n_folds, new Randoms());
 		//add base results containers for each confidence threshold
 		for (int i = 0; i < confidenceThresholds.length; i++) {
 			resultsOverTrialsForAllThresholds.add(new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds));
@@ -237,7 +541,7 @@ public class MaxEntClassification {
 			InstanceList training = split[0];
 			InstanceList testing = split[1];
 
-			trainClassifier(training);
+			trainClassifier(training, true);
 			saveClassifier(classifierFile);
 			System.out.println();
 			System.out.println("NEW TEST:");
@@ -249,7 +553,7 @@ public class MaxEntClassification {
 				int stoppingPoint = pathToResultsFileBase.length() - 4;
 				String thisPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + thisConfidenceThreshold + pathToResultsFileBase.substring(stoppingPoint);
 
-				resultsOverTrialsThisThreshold.add(testRunConfThresholdVersion(testing, nullClass, thisConfidenceThreshold));
+				//resultsOverTrialsThisThreshold.add(evaluateWithConfThreshold(testing, nullClass, thisConfidenceThreshold));
 				writeTestResultsToFile(resultsOverTrialsThisThreshold.get(resultsOverTrialsThisThreshold.size() - 1), 1, thisPathToResultsFile, true);
 			}
 		}
@@ -263,6 +567,7 @@ public class MaxEntClassification {
 			//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
 			writeTestResultsToFile(averageTrialResults(resultsOverTrialsThisThreshold), n_folds, thisPathToResultsFile, true);
 		}
+		*/
 	}
 
 	/*
@@ -374,6 +679,7 @@ public class MaxEntClassification {
 		//PrintWriter p = new PrintWriter("data/featureWeights.txt");
 		// p.write("\n");
 		((MaxEnt) maxEntClassifier).print();
+		//((NaiveBayes) maxEntClassifier).print();
 		//p.close();
 		//first entry is accuracy
 
@@ -391,12 +697,142 @@ public class MaxEntClassification {
 		return output;
 	}
 
-	public void getAreaUnderCurve(Trial t) {
+	/*
+    Returns a hashtable containing accuracy and performance metrics for the given test instances. Requires that each instance
+    is classified with a confidence above the specified threshold, or else it will be classified as the nullClass.
+*/
+	public Hashtable<String, Hashtable<String, Double>> evaluateWithConfThreshold(TweetVector[] testTweetVectors, String nullClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
+		//get classification figures and calculate performance metrics from them
+		Hashtable<String, Hashtable<String, Integer>> classificationResults = getClassificationFigures(testTweetVectors, confThreshold, nullClass);
+		int instancesOfClass;
+		int classifiedAsClass;
+		int correctlyClassifiedAsClass;
+		double precision;
+		double recall;
+		double F1;
+		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
 
+		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
+		Enumeration<String> classes = classificationResults.keys();
+		while (classes.hasMoreElements()) {
+			String currClass = classes.nextElement();
+
+			//get figures
+			Hashtable<String, Integer> figuresForClass = classificationResults.get(currClass);
+			instancesOfClass = figuresForClass.get("instances");
+			classifiedAsClass = figuresForClass.get("classified as");
+			correctlyClassifiedAsClass = figuresForClass.get("correctly classified as");
+
+			//update accuracy, as this takes into account all classes
+			if (accuracy.size() == 0) { //initialize if this is the first class
+				accuracy.put("Accuracy", (double)correctlyClassifiedAsClass);
+			}
+			else { //otherwise, update
+				accuracy.put("Accuracy", ((double)correctlyClassifiedAsClass) + accuracy.get("Accuracy"));
+			}
+
+			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
+			if (classifiedAsClass > 0) {
+				precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
+			}
+			else {
+				precision = 0.0;
+			}
+			if (instancesOfClass > 0) {
+				recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
+			}
+			else {
+				recall = 0.0;
+			}
+			F1 = (2 * precision * recall) / (precision + recall);
+			if (precision == 0.0 && recall == 0.0) {
+				F1 = 0.0;
+			}
+			metrics.put("Precision", precision);
+			metrics.put("Recall", recall);
+			metrics.put("F1", F1);
+			results.put(currClass, metrics);
+
+			/*
+			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
+
+			//test run using the trimmed instance list
+			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
+			testRun(trimmedTestInstances);
+			*/
+
+		}
+		//finally get accuracy
+		accuracy.put("Accuracy", accuracy.get("Accuracy")/testTweetVectors.length);
+		results.put("Accuracy", accuracy);
+
+		return results;
+	}
+
+	public void getAreaUnderCurve(Trial t) {
 		AccuracyCoverage a = new AccuracyCoverage(t, "AUC", "Labelings");
 
 		a.displayGraph();
 		System.out.println(a.cumulativeAccuracy());
+	}
+
+	public Hashtable<String, Hashtable<String, Integer>> getClassificationFigures(TweetVector[] testTweetVectors, double confThreshold, String nullClass) {
+		Hashtable<String, Hashtable<String, Integer>> results = new Hashtable<String, Hashtable<String, Integer>>();
+
+		//Get the number of instances of each class, the number of times an instance is classified as each class,
+		//and the number of times an instance is correctly classified as each class
+		//for (int j = 0; j < testInstances.size(); j++) {
+		for (TweetVector tweetVector: testTweetVectors) {
+			//make an instance out of it
+			//make an instance
+			Instance instance = makeInstance(tweetVector);
+
+			//get the correct label
+			//String correctLabel = instance.getLabeling().toString();
+			String correctLabel = instance.getTarget().toString();
+			//get the label given by the classifier, unless the label is the specified class and its confidence
+			//is below the threshold (in which case the label with the second highest confidence is chosen), or
+			//the label is not the specified class, but the confidence for the specified class is above the threshold
+			//(in which case the label is the specified class)
+			//String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
+			String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, nullClass, confThreshold);
+
+			//initialize fields if necessary, set all figures to 0
+			if (!results.containsKey(correctLabel)) {
+				Hashtable<String, Integer> figures = new Hashtable<String, Integer>();
+				figures.put("instances", 0);
+				figures.put("classified as", 0);
+				figures.put("correctly classified as", 0);
+				results.put(correctLabel, figures);
+			}
+			if (!results.containsKey(experimentalLabel)) {
+				Hashtable<String, Integer> figures = new Hashtable<String, Integer>();
+				figures.put("instances", 0);
+				figures.put("classified as", 0);
+				figures.put("correctly classified as", 0);
+				results.put(experimentalLabel, figures);
+			}
+
+			//update fields
+			Hashtable<String, Integer> correctFigures = results.get(correctLabel);
+			Hashtable<String, Integer> experimentalFigures = results.get(experimentalLabel);
+			//add one instance to the correct label
+			correctFigures.put("instances", correctFigures.get("instances") + 1);
+			if (correctLabel.equals(experimentalLabel)) {
+				//add one "classified as" and one "correctly classified as" to the correct label
+				correctFigures.put("classified as", correctFigures.get("classified as") + 1);
+				correctFigures.put("correctly classified as", correctFigures.get("correctly classified as") + 1);
+			}
+			else {
+				//add one "classified as" to the experimental label
+				experimentalFigures.put("classified as", experimentalFigures.get("classified as") + 1);
+			}
+			results.put(correctLabel, correctFigures);
+			results.put(experimentalLabel, experimentalFigures);
+
+		}
+
+		return results;
 	}
 
 	/*
@@ -472,6 +908,22 @@ public class MaxEntClassification {
 		return newFeats;
 	}
 
+	public void initializeAlphabets(ArrayList<TweetVector> trainingTweetVectors) {
+		//clearAlphabets();
+		for (TweetVector tweetVector: trainingTweetVectors) {
+			addToInstanceList(tweetVector);
+		}
+		clearInstances();
+	}
+
+	public void initializeAlphabets(TweetVector[] trainingTweetVectors) {
+		//clearAlphabets();
+		for (TweetVector tweetVector: trainingTweetVectors) {
+			addToInstanceList(tweetVector);
+		}
+		clearInstances();
+	}
+
 	public Classifier loadClassifier(File serializedFile)
 			throws FileNotFoundException, IOException, ClassNotFoundException {
 
@@ -492,6 +944,51 @@ public class MaxEntClassification {
 		}
 
 		return classifier;
+	}
+
+	//makes an instance out of a TweetVector, using the existing data and label alphabets
+	public Instance makeInstance(TweetVector tweetVector) {
+		Hashtable<String, Double> table = tweetVector.getFeatures();
+		String label = tweetVector.getLabel();
+		String name = tweetVector.getName();
+
+		Enumeration<String> features = table.keys();
+		int numberOfNewFeatures = getNumOfNewFeatures(table);
+		double[] featureValues = new double[dataAlphabet.size() + numberOfNewFeatures];
+
+		while (features.hasMoreElements()) {
+			String featureName = features.nextElement();
+			featureValues[dataAlphabet.lookupIndex(featureName, true)] = table.get(featureName);
+		}
+
+		Instance instance = new Instance(new FeatureVector(dataAlphabet, featureValues), label, name, null);
+		return instance;
+	}
+
+	/*
+		Makes instances out of all tweets in a path-to-tweet file and trains the classifier on them, one instance
+		at a time
+	 */
+	public void makeInstancesAndTrain(TweetVector[] tweetVectors, String classifierType, int batchSize) throws IOException, FileNotFoundException, InterruptedException {
+		//for each tweet
+		//set up Stanford CoreNLP object for annotation
+		Properties props = new Properties();
+		props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
+		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+		//new training session, clear the classifier, the alphabets, and all instances. Initialize alphabets with the
+		//training tweets
+		clearAlphabets();
+		clearClassifier();
+		clearInstances();
+		initializeAlphabets(tweetVectors);
+
+		//train batchwise
+		for (TweetVector tweetVector: tweetVectors) {
+			addToInstanceListAndTrainBatchwise(tweetVector, batchSize);
+		}
+		//train any untrained batches
+		train();
 	}
 
 	public void printLabelings(InstanceList testInstances) throws IOException {
@@ -540,71 +1037,112 @@ public class MaxEntClassification {
     	Runs n trials on the data, requiring that each instance be classified at or above the threshold confidence
     	level.
  	*/
-	public void runNSplits(int n, String pathToResultsFile, String nullClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
+	public void runNSplits(int n, TweetVector[] tweetVectors, String pathToResultsFile, String nullClass, double confThreshold, int batchSize) throws IOException, InterruptedException, ClassNotFoundException {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
-		//save the instances the classifier started out with
-		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
-		for (Instance instance: instances) {
-			instancesCopy.add(instance);
-		}
 
+		/*
+		//build up data alphabet/label alphabet, but don't actually train the classifier yet
+		//PROBABLY USELESS
+		//also clear any classifier and instance list that may already be there
+		clearInstances();
+		clearClassifier();
+		for (TweetVector tweetVector: tweetVectors) {
+			addToInstanceList(tweetVector);
+		}
+		*/
+
+		//get splits, and train/test a classifier on each
 		for (int i = 0; i < n; i++) {
-			//ensure that the classifier starts each trial with the same instances it started out with
-			clearInstances();
-			for (Instance instance: instancesCopy) {
-				instances.add(instance);
+			//get splits
+			ArrayList<ArrayList<TweetVector>> thisSplit = split(tweetVectors, new double[]{0.8, 0.2});
+			TweetVector[] trainingTweetVectors = thisSplit.get(0).toArray(new TweetVector[1]);
+			TweetVector[] testTweetVectors = thisSplit.get(1).toArray(new TweetVector[1]);
+
+			//new training session, clear the classifier, initialize the alphabets (which also initializes the instances)
+			clearClassifier();
+			initializeAlphabets(trainingTweetVectors);
+
+			//train classifier
+			//train using the training tweets
+			for (TweetVector trainingTweetVector: trainingTweetVectors) {
+				//train batchwise
+				addToInstanceListAndTrainBatchwise(trainingTweetVector, batchSize);
+			}
+			//train any untrained batches
+			train();
+
+			//test, save results
+			Hashtable<String, Hashtable<String, Double>> results = evaluateWithConfThreshold(testTweetVectors, nullClass, confThreshold);
+			resultsOverTrials.add(results);
+			//write out the results for the current trial
+			if (i == 0) {
+				writeTestResultsToFile(results, 1, pathToResultsFile, false);
+			}
+			else {
+				writeTestResultsToFile(results, 1, pathToResultsFile, true);
 			}
 
-			InstanceList testInstances = split(instances);
-			trainClassifier(instances);
-			saveClassifier(classifierFile);
-
-			Hashtable<String, Hashtable<String, Double>> results = testRunConfThresholdVersion(testInstances, nullClass, confThreshold);
-			//Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
-			resultsOverTrials.add(results);
-
 		}
-		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
+		//clear everything as this is a train-test framework
+		//clearAlphabets();
+		clearClassifier();
+		clearInstances();
+
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
 	}
 
 	/*
-		Runs n trials on the data at a given threshold of confidence for the desired class. Any instance that is not
-		classified as the desired class with a confidence at or above the threshold is classified as the altClass.
+    	Runs n trials on the data
+ 	*/
+	public void runNSplits(int n, TweetVector[] tweetVectors, String pathToResultsFile, int batchSize) throws IOException, InterruptedException, ClassNotFoundException {
+		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n);
 
-		ONLY WORKS WITH BINARY CLASSES
-		TODO: possibly generalize to all different class names
-	 */
-	public void runNSplits(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
-		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
-		//save the instances the classifier started out with
-		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
-		for (Instance instance: instances) {
-			instancesCopy.add(instance);
-		}
-
-		//run n trials
-		for (int i = 0; i < n; i++) {
-			//ensure that the classifier starts each trial with the same instances it started out with
-			clearInstances();
-			for (Instance instance: instancesCopy) {
-				instances.add(instance);
-			}
-			//train the classifier
-			InstanceList testInstances = split(instances);
-			//InstanceList trimmedTestInstances = new InstanceList(dataAlphabet, targetAlphabet); //to contain only the instances passing the test
-			trainClassifier(instances);
-			saveClassifier(classifierFile);
-
-			Hashtable<String, Hashtable<String, Double>> resultsForTrial = testRun(testInstances, desiredClass, confidenceThreshold, altClass);
-			resultsOverTrials.add(resultsForTrial);
-		}
+		//initialize new data and label alphabets
+/*
+		//build up data alphabet/label alphabet, but don't actually train the classifier yet
+		//PROBABLY USELESS
 		clearInstances();
-		//include a header to describe the confidence threshold
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToResultsFile), false));
-		bufferedWriter.write("Using a threshold of: "+confidenceThreshold);
-		bufferedWriter.newLine();
-		bufferedWriter.close();
-		//write the averaged results
+		clearClassifier();
+		for (TweetVector tweetVector: tweetVectors) {
+			addToInstanceList(tweetVector);
+		}
+*/
+		//get splits, and train/test a classifier on each
+		for (int i = 0; i < n; i++) {
+			//get splits
+			ArrayList<ArrayList<TweetVector>> thisSplit = split(tweetVectors, new double[]{0.8, 0.2});
+			TweetVector[] trainingTweetVectors = thisSplit.get(0).toArray(new TweetVector[1]);
+			TweetVector[] testTweetVectors = thisSplit.get(1).toArray(new TweetVector[1]);
+
+			//new training session, clear the classifier, initialize the alphabets (which also initializes the instances)
+			clearClassifier();
+			initializeAlphabets(trainingTweetVectors);
+
+			//train classifier
+			//train using the training tweets
+			for (TweetVector trainingTweetVector: trainingTweetVectors) {
+				//train batchwise
+				addToInstanceListAndTrainBatchwise(trainingTweetVector, batchSize);
+			}
+			//train any untrained batches
+			train();
+
+			//test, save results
+			Hashtable<String, Hashtable<String, Double>> results = evaluateWithConfThreshold(testTweetVectors, "null_class", 0.0);
+			resultsOverTrials.add(results);
+			//write out the results for the current trial
+			if (i == 0) {
+				writeTestResultsToFile(results, 1, pathToResultsFile, false);
+			}
+			else {
+				writeTestResultsToFile(results, 1, pathToResultsFile, true);
+			}
+		}
+		//clear everything, as this is a train-test framework
+		//clearAlphabets();
+		clearClassifier();
+		clearInstances();
+
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
 	}
 
@@ -627,6 +1165,7 @@ public class MaxEntClassification {
 		targetAlphabet.stopGrowth();
 	}
 
+	/*
 	public InstanceList split(InstanceList instances) throws IOException {
 		try {
 			int TRAINING = 0;
@@ -639,7 +1178,7 @@ public class MaxEntClassification {
 
 /*		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
-						new double[] {0.5, 0.5, 0.0});*/
+						new double[] {0.5, 0.5, 0.0});*
 //better than 0.8, 0.2 split
 			Randoms randoms = new Randoms();
 			int cutoffPt = instances.size() * 4 / 5;
@@ -673,7 +1212,7 @@ public class MaxEntClassification {
 		InstanceList[] instanceLists =
 				instances.split(new Randoms(),
 						new double[] {0.8, 0.2, 0.0});
-						*/
+						*
 			instances = newThingy;
 			InstanceList[] instanceLists = instances.splitInOrder(new double[]{0.8, 0.2, 0.0});
 			//  The third position is for the "validation" set,
@@ -685,20 +1224,59 @@ public class MaxEntClassification {
 			//  of validation sets.
 			this.instances = instanceLists[TRAINING];
 
-			//TEMPORARY ADDITION FOR TESTS
-			BufferedWriter writeOutTestInstanceIndices = new BufferedWriter(new FileWriter(new File(path)));
-			for (int i = cutoffPt; i < arr.size(); i++) {
-				//print all ints from arr at the cutoff pt, these are the test indices
-				writeOutTestInstanceIndices.write(Integer.toString(arr.get(i)));
-				writeOutTestInstanceIndices.newLine();
-			}
-			writeOutTestInstanceIndices.close();
 			return instanceLists[TESTING];
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}*/
+
+	/*
+		Splits an array of tweet vectors based on the given proportions
+	 */
+	private ArrayList<ArrayList<TweetVector>> split(TweetVector[] allVectors, double[] proportions) {
+		//make sure the proportions add up to 1.0
+		double sum = 0.0;
+		for (double proportion: proportions) {
+			sum += proportion;
+		}
+		if (Math.abs(sum - 1.0) >= 0.0001) {
+			System.err.println("ERROR in MaxEntClassification.split: values in double[] proportions do not add up to 1.0");
+			System.exit(1);
+		}
+		ArrayList<ArrayList<TweetVector>> splitVectors = new ArrayList<ArrayList<TweetVector>>();
+
+		//shuffle the array
+		util.shuffleTweetVectors(allVectors);
+
+		//divide up the array based on the given proportions
+		int lastEnd = 0;
+		int newEnd;
+		for (int i = 0; i < proportions.length; i++) {
+			ArrayList<TweetVector> thisSection = new ArrayList<TweetVector>();
+
+			//if it's the last set of proportions, make sure everything is added to it
+			if (i == proportions.length - 1) {
+				newEnd = allVectors.length;
+			}
+			else {
+				int tweetsForThisSection = (int)(proportions[i] * allVectors.length);
+				newEnd = lastEnd + tweetsForThisSection;
+			}
+
+			//add the necessary vectors
+			for (int j = lastEnd; j < newEnd; j++) {
+				thisSection.add(allVectors[j]);
+			}
+
+			//update
+			lastEnd = newEnd;
+			splitVectors.add(thisSection);
+		}
+
+		return splitVectors;
 	}
+
 
 	/*
 	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances) throws IOException {
@@ -737,174 +1315,10 @@ public class MaxEntClassification {
 	}*/
 
 	/*
-    	Returns a hashtable containing accuracy and performance metrics for the given test instances. Requires that each instance
-    	is classified with a confidence above the specified threshold, or else it will be classified as the nullClass.
-
-    	Multithreads to improve speed
-	*/
-	public Hashtable<String, Hashtable<String, Double>> testRunConfThresholdVersion(InstanceList testInstances, String nullClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
-		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
-
-		Hashtable<String, Hashtable<String, Integer>> figuresFromThreads = new Hashtable<String, Hashtable<String, Integer>>();
-
-		//split the task into several threads, each classifying a sub-section of the test instances
-		ArrayList<MulticlassMaxEntTestThread> threads = new ArrayList<MulticlassMaxEntTestThread>();
-
-		//split the InstanceList
-		//double coreProportion = 1.0 / nCores;
-		double coreProportion = 1.0;
-		//double[] proportions = new double[nCores];
-		double[] proportions = new double[1];
-		for (int i = 0; i < proportions.length; i++) {
-			proportions[i] = coreProportion;
-		}
-		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
-
-		//create and run threads
-		int counter = 0;
-		for (InstanceList list: sections) {
-			InstanceList newList = new InstanceList(list.getDataAlphabet(), list.getTargetAlphabet());
-			for (Instance i: list) {
-				newList.add(i);
-			}
-			counter++;
-			MulticlassMaxEntTestThread thread = new MulticlassMaxEntTestThread("thread"+counter, newList, new MaxEntClassification(classifierFile, proportions.length), nullClass, confThreshold); //might want to change proportions.length to 1
-			threads.add(thread);
-			thread.start();
-		}
-
-		/*
-		int unit = testInstances.size() / nCores;
-		int lastStart = 0;
-		int lastEnd = unit;
-		for (int i = 0; i < nCores; i++) {
-			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
-			if (i == nCores - 1) {
-				lastEnd = testInstances.size();
-			}
-
-			//create the next thread
-			InstanceList thisThread = new InstanceList()
-
-			//set the pointers for the next thread
-			lastStart = lastEnd;
-			lastEnd += unit;
-		}
-
-		for (int i = unit; i < testInstances.size(); i += unit) {
-
-			lastStart = i;
-		}
-		*/
-
-		//run the various threads, wait for them to finish, and collect their data
-		for (MulticlassMaxEntTestThread thread: threads) {
-			thread.thread.join();
-
-			//each thread contains figures for various classes; add them to the cumulative figures in figuresFromThreads
-			Enumeration<String> classes = thread.results.keys();
-			while (classes.hasMoreElements()) {
-				//add figures from each class in the thread's figures. If the cumulative does not have this class,
-				//initialize an entry for this class's figures. Otherwise, add to the existing entry
-				String currClass = classes.nextElement();
-
-				//If the cumulative does not have this class, initialize an entry for this class's figures.
-				Hashtable<String, Integer> currClassFigures = thread.results.get(currClass);
-				if (!figuresFromThreads.containsKey(currClass)) {
-					figuresFromThreads.put(currClass, currClassFigures);
-				}
-				//Otherwise, add to the existing entry
-				else {
-					//get the cumulative figure for this class
-					Hashtable<String, Integer> cumulativeFiguresForCurrClass = figuresFromThreads.get(currClass);
-
-					//add all values in currClassFigures to those in cumulativeFiguresForCurrClass
-					Enumeration<String> figureNames = currClassFigures.keys();
-					while(figureNames.hasMoreElements()) {
-						String currFig = figureNames.nextElement();
-						int newCumulativeValue = cumulativeFiguresForCurrClass.get(currFig) + currClassFigures.get(currFig);
-						cumulativeFiguresForCurrClass.put(currFig, newCumulativeValue);
-					}
-				}
-			}
-		}
-
-		//calculate performance metrics from figures for each class
-		int instancesOfClass;
-		int classifiedAsClass;
-		int correctlyClassifiedAsClass;
-		double precision;
-		double recall;
-		double F1;
-		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-
-		//ACCURACY
-		/*
-		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
-		results.put("Accuracy", accuracy);
-		*/
-
-		Enumeration<String> classes = figuresFromThreads.keys();
-		while (classes.hasMoreElements()) {
-			String currClass = classes.nextElement();
-
-			//get figures
-			Hashtable<String, Integer> figuresForClass = figuresFromThreads.get(currClass);
-			instancesOfClass = figuresForClass.get("instances");
-			classifiedAsClass = figuresForClass.get("classified as");
-			correctlyClassifiedAsClass = figuresForClass.get("correctly classified as");
-
-			//update accuracy, as this takes into account all classes
-			if (accuracy.size() == 0) { //initialize if this is the first class
-				accuracy.put("Accuracy", (double)correctlyClassifiedAsClass);
-			}
-			else { //otherwise, update
-				accuracy.put("Accuracy", ((double)correctlyClassifiedAsClass) + accuracy.get("Accuracy"));
-			}
-
-			Hashtable<String, Double> metrics = new Hashtable<String, Double>();
-			if (classifiedAsClass > 0) {
-				precision = ((double) correctlyClassifiedAsClass) / classifiedAsClass;
-			}
-			else {
-				precision = 0.0;
-			}
-			if (instancesOfClass > 0) {
-				recall = ((double) correctlyClassifiedAsClass) / instancesOfClass;
-			}
-			else {
-				recall = 0.0;
-			}
-			F1 = (2 * precision * recall) / (precision + recall);
-			if (precision == 0.0 && recall == 0.0) {
-				F1 = 0.0;
-			}
-			metrics.put("Precision", precision);
-			metrics.put("Recall", recall);
-			metrics.put("F1", F1);
-			results.put(currClass, metrics);
-
-			/*
-			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
-
-			//test run using the trimmed instance list
-			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
-			testRun(trimmedTestInstances);
-			*/
-
-		}
-		//finally get accuracy
-		accuracy.put("Accuracy", accuracy.get("Accuracy")/testInstances.size());
-		results.put("Accuracy", accuracy);
-
-		return results;
-	}
-
-	/*
     	Returns a hashtable containing accuracy and performance metrics for the given test instances. Multithreads to
     	improve speed
-    *
+    */
+	/*
 	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances, String desiredClass, double confThreshold) throws IOException, InterruptedException, ClassNotFoundException {
 		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
 
@@ -1063,120 +1477,42 @@ public class MaxEntClassification {
 	*/
 
 	/*
-		Returns a hashtable containing accuracy and performance metrics for the given test instances. For a given
-		desiredClass, instances are only classified as that class if they are classified with at least <threshold> confidence
-		for that class. Instances classified as desiredClass with a confidence level below the threshold are instead
-		classified as altClass.
-
-		Multithreads to improve speed
-
-		CURRENTLY ONLY WORKS WITH BINARY CLASS DISTINCTIONS
-	 */
-	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
-		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
-
-		int desiredInstances = 0;
-		int altInstances = 0;
-		int classifiedAsDesired = 0;
-		int classifiedAsAlt = 0;
-		int correctlyClassifiedAsDesired = 0;
-		int correctlyClassifiedAsAlt = 0;
-
-		//split the task into several threads, each classifying a sub-section of the test instances
-		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
-
-		//split the InstanceList
-		double coreProportion = 1.0 / nCores;
-		double[] proportions = new double[nCores];
-		for (int i = 0; i < nCores; i++) {
-			proportions[i] = coreProportion;
-		}
-		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
-
-		//create and run threads
-		for (InstanceList list: sections) {
-			MaxEntTestRunThread thread = new MaxEntTestRunThread("thread", list, this, desiredClass, confidenceThreshold, altClass);
-			threads.add(thread);
-			thread.start();
-		}
-
-		/*
-		int unit = testInstances.size() / nCores;
-		int lastStart = 0;
-		int lastEnd = unit;
-		for (int i = 0; i < nCores; i++) {
-			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
-			if (i == nCores - 1) {
-				lastEnd = testInstances.size();
-			}
-
-			//create the next thread
-			InstanceList thisThread = new InstanceList()
-
-			//set the pointers for the next thread
-			lastStart = lastEnd;
-			lastEnd += unit;
-		}
-
-		for (int i = unit; i < testInstances.size(); i += unit) {
-
-			lastStart = i;
-		}
-		*/
-
-		//run the various threads, wait for them to finish, and collect their data
-		for (MaxEntTestRunThread thread: threads) {
-			thread.thread.join();
-
-			desiredInstances += thread.desiredInstances;
-			altInstances += thread.altInstances;
-			classifiedAsDesired += thread.classifiedAsDesired;
-			classifiedAsAlt += thread.classifiedAsAlt;
-			correctlyClassifiedAsDesired += thread.correctlyClassifiedAsDesired;
-			correctlyClassifiedAsAlt += thread.correctlyClassifiedAsAlt;
-		}
-
-		//calculate the actual figures
-		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
-		results.put("Accuracy", accuracy);
-
-		Hashtable<String, Double> desired = new Hashtable<String, Double>();
-		double desPrecision = ((double)correctlyClassifiedAsDesired)/classifiedAsDesired;
-		double desRecall = ((double)correctlyClassifiedAsDesired)/desiredInstances;
-		double desF1 = (2 * desPrecision * desRecall)/(desPrecision + desRecall);
-		desired.put("Precision", desPrecision);
-		desired.put("Recall", desRecall);
-		desired.put("F1", desF1);
-		results.put(desiredClass, desired);
-
-		Hashtable<String, Double> alt = new Hashtable<String, Double>();
-		double altPrecision = ((double)correctlyClassifiedAsAlt)/classifiedAsAlt;
-		double altRecall = ((double)correctlyClassifiedAsAlt)/altInstances;
-		double altF1 = (2 * altPrecision * altRecall)/(altPrecision + altRecall);
-		alt.put("Precision", altPrecision);
-		alt.put("Recall", altRecall);
-		alt.put("F1", altF1);
-		results.put(altClass, alt);
-
-			/*
-			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
-
-			//test run using the trimmed instance list
-			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
-			testRun(trimmedTestInstances);
-			*/
-		return results;
-	}
-
-	public Classifier trainClassifier(InstanceList trainingInstances) {
-
+	//trains the classifier using the given instances. Continues training an existing classifier if it is already there,
+	//if trainOld is set to true
+	public Classifier trainClassifier(InstanceList trainingInstances, boolean trainOld) {
 		// Here we use a maximum entropy (ie polytomous logistic regression)
 		//  classifier. Mallet includes a wide variety of classification
 		//  algorithms, see the JavaDoc API for details.
+		if (maxEntClassifier == null || !trainOld) {
+			//trainer = new MaxEntTrainer();
+			//maxEntClassifier = trainer.train(trainingInstances);
+		}
+		else {
+			//ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer(maxEntClassifier);
+			//maxEntClassifier = trainer.train(trainingInstances);
+		}
 
-		ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer();
+		return maxEntClassifier;
+	}
+	*/
+
+	//trains the classifier using the given trainingInstances. Continues training an existing classifier if it is
+	//already there. Also gets rid of the current training instances
+	private Classifier train() {
+		//InstanceList instanceList = new InstanceList(dataAlphabet, targetAlphabet);
+		//addToInstanceList(instance, instanceList);
+
+		if (maxEntClassifier == null) {
+			//trainer = new NaiveBayesTrainer();
+			trainer = new MaxEntTrainer();
+			//maxEntClassifier = trainer.train(trainingInstances);
+		}
+		//else {
+			//ClassifierTrainer<MaxEnt> trainer = new MaxEntTrainer(maxEntClassifier);
+			//maxEntClassifier = trainer.train(trainingInstances);
+		//}
 		maxEntClassifier = trainer.train(trainingInstances);
+		clearInstances();
 		return maxEntClassifier;
 	}
 

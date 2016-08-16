@@ -555,7 +555,7 @@ public class AnnotationFeatures {
         for (CoreLabel[] phrase : phrases) {
             for (CoreLabel token : phrase) if (token.tag().equals("CD")) counter++;
         }
-        counter += getFeatureForWordClass(phrases, "Numerical references");
+        counter += getFeatureForWordClass(phrases, numericalReferencesWordClassName);
         return counter;
     }
 

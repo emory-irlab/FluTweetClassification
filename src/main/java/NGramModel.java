@@ -9,6 +9,9 @@ import java.util.Enumeration;
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 /*
  * Created by Alec Wolyniec on 6/14/16.
@@ -38,7 +41,7 @@ public class NGramModel {
         to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of documents
         an n-gram must appear in within the training data in order to be considered
      */
-    public NGramModel(int n, TweetVector[] tweetVectors, String dT, String stopWordPath, int freq, int nCores) throws IOException {
+    public NGramModel(int n, String pathToTweetFile, String dT, String stopWordPath, int freq, int nCores) throws IOException {
         N = n;
         this.nCores = nCores;
         freqThreshold = freq;
@@ -50,7 +53,7 @@ public class NGramModel {
         else {
             stopWords = true;
         }
-        initializeIDFsFromTweetFields(tweetVectors);
+        initializeIDFsFromTweetFields(pathToTweetFile);
     }
 
     /*
@@ -213,14 +216,42 @@ public class NGramModel {
         Initializes idfs from tweet data fields. Only maintains a list of those that appear at least as many
         times as specified by the frequency threshold, and excludes stop words if this model is set to do so
      */
-    private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
-        totalDocs = tweetVectors.length;
+    private void initializeIDFsFromTweetFields(String pathToTweetFile) throws FileNotFoundException, IOException {
+        //count the number of records that are tweets and not blanks
+        int counter = 0;
+        BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToTweetFile)));
+        CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180);
+        List<CSVRecord> records = tweetCSV.getRecords();
+        for (CSVRecord record: records) {
+            if (record.size() >= 6) {
+                counter++;
+            }
+        }
+        totalDocs = counter;
+
         //go through all tweets
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        for (int i = 0; i < tweetVectors.length; i++) {
-            String text = readTweetsGetFeatures.process(returnAppropriateTextForm(tweetVectors[i]));
+        for (int i = 0; i < records.size(); i++) {
+            //get a tweet
+            CSVRecord currentTweet = records.get(i);
+            if (currentTweet.size() < 6) {
+                continue;
+            }
+
+            //get the proper data type
+            String text = "";
+            if (dataType.equals(descriptionName)) {
+                text = readTweetsGetFeatures.process(currentTweet.get(3));
+            }
+            else if (dataType.equals(textName)) {
+                text = readTweetsGetFeatures.process(currentTweet.get(4));
+            }
+            else {
+                System.err.println("IMPROPER DATA TYPE REQUESTED FOR NGRAM MODEL - in method initializeIDFSFromTweetFields"); //change to exception
+                System.exit(1);
+            }
 
             //annotate to get lemma annotations
             Annotation document = new Annotation(text);
@@ -308,7 +339,6 @@ public class NGramModel {
         System.out.println();
     }
 
-
     /*
     //multithreaded version
     private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
@@ -317,10 +347,19 @@ public class NGramModel {
         //split up tweetVectors
         int left = tweetVectors.length;
         int unit = left / nCores;
-        int vectorsForThis = 0;
+        int currentStartPt = 0;
+        ArrayList<Integer> startPts = new ArrayList<Integer>();
+        startPts.add(0);
+        currentStartPt = unit;
+
+        for (int i = 1; i < nCores; i++) {
+            startPts.add(currentStartPt);
+        }
+
         ArrayList<TweetVector[]> splitVectorsForThreads = new ArrayList<TweetVector[]>();
         //add to split vector list
         for (int i = 0; i < nCores; i++) {
+            //if no vectors, set vectors for this list
 
         }
 
@@ -383,7 +422,7 @@ public class NGramModel {
 
         System.out.println();
     }
-    */
+*/
 
     /*
         Saves all idfs to a given path

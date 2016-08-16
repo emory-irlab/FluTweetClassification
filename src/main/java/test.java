@@ -31,6 +31,8 @@ public class test {
         double average = 0.0;
         int tweetNum = 0;
         for (String[] tweet: tweets) {
+            System.out.println(tweet[4]+" <WITHOUT HASHTAGS> --> "+TextFeatures.removeHashtagCharInHashtags(tweet[4]));
+            /*
             tweetNum++;
             long startTime = System.currentTimeMillis();
             int[] most = topicFeatureModel.getNMostLikelyTopics(3, tweet[4]);
@@ -40,8 +42,11 @@ public class test {
             if (tweetNum % 25 == 0) {
                 System.out.println("   Average time so far: "+average+ " seconds. Time for 30k tweets is "+average*30000+" seconds "+average*500+" minutes "+average*500/60+" hours");
             }
+            *
         }
-
+        System.out.println(TextFeatures.removeHashtagCharInHashtags("got a job interview wed. hopefully job #2 and got called about an apartment , gods way of telling me Ima be good lol"));
+        */
+    /*
         long startTime = System.currentTimeMillis();
         int[] most = topicFeatureModel.getNMostLikelyTopics(3, "stage race monday jack louis wins flag stream sunday ichoosenicki crowd ji football victory game weekend watching jerry pita");
         System.out.println(((double)System.currentTimeMillis() - startTime)/1000+" seconds to get");

@@ -21,7 +21,6 @@ import java.io.File;
     used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
-    private static TweetVector[] tweetVectors;
     private static int idfUpdateCounter = 0;
     private static NGramModel tweetTextUnigramModel = null;
     private static NGramModel tweetTextBigramModel = null;
@@ -79,14 +78,14 @@ public class readTweetsGetFeatures {
         CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180);
         List<CSVRecord> records = tweetCSV.getRecords();
         for (CSVRecord record: records) {
-            if (record.size() >= 1) {
+            if (record.size() >= 6) {
                 counter++;
             }
         }
 
         //get tweet vector model
         TweetVector[] tweetVectors = new TweetVector[counter];
-        readTweetsGetFeatures.tweetVectors = tweetVectors;
+        //readTweetsGetFeatures.tweetVectors = tweetVectors;
 
         //initialize tweet vectors
         //String label = toBinaryLabels(tweet[5], classifierType);
@@ -101,15 +100,15 @@ public class readTweetsGetFeatures {
             tweetVectors[i] = new TweetVector(tweetFields[0], tweetFields[1], tweetFields[2], tweetFields[3], tweetFields[4], tweetFields[5], labelSet);
         }
 
+        //free up space?
+        records = null;
+
         //get features for each tweet vector
-        for (int i = 0; i < records.size(); i++) {
+        for (int i = 0; i < counter; i++) {
             long tweetBeginTime = System.currentTimeMillis();
-            getVectorModelForTweet(tweetVectors[i], pipeline, classifierType, nCores);
+            getVectorModelForTweet(tweetVectors[i], pathToTweetFile, pipeline, classifierType, nCores);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
-
-        //free up space?
-        readTweetsGetFeatures.tweetVectors = null;
 
         return tweetVectors;
     }
@@ -118,7 +117,7 @@ public class readTweetsGetFeatures {
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
      */
-    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType, int nCores) throws IOException, InterruptedException {
+    public static void getVectorModelForTweet(TweetVector tweetVector, String pathToTweets, StanfordCoreNLP pipeline, String classifierType, int nCores) throws IOException, InterruptedException {
         //annotate fields with Stanford CoreNLP
         String processedTweet = process(tweetVector.getTweetText());
 
@@ -139,7 +138,7 @@ public class readTweetsGetFeatures {
                 collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
                 break;
             case "EventVsNonEvent":
-                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences, nCores);
+                collectFeaturesEventVsNotEvent(tweetVector, pathToTweets, tweetPhrases, tweetSentences, nCores);
                 break;
             case "SelfVsOther":
                 collectFeaturesSelfVsOther(tweetVector, tweetPhrases);
@@ -257,28 +256,28 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
+    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, String pathToTweetFile, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
         String text = process(tweetVector.getTweetText());
 
         //unigram features (tf-idf value of each word)
         if (tweetTextUnigramModel == null) {
-            tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
+            tweetTextUnigramModel = new NGramModel(1, pathToTweetFile, NGramModel.textName, "data/stopwords.txt", 1, nCores);
         }
         //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
         tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
-
+/*
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7, nCores);
+            tweetTextBigramModel = new NGramModel(2, pathToTweetFile, NGramModel.textName, "data/stopwords.txt", 7, nCores);
         }
         //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases)); 
-/*
+        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases));
+
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModel == null) {
-            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
+            tweetTextTrigramModel = new NGramModel(3, pathToTweetFile, NGramModel.textName, "data/stopwords.txt", 1, nCores);
         }
         //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
 	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
@@ -288,7 +287,7 @@ public class readTweetsGetFeatures {
         for (String template: phraseTemplates) {
             tweetVector.addFeature(template, 1.0);
         }
-
+/*
         //topics for tweet
         if (topicFeatureModel == null) {
             topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", nCores);
@@ -297,7 +296,7 @@ public class readTweetsGetFeatures {
         for (int topTopic: topTopics) {
             tweetVector.addFeature(Integer.toString(topTopic), 1.0);
         }
-
+*/
         //other features
         //addition 1
         //tweetVector.addFeature("Hashtag Count", TextFeatures.countInstancesOf(text, TextFeatures.hashtagPattern));

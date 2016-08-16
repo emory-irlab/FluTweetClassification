@@ -71,7 +71,7 @@ public class runClassifierOnTweets {
         //ArrayList<String[]> randomTweets = TweetParser.getUnlabeledTweetEntitiesAndLabel("data/tweets/5kRandomTweets.txt", 2, true, "none_of_the_above");
 
         //Initialize hash sets once at run time
-        TextFeatures.initializeHashSets();
+        //TextFeatures.initializeHashSets();
 
         //random tweet texts for EvN dataset
         /*
@@ -96,27 +96,21 @@ public class runClassifierOnTweets {
         //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
 
         //get vectors from the training tweets and add them to the classifier's instance list
-        MaxEntClassification classifier = new MaxEntClassification(pathToEvN, nCores);
-        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToEvNTweets, "EventVsNonEvent", nCores);
-        classifier.addToInstanceList(trainingTweetVectors);
-
-        //free up space?
-        trainingTweetVectors = null;
+        MaxEntClassification classifier = new MaxEntClassification(pathToHvN, nCores);
+        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToHvNTweets, "HumanVsNonHuman", nCores);
 
         //VARIOUS OPTIONS FOR RUNNING THE CLASSIFIER
 
         //train + test
          //cross-validation test
-        //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
-        //classifier.crossValidate(5, pathToTestResults, "null_class", 0.5);
-        classifier.crossValidate(5, pathToTestResults, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
+        classifier.crossValidate(5, trainingTweetVectors, pathToTestResults, 10000); //cross-validation must have at least 2 folds
+        //classifier.crossValidate(5, trainingTweetVectors, pathToTestResults, "null_class", 0.5);
+        //classifier.crossValidate(5, trainingTweetVectors, pathToTestResults, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
          //split multiple times test
-        //classifier.runNSplits(1, pathToTestResults, "null_class", 0.9);
-         //non-cross-validation test for "person" class of HvN with varying confidence intervals
-        //classifier.runNSplits(5, pathToTestResults, "person", 0.8, "organization");
+        //classifier.runNSplits(5, trainingTweetVectors, pathToTestResults);
 
         //just train
-        //classifier.trainClassifier(classifier.instances);
+        //classifier.makeInstancesAndTrain(pathToEvNTweets, "EventVsNonEvent");
 
         //save
         //classifier.saveClassifier(new File(pathToEvN));

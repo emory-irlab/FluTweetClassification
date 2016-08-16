@@ -1,0 +1,18 @@
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.8844645550527904
+--------------------
+
+Metrics for class organization
+Recall: 0.8651061235002041
+Precision: 0.9139800478683868
+F1: 0.8888645911797057
+
+Metrics for class person
+Recall: 0.9066736099436875
+Precision: 0.8538580134377641
+F1: 0.8794527300186779
+
+Metrics for class Accuracy
+Accuracy: 0.8844645550527904

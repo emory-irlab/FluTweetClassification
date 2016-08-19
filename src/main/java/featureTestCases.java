@@ -45,6 +45,7 @@ public class featureTestCases {
             - -rrb- - 5
             -Can - 5
     */
+    /*
     public static void testUnigramFeaturesIDFThresholdOf1WithStopWords() throws IOException {
         //---------------
         //TRAINING
@@ -110,6 +111,7 @@ public class featureTestCases {
             e.printStackTrace();
         }
     }
+    */
 
     /*
     Assuming a working TweetVector model and a working Stanford CoreNLP model, tests to see if the unigram model
@@ -141,6 +143,7 @@ public class featureTestCases {
     Fifth:
 
  */
+    /*
     public static void testUnigramFeaturesTFIDFThresholdOf1WithStopWords() throws IOException {
         //---------------
         //TRAINING
@@ -247,6 +250,7 @@ public class featureTestCases {
             e.printStackTrace();
         }
     }
+    */
 
     /*
         From 5 training tweets, test to see if tf-idf values are correct when only words that appear at least 2 times
@@ -273,6 +277,7 @@ public class featureTestCases {
         Fifth:
 
      */
+    /*
     public static void testUnigramFeaturesTFIDFThresholdOf2WithStopWords() throws IOException {
         //---------------
         //TRAINING
@@ -376,6 +381,7 @@ public class featureTestCases {
             e.printStackTrace();
         }
     }
+    */
 
     /*
         Test to see if tf-idf values remain correct even if stopwords are removed
@@ -396,6 +402,7 @@ public class featureTestCases {
         Fifth:
 
      */
+    /*
     public static void testUnigramFeaturesTFIDFThresholdOf1NoStopWords() throws IOException {
         //---------------
         //TRAINING
@@ -493,6 +500,7 @@ public class featureTestCases {
             e.printStackTrace();
         }
     }
+    */
 
     /*
         From 5 training and 5 test tweets, extract tf-idf features on bigrams and check to make sure they're correct.
@@ -517,6 +525,7 @@ public class featureTestCases {
         - -pre- marshmallow - 5.0
 
      */
+    /*
     public static void testBigramFeaturesTFIDFThresholdOf1NoStopWords() throws IOException {
         //---------------
         //TRAINING
@@ -627,7 +636,9 @@ public class featureTestCases {
             e.printStackTrace();
         }
     }
+    */
 
+    /*
     public static void test6gramFeaturesTFIDFThresholdOf1NoStopWords() throws IOException {
         //---------------
         //TRAINING
@@ -768,6 +779,7 @@ public class featureTestCases {
             e.printStackTrace();
         }
     }
+    */
 
     //topic features
     public static void testGetProbabilityOfWord() throws IOException {
@@ -931,22 +943,22 @@ public class featureTestCases {
         //tests for the N-gram model (all words measure by it are assumed to be lowercase unless they are proper nouns,
         //in which case the first character (and only the first character) is uppercase
          //test the unigram idf method
-        testUnigramFeaturesIDFThresholdOf1WithStopWords();
+        //testUnigramFeaturesIDFThresholdOf1WithStopWords();
 
          //test the combination of the unigram tf and idf methods
-        testUnigramFeaturesTFIDFThresholdOf1WithStopWords();
+        //testUnigramFeaturesTFIDFThresholdOf1WithStopWords();
 
          //test a tf-idf unigram model with a higher frequency threshold than 1
-        testUnigramFeaturesTFIDFThresholdOf2WithStopWords();
+        //testUnigramFeaturesTFIDFThresholdOf2WithStopWords();
 
          //test a tf-idf unigram model without stopwords
-        testUnigramFeaturesTFIDFThresholdOf1NoStopWords();
+        //testUnigramFeaturesTFIDFThresholdOf1NoStopWords();
 
          //test a tf-idf bigram model without stopwords
-        testBigramFeaturesTFIDFThresholdOf1NoStopWords();
+        //testBigramFeaturesTFIDFThresholdOf1NoStopWords();
 
          //test 6-grams
-        test6gramFeaturesTFIDFThresholdOf1NoStopWords();
+        //test6gramFeaturesTFIDFThresholdOf1NoStopWords();
 
          //test phrase template model
 

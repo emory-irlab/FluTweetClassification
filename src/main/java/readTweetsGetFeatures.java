@@ -5,46 +5,65 @@ import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.util.CoreMap;
 
-import org.apache.commons.csv.*;
-
 import java.io.FileNotFoundException;
-import java.util.*;
-import java.io.FileReader;
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.FileReader;
+import java.util.*;
 import java.io.IOException;
+import java.io.File;
 
 /*
     Methods useful for creating a vector model from each tweet in an input set, representing all of the features
     used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
-    private static TweetVector[] tweetVectors;
-    private static NGramModel tweetTextUnigramModel = null;
-    private static NGramModel tweetTextBigramModel = null;
+
+    //classifier names
+    static final String humanNonHumanClassifierName = "humanNonHuman";
+    static final String eventClassifierName = "event";
+    static final String selfOtherClassifierName = "selfOther";
+
+    private static String dataSource = "";
+    private static int idfUpdateCounter = 0;
+    private static NGramModel tweetTextUnigramModelEvent = null;
+    private static NGramModel tweetTextBigramModelEvent = null;
+    private static NGramModel tweetTextTrigramModelEvent = null;
+
+    private static NGramModel tweetTextUnigramModelSvO = null;
+    private static NGramModel tweetTextBigramModelSvO = null;
+    private static NGramModel tweetTextTrigramModelSvO = null;
+
     private static TopicFeatureModel topicFeatureModel = null;
-    private static String stopWordPath = "src\\data\\stopwords.txt";
+    private static StanfordCoreNLP pipeline = null;
+
     /*
-        Get csv-formatted tweets from a path to a file
-        Fields should be as follows: profile picture, handle, name, description, tweet, label
-     */
+        Get tweets from a path to a file
+    */
+    /*
     public static ArrayList<String[]> getTweets(String pathToTweetFile) throws FileNotFoundException, IOException {
         ArrayList<String[]> tweets = new ArrayList<String[]>();
-        BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));
-        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
-        for (CSVRecord record : records) {
-            String[] tweetFields = new String[6];
-            for (int i = 0; i < 6; i++) {
-                tweetFields[i] = record.get(i);
+        BufferedReader reader = new BufferedReader(new FileReader(pathToTweetFile));
+        String currentLine;
+        while ((currentLine = reader.readLine()) != null) {
+            String[] split = currentLine.split("\t");
+            if (split.length < 3) break;
+            String text = "";
+            for (int i = 2; i < split.length; i++) {
+                text += split[i];
             }
-            tweets.add(tweetFields);
+            String[] tweet = {split[0], split[1], text};
+            tweets.add(tweet);
         }
         return tweets;
     }
-    
+    */
+
     public static String process(String input) {
         input = TextFeatures.removeRetweets(input);
         input = TextFeatures.removeHashtagCharInHashtags(input);
@@ -63,17 +82,19 @@ public class readTweetsGetFeatures {
      */
     public static TweetVector[] getVectorModelsFromTweets(String pathToTweetFile, String classifierType, int nCores) throws IOException, InterruptedException {
         ArrayList<String> labelSet = new ArrayList<String>(0);
-        //set up Stanford CoreNLP object for annotation
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, depparse, natlog, openie");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        //set up Stanford CoreNLP object for annotation, if it hasn't been set up yet
+        if (pipeline == null) {
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, depparse, natlog, openie");
+            pipeline = new StanfordCoreNLP(props);
+        }
 
         //get the number of tweets for the sake of initializing tweet vectors (may remove later for speed's sake)
         int counter = 0;
         BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToTweetFile)));
         CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180);
         List<CSVRecord> records = tweetCSV.getRecords();
-        
+
         for (CSVRecord record: records) {
             if (record.size() >= 1) {
                 counter++;
@@ -82,7 +103,7 @@ public class readTweetsGetFeatures {
 
         //get tweet vector model
         TweetVector[] tweetVectors = new TweetVector[counter];
-        readTweetsGetFeatures.tweetVectors = tweetVectors;
+        readTweetsGetFeatures.dataSource = pathToTweetFile;
 
         //initialize tweet vectors
         //String label = toBinaryLabels(tweet[5], classifierType);
@@ -99,15 +120,13 @@ public class readTweetsGetFeatures {
 
         //get features for each tweet vector
         for (int i = 0; i < records.size(); i++) {
-//            long tweetBeginTime = System.currentTimeMillis();
-            getVectorModelForTweet(tweetVectors[i], pipeline, classifierType, nCores);
-//            System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
+            long tweetBeginTime = System.currentTimeMillis();
+            getVectorModelForTweet(tweetVectors[i], classifierType, nCores);
+            System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
 
-        //free up space?
-        readTweetsGetFeatures.tweetVectors = null;
         tweetCSV.close();
-        
+
         return tweetVectors;
     }
 
@@ -115,7 +134,14 @@ public class readTweetsGetFeatures {
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
      */
-    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType, int nCores) throws IOException, InterruptedException {
+    public static TweetVector getVectorModelForTweet(TweetVector tweetVector, String classifierType, int nCores) throws IOException, InterruptedException {
+        //create the Stanford CoreNLP pipeline if it doesn't exist yet
+        if (pipeline == null) {
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
+            pipeline = new StanfordCoreNLP(props);
+        }
+
         //annotate fields with Stanford CoreNLP
         String processedTweet = process(tweetVector.getTweetText());
 
@@ -132,16 +158,17 @@ public class readTweetsGetFeatures {
 
         //collect features
         switch (classifierType) {
-            case "HumanVsNonHuman":
+            case humanNonHumanClassifierName:
                 collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
                 break;
-            case "EventVsNonEvent":
+            case eventClassifierName:
                 collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences, nCores);
                 break;
-            case "SelfVsOther":
-                collectFeaturesSelfVsOther(tweetVector, tweetPhrases, tweetSentences, nCores, tweetDocument);
+            case selfOtherClassifierName:
+                collectFeaturesSelfVsOther(tweetVector, tweetPhrases, tweetSentences);
                 break;
         }
+        return tweetVector;
     }
 
     public static CoreLabel[][] getPhrases(Annotation document) {
@@ -153,6 +180,7 @@ public class readTweetsGetFeatures {
         int phraseCounter = 0;
         for (int i = 0; i < tokens.size(); i++) {
             CoreLabel token = tokens.get(i);
+            String text = token.get(TextAnnotation.class);
 
             //Add token to current phrase
             phrase[phraseCounter++] = token;
@@ -199,9 +227,9 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the human vs. non-human classifier
     */
-    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
+    private static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
 
-    	//features based on the user's profile pic
+        //features based on the user's profile pic
 
         //features based on the user's username
         String username = tweetVector.getUsername();
@@ -253,30 +281,27 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
+    private static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
         String text = process(tweetVector.getTweetText());
 
         //unigram features (tf-idf value of each word)
-        if (tweetTextUnigramModel == null) {
-            tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, stopWordPath, 3, nCores);
+        if (tweetTextUnigramModelEvent == null) {
+            tweetTextUnigramModelEvent = new NGramModel(1, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
         }
-        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextUnigramModelEvent.getFeaturesForTweetTF(phrases));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
-        if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, stopWordPath, 7, nCores);
+        if (tweetTextBigramModelEvent == null) {
+            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 7);
         }
-        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases)); 
+        tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(phrases));
 /*
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
-        if (tweetTextTrigramModel == null) {
-            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
+        if (tweetTextTrigramModelEvent == null) {
+            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
         }
-        //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
 	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
 */
         //phrase templates
@@ -286,9 +311,9 @@ public class readTweetsGetFeatures {
         }
 
         //topics for tweet
-//        if (topicFeatureModel == null) {
-//            topicFeatureModel = new TopicFeatureModel("src\\data\\topics\\countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", nCores);
-//        }
+        if (topicFeatureModel == null) {
+            topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", nCores);
+        }
         int[] topTopics = topicFeatureModel.getNMostLikelyTopics(3, text);
         for (int topTopic: topTopics) {
             tweetVector.addFeature(Integer.toString(topTopic), 1.0);
@@ -317,19 +342,15 @@ public class readTweetsGetFeatures {
 //        tweetVector.addFeature("Count Exclamations", TextFeatures.countExclamationPhrases(text));
 //        tweetVector.addFeature("Count Question Marks", TextFeatures.countQuestionMarkGroups(text));
     }
-    
+
     public static void collectFeaturesEventVsNotEventParallel(TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
-    	
+
     }
 
     /*
         Obtain all features for the self vs. other classifier
      */
-    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, 
-    		int nCores, Annotation tweetDocument) throws IOException {
-    	
-    	String text = tweetVector.getTweetText();
-    	
+    private static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
         //the number of words/strings in each of the given word classes
         tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Past Tense"));
         tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Present Tense"));
@@ -338,7 +359,9 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("Count Singular Plural Nouns", AnnotationFeatures.countSingularProperNouns(phrases));
         tweetVector.addFeature("Count Plural Nouns", AnnotationFeatures.countPluralProperNouns(phrases));
         tweetVector.addFeature("Numeric References Count", AnnotationFeatures.numericalReferencesCount(phrases));
-        
+
+        String text = tweetVector.getTweetText();
+
         //Stylometry
         tweetVector.addFeature("Contains Mentions", TextFeatures.containsAt(text));
         tweetVector.addFeature("Contains URL", TextFeatures.containsURL(text));
@@ -351,36 +374,36 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("Phrases beginning with verb", AnnotationFeatures.phrasesBeginningWithVerb(phrases));
         tweetVector.addFeature("Phrases beginning with past tense verb", AnnotationFeatures.phrasesBeginningWithPastTenseVerb(phrases));
         tweetVector.addFeature("Count Verbs Following Proper Nouns", AnnotationFeatures.properNounsFollowedByVerb(phrases));
-        
+
 //        //OpenIE features
 //        int openIESelf = 0;
 //        int openIEOther = 0;
-        
+
         // Loop over sentences in the document
-        for (CoreMap sentence : tweetDocument.get(CoreAnnotations.SentencesAnnotation.class)) {
+        for (CoreMap sentence : tweetSentences) {
           // Get the OpenIE triples for the sentence
           Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
           // Print the triples
           for (RelationTriple triple : triples) {
-        	  
+
         	  String[] noConfidenceTrip = triple.toString().split("\\s");
-        	  
+
         	  String[] subVerbObj =(noConfidenceTrip[1] + " " + noConfidenceTrip[2] + " " + noConfidenceTrip[3]).split("\\s");
         	  tweetVector.addFeature("openIE Self Count - sVO", AnnotationFeatures.countWordsInClassSelf(subVerbObj));
         	  tweetVector.addFeature("openIE Other Count - sVO", AnnotationFeatures.countWordsInClassOther(subVerbObj));
-        	  
+
         	  String[] subVerb = (noConfidenceTrip[1] + " " + noConfidenceTrip[2]).split("\\s");
         	  tweetVector.addFeature("openIE Self Count - subVerb", AnnotationFeatures.countWordsInClassSelf(subVerb));
         	  tweetVector.addFeature("openIE Other Count - subVerb", AnnotationFeatures.countWordsInClassOther(subVerb));
-        	  
+
         	  String[] subObj = (noConfidenceTrip[1] + " " + noConfidenceTrip[3]).split("\\s");
         	  tweetVector.addFeature("openIE Self Count - subObj", AnnotationFeatures.countWordsInClassSelf(subObj));
         	  tweetVector.addFeature("openIE Other Count - subObj", AnnotationFeatures.countWordsInClassOther(subObj));
-        	  
+
         	  String[] verbObj = (noConfidenceTrip[2] + " " + noConfidenceTrip[2]).split("\\s");
         	  tweetVector.addFeature("openIE Self Count - verbObj", AnnotationFeatures.countWordsInClassSelf(verbObj));
         	  tweetVector.addFeature("openIE Other Count - subObj", AnnotationFeatures.countWordsInClassOther(verbObj));
-        	  
+
         	  //Subject-Verb-Object tuple
         	  tweetVector.addFeature(noConfidenceTrip[1] + " " + noConfidenceTrip[2] + " " + noConfidenceTrip[3], 1);
         	  //Subject-verb tuple
@@ -389,9 +412,9 @@ public class readTweetsGetFeatures {
         	  tweetVector.addFeature(noConfidenceTrip[1] + " " + noConfidenceTrip[3], 1);
         	  //Verb-Object Tuple
         	  tweetVector.addFeature(noConfidenceTrip[2] + " " + noConfidenceTrip[3], 1);
-        	  
+
 //        	  for (CoreLabel l : triple) {
-//        		  
+//
 //        		  if (AnnotationFeatures.isInWordClassSelf(l.word())) {
 //        			  openIESelf++;
 //        		  }
@@ -401,11 +424,11 @@ public class readTweetsGetFeatures {
 //        	  }
            }
         }
-        
+
 //	    tweetVector.addFeature("openIE Self Count", openIESelf);
 //	    tweetVector.addFeature("openIE Other Count", openIEOther);
 
-        
+
         //Dredze POS templates
         String[] firstPronounLastNoun = AnnotationFeatures.pairFirstPronounLastNoun(phrases);
         //First pronoun, last noun pair
@@ -414,7 +437,7 @@ public class readTweetsGetFeatures {
             tweetVector.addFeature("fProLNoun in Self", AnnotationFeatures.countWordsInClassSelf(firstPronounLastNoun));
             tweetVector.addFeature("fProLNoun in Other", AnnotationFeatures.countWordsInClassOther(firstPronounLastNoun));
         }
-        
+
         String[] firstNounPronounLastVerb = AnnotationFeatures.pairFirstPronounOrNounLastVerb(phrases);
         //First noun or pronoun (not counting proper nouns) last verb pair
         if (firstNounPronounLastVerb[0] != null && firstNounPronounLastVerb[1] != null) {
@@ -422,19 +445,17 @@ public class readTweetsGetFeatures {
             tweetVector.addFeature("fPro|NounVerb in Self", AnnotationFeatures.countWordsInClassSelf(firstNounPronounLastVerb));
             tweetVector.addFeature("fPro|NounVerb in Other", AnnotationFeatures.countWordsInClassOther(firstNounPronounLastVerb));
         }
-        
-        text = process(text);
-        //Unigram Model
-        if (tweetTextUnigramModel == null) {
-    		tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, stopWordPath, 1, nCores);
-    	}
-        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
-        
-        //Bigram Model
-        if (tweetTextBigramModel == null) {
-    		tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, stopWordPath, 1, nCores);
-    	}
-        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases));
+
+        //unigrams
+        if (tweetTextUnigramModelSvO == null) {
+            tweetTextUnigramModelSvO = new NGramModel(1, dataSource, NGramModel.textName, selfOtherClassifierName, "data/stopwords.txt", 1);
+        }
+        tweetVector.addFeatures(tweetTextUnigramModelSvO.getFeaturesForTweetTF(phrases));
+
+        if (tweetTextBigramModelSvO == null) {
+            tweetTextBigramModelSvO = new NGramModel(2, dataSource, NGramModel.textName, selfOtherClassifierName, "data/stopwords.txt", 1);
+        }
+        tweetVector.addFeatures(tweetTextBigramModelSvO.getFeaturesForTweetTF(phrases));
     }
 
     /*
@@ -443,13 +464,15 @@ public class readTweetsGetFeatures {
     public static void collectPhraseDefinedFeatures(TweetVector tweet, CoreLabel[] phrase) {
         //get features based on part-of-speech templates
         String[] POSTemplates = getPOSTemplates(phrase);
+
+
     }
 
     public static int getSentimentScore(Annotation tweetDocument) {
-    	
+
         int mainSentiment = 0;
         int longest = 0;
-        
+
         for (CoreMap sentence : tweetDocument.get(CoreAnnotations.SentencesAnnotation.class)) {
             Tree tree = sentence.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
             int sentiment = RNNCoreAnnotations.getPredictedClass(tree);
@@ -472,19 +495,5 @@ public class readTweetsGetFeatures {
     public static String[] getPOSTemplates(CoreLabel[] phrase) {
         return new String[0];
     }
-
-    /*
-    public static String toBinaryLabels(String input, String classifierType) {
-        switch (classifierType) {
-            case "HumanVsNonHuman":
-                if (input.equals("person")) return "0";
-                if (input.equals("organization")) return "1";
-            case "SelfVsOther":
-                if (input.equals("self")) return "1";
-                if (input.equals("other")) return "0";
-        }
-        return input;
-    }
-    */
 
 }

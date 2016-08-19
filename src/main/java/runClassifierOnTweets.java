@@ -20,37 +20,6 @@ public class runClassifierOnTweets {
     static final int nCores = Runtime.getRuntime().availableProcessors() - 1;
     //private static int nCores = 1;
 
-    /*
-        Loads a classifier from a file and runs it on a set of tweets. Returns the ones that are labeled with the desired
-        class, according to the specified confidence threshold
-     */
-    /*
-    public static ArrayList<String[]> runClassifierAndGetTweetsByLabel(ArrayList<String[]> testTweets, String pathToClassifier, String classifierType, String desiredClass, double confidenceThreshold)
-    throws IOException, ClassNotFoundException, InterruptedException {
-        //classifier and output variables
-        MaxEntClassification classifier = new MaxEntClassification(pathToClassifier, nCores);
-        ArrayList<String[]> outputTweets = new ArrayList<String[]>();
-
-        //get the tweets to be labeled, generate features for them, and store them as Instances in a dummy classifier
-        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(testTweets, classifierType);
-        MaxEntClassification dummy = new MaxEntClassification("", nCores);
-        for (TweetVector tweetVector: tweetVectors) {
-            dummy.addToInstanceList(tweetVector.getFeatures(), tweetVector.getName(), tweetVector.getLabel());
-        }
-
-        //run the instances through the classifier by confidence level, add the ones labeled as the desired class
-        //to the output
-        InstanceList instances = dummy.instances;
-        for (int i = 0; i < instances.size(); i++) {
-            if (classifier.getLabelConfThresholdForDesiredClass(instances.get(i), desiredClass, confidenceThreshold).equals(desiredClass)) {
-                outputTweets.add(testTweets.get(i));
-            }
-        }
-
-        return outputTweets;
-    }
-    */
-
     //vectorizes and classifies a tweet using the given classifier, and returns its label
     public static String classify (ArrayList<String> tweet, String classifierType, MaxEntClassification classifier, double confThreshold) throws InterruptedException, IOException, ClassNotFoundException {
         //initialize the vector with the profile pic link, username, name, description, and tweet parameters set

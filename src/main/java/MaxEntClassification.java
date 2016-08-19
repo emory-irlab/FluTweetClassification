@@ -179,6 +179,7 @@ public class MaxEntClassification {
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
 		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
+		int counter = 0;
 		while (crossValidationIterator.hasNext()) {
 			InstanceList[] split = crossValidationIterator.next();
 			InstanceList training = split[0];
@@ -188,10 +189,19 @@ public class MaxEntClassification {
 			System.out.println();
 			System.out.println("NEW TEST:");
 
-			resultsOverTrials.add(evaluate(testing));
+			//print results for this trial
+			Hashtable<String, Hashtable<String, Double>> resultsForTrial = evaluate(testing);
+			if (counter == 0) {
+				writeTestResultsToFile(resultsForTrial, 1, pathToResultsFile, false);
+			}
+			else {
+				writeTestResultsToFile(resultsForTrial, 1, pathToResultsFile, true);
+			}
+			resultsOverTrials.add(resultsForTrial);
+			counter++;
 		}
 		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
-		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, false);
+		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
 	}
 
 	/*
@@ -202,6 +212,7 @@ public class MaxEntClassification {
 		CrossValidationIterator crossValidationIterator = new CrossValidationIterator(instances, n_folds, new Randoms());
 		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>(n_folds);
 
+		int counter = 0;
 		while (crossValidationIterator.hasNext()) {
 			InstanceList[] split = crossValidationIterator.next();
 			InstanceList training = split[0];
@@ -211,8 +222,18 @@ public class MaxEntClassification {
 			System.out.println();
 			System.out.println("NEW TEST:");
 
-			resultsOverTrials.add(evaluateWithConfThreshold(testing, nullClass, confidenceThreshold));
-			writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, true);
+			Hashtable<String, Hashtable<String, Double>> resultsOneTrial = evaluateWithConfThreshold(testing, nullClass, confidenceThreshold);
+			resultsOverTrials.add(resultsOneTrial);
+
+			//print results for this trial
+			if (counter == 0) {
+				writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, false);
+			}
+			else {
+				writeTestResultsToFile(resultsOverTrials.get(resultsOverTrials.size() - 1), 1, pathToResultsFile, true);
+			}
+
+			counter++;
 		}
 		//printTestResults(averageTrialResults(resultsOverTrials), n_folds);
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n_folds, pathToResultsFile, true);
@@ -231,6 +252,7 @@ public class MaxEntClassification {
 		}
 
 		//run a number of trials equal to the number of folds
+		int counter = 0;
 		while (crossValidationIterator.hasNext()) {
 			InstanceList[] split = crossValidationIterator.next();
 			InstanceList training = split[0];
@@ -247,9 +269,17 @@ public class MaxEntClassification {
 				int stoppingPoint = pathToResultsFileBase.length() - 4;
 				String thisPathToResultsFile = pathToResultsFileBase.substring(0, stoppingPoint) + thisConfidenceThreshold + pathToResultsFileBase.substring(stoppingPoint);
 
-				resultsOverTrialsThisThreshold.add(evaluateWithConfThreshold(testing, nullClass, thisConfidenceThreshold));
-				writeTestResultsToFile(resultsOverTrialsThisThreshold.get(resultsOverTrialsThisThreshold.size() - 1), 1, thisPathToResultsFile, true);
+				//print results for this trial
+				Hashtable<String, Hashtable<String, Double>> resultsThisTrial = evaluateWithConfThreshold(testing, nullClass, thisConfidenceThreshold);
+				resultsOverTrialsThisThreshold.add(resultsThisTrial);
+				if (counter == 0) {
+					writeTestResultsToFile(resultsOverTrialsThisThreshold.get(resultsOverTrialsThisThreshold.size() - 1), 1, thisPathToResultsFile, false);
+				}
+				else {
+					writeTestResultsToFile(resultsOverTrialsThisThreshold.get(resultsOverTrialsThisThreshold.size() - 1), 1, thisPathToResultsFile, true);
+				}
 			}
+			counter++;
 		}
 		//print out results for each confidence threshold
 		for (int i = 0; i < confidenceThresholds.length; i++) {
@@ -682,51 +712,18 @@ public class MaxEntClassification {
 			InstanceList testInstances = split(instances);
 			trainClassifier(instances);
 
-			Hashtable<String, Hashtable<String, Double>> results = evaluateWithConfThreshold(testInstances, nullClass, confThreshold);
-			//Hashtable<String, Hashtable<String, Double>> results = evaluate(testInstances);
-			resultsOverTrials.add(results);
+			Hashtable<String, Hashtable<String, Double>> resultsThisTrial = evaluateWithConfThreshold(testInstances, nullClass, confThreshold);
+			resultsOverTrials.add(resultsThisTrial);
 
-		}
-		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, false);
-	}
-
-	/*
-		Runs n trials on the data at a given threshold of confidence for the desired class. Any instance that is not
-		classified as the desired class with a confidence at or above the threshold is classified as the altClass.
-
-		ONLY WORKS WITH BINARY CLASSES
-		TODO: possibly generalize to all different class names
-	 */
-	public void runNSplits(int n, String pathToResultsFile, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
-		ArrayList<Hashtable<String, Hashtable<String, Double>>> resultsOverTrials = new ArrayList<Hashtable<String, Hashtable<String, Double>>>();
-		//save the instances the classifier started out with
-		InstanceList instancesCopy = new InstanceList(dataAlphabet, targetAlphabet);
-		for (Instance instance: instances) {
-			instancesCopy.add(instance);
-		}
-
-		//run n trials
-		for (int i = 0; i < n; i++) {
-			//ensure that the classifier starts each trial with the same instances it started out with
-			clearInstances();
-			for (Instance instance: instancesCopy) {
-				instances.add(instance);
+			//print out results for this trial
+			if (i == 0) {
+				writeTestResultsToFile(resultsThisTrial, 1, pathToResultsFile, false);
 			}
-			//train the classifier
-			InstanceList testInstances = split(instances);
-			//InstanceList trimmedTestInstances = new InstanceList(dataAlphabet, targetAlphabet); //to contain only the instances passing the test
-			trainClassifier(instances);
+			else {
+				writeTestResultsToFile(resultsThisTrial, 1, pathToResultsFile, true);
+			}
 
-			Hashtable<String, Hashtable<String, Double>> resultsForTrial = testRun(testInstances, desiredClass, confidenceThreshold, altClass);
-			resultsOverTrials.add(resultsForTrial);
 		}
-		clearInstances();
-		//include a header to describe the confidence threshold
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToResultsFile), false));
-		bufferedWriter.write("Using a threshold of: "+confidenceThreshold);
-		bufferedWriter.newLine();
-		bufferedWriter.close();
-		//write the averaged results
 		writeTestResultsToFile(averageTrialResults(resultsOverTrials), n, pathToResultsFile, true);
 	}
 

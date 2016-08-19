@@ -20,9 +20,10 @@ public class TrainAndSaveClassifiers {
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         //clean everything up for the new training run
          //delete all of the n-gram model "accepted n-grams" files
+        MaxEntClassification classifier;
 
         //human-non-human classifier
-        MaxEntClassification classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
+        classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
         classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt"));
 
         //event classifier

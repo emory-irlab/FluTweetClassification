@@ -35,11 +35,12 @@ public class NGramModel {
 
     /*
         Initializes an n-gram model from an int specifying the number of words per gram, a
-        dataset to collect idfs on, a string indicating the type of data to collect, a path to a file containing stopwords
-        to be used (or an empty string if stopwords are to be included), and an int specifying the minimum number of documents
-        an n-gram must appear in within the training data in order to be considered
+        dataset to collect idfs on, a string indicating the type of data to collect, the type of classifier,
+        a path to a file containing stopwords to be used (or an empty string if stopwords are to be included), and
+        an int specifying the minimum number of documents an n-gram must appear in within the training data in order
+        to be considered
      */
-    public NGramModel(int n, String pathToTweetFields, String dT, String stopWordPath, int freq) throws IOException {
+    public NGramModel(int n, String pathToTweetFields, String dT, String classifierName, String stopWordPath, int freq) throws IOException {
         N = n;
         //this.nCores = nCores;
         freqThreshold = freq;
@@ -57,7 +58,7 @@ public class NGramModel {
             and the frequency threshold) already exists. If it does, use those n-grams as the accepted ones. If not,
             initialize and save a file of accepted n-grams for future reference
          */
-        acceptedNGramFilePath = "nGramModels/acceptedNGrams/"+n+"-gram_"+freq+"-frequency.txt";
+        acceptedNGramFilePath = "nGramModels/acceptedNGrams/"+classifierName+"-"+n+"-gram_"+freq+"-frequency.txt";
         File nGramFile = new File(acceptedNGramFilePath);
         if (nGramFile.exists()) {
             loadAcceptedNGramsFromFile();
@@ -568,8 +569,12 @@ public class NGramModel {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(nGramFile, false));
 
         Enumeration<String> accepteds = acceptedNGrams.keys();
+        int counter = 0;
         while (accepteds.hasMoreElements()) {
-            bufferedWriter.newLine();
+            if (counter != 0) {
+                bufferedWriter.newLine();
+            }
+            counter = 1;
             bufferedWriter.write(accepteds.nextElement());
         }
         bufferedWriter.close();

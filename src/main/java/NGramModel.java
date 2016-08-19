@@ -564,7 +564,8 @@ public class NGramModel {
         Save the accepted n-grams to a file where each is given its own line
      */
     private void saveAcceptedNGramsToFile() throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(acceptedNGramFilePath), false));
+        File nGramFile = new File(acceptedNGramFilePath);
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(nGramFile, false));
 
         Enumeration<String> accepteds = acceptedNGrams.keys();
         while (accepteds.hasMoreElements()) {

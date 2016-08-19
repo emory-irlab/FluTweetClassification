@@ -23,15 +23,15 @@ public class TrainAndSaveClassifiers {
 
         //human-non-human classifier
         MaxEntClassification classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
-        classifier.saveClassifier(new File("classifiers/humanNonHuman.txt"));
+        classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt"));
 
         //event classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.eventClassifierName, args[1]);
-        classifier.saveClassifier(new File("classifiers/event.txt"));
+        classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt"));
 
         //self-other classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.selfOtherClassifierName, args[2]);
-        classifier.saveClassifier(new File("classifiers/selfOther.txt"));
+        classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt"));
     }
 
 }

@@ -1131,11 +1131,12 @@ public class MaxEntClassification {
 
 	//trains a single classifier of the specified type on the specified training data
 	public static MaxEntClassification trainAndReturnClassifier(String classifierType, String pathToTrainingTweets) throws IOException, ClassNotFoundException, InterruptedException {
+		//initialize a classifier, add the vectors to the training data, train
+		MaxEntClassification classifier = new MaxEntClassification(pathToTrainingTweets, runClassifierOnTweets.nCores);
+
 		//vectorize the training data
 		TweetVector[] vectorizedTrainingData = readTweetsGetFeatures.getVectorModelsFromTweets(pathToTrainingTweets, classifierType, runClassifierOnTweets.nCores);
 
-		//initialize a classifier, add the vectors to the training data, train
-		MaxEntClassification classifier = new MaxEntClassification(pathToTrainingTweets, runClassifierOnTweets.nCores);
 		classifier.addToInstanceList(vectorizedTrainingData);
 		classifier.trainClassifier(classifier.instances);
 

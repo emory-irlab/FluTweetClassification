@@ -1,6 +1,12 @@
 import java.io.*;
 import java.util.*;
 import cc.mallet.types.InstanceList;
+import cc.mallet.types.Instance;
+import cc.mallet.types.Labeling;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.CSVPrinter;
 
 public class runClassifierOnTweets {
 	
@@ -11,8 +17,8 @@ public class runClassifierOnTweets {
 
     public static long startRunTime;
     public static long endRunTime;
-    //private static int nCores = Runtime.getRuntime().availableProcessors();
-    private static int nCores = 1;
+    static final int nCores = Runtime.getRuntime().availableProcessors() - 1;
+    //private static int nCores = 1;
 
     /*
         Loads a classifier from a file and runs it on a set of tweets. Returns the ones that are labeled with the desired
@@ -45,90 +51,109 @@ public class runClassifierOnTweets {
     }
     */
 
+    //vectorizes and classifies a tweet using the given classifier, and returns its label
+    public static String classify (ArrayList<String> tweet, String classifierType, MaxEntClassification classifier, double confThreshold) throws InterruptedException, IOException, ClassNotFoundException {
+        //initialize the vector with the profile pic link, username, name, description, and tweet parameters set
+        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), "", null);
+        //get features
+        tweetVector = readTweetsGetFeatures.getVectorModelForTweet(tweetVector, classifierType, nCores);
+
+        //make an instance out of the tweetVector
+        classifier.addToInstanceList(tweetVector.getFeatures(), tweetVector.getName(), tweetVector.getLabel());
+        Instance tweetInstance = classifier.instances.get(0);
+        classifier.clearInstances();
+
+        //classify and get the label
+        String label = classifier.getLabelConfThresholdForDesiredClass(tweetInstance, "null_class", confThreshold);
+        return label;
+    }
+
     /*
         From a path to a file containing tweet ids, tweet labels, and tweet texts separated by null characters,
         construct and train a classifier, then use it to classify any given tweet data
         Args:
-        0 - path to a file containing HvN tweets, one in each line (with its id, label, and text separated by double spaces)
-        1 - path to a file where the human vs. non-human classifier will be stored
-        2 - path to a file containing EvNE tweets
-        3 - path to a file where the <relevant life event> vs. <non-relevant life event> classifier will be stored
-        4 - path to a file containing SvO tweets
-        5 - path to a file where the self vs. other classifier will be stored
-        6 - path to a file where the results will be stored
+        0 - path to a file containing unlabeled tweets to be classified
     */
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         //for test
         //System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream("data/StdOutput.txt"))));
 
+/*
         //String dataPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\tweet_person_vs_organization.csv";
         //String classifierPathHvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\HvNClassifierFile.txt";
         String dataPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\twitterLifeEventExtracted1000.csv";
         String classifierPathEvN = "C:\\Users\\AshMo\\Documents\\IR Lab-Classification\\EvNClassifierFile.txt";
         //String[] labels = {"Human", "Not Human"};
         startRunTime = System.currentTimeMillis();
+*/
 
-        //ArrayList<String[]> randomTweets = TweetParser.getUnlabeledTweetEntitiesAndLabel("data/tweets/5kRandomTweets.txt", 2, true, "none_of_the_above");
+        //begin with tweets to be classified
+        String pathToUnlabeledTweets = args[0];
+        //initialize the classifiers
+        MaxEntClassification humanNonHuman = new MaxEntClassification("classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt", nCores);
+        MaxEntClassification event = new MaxEntClassification("classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt", nCores);
+        MaxEntClassification selfOther = new MaxEntClassification("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt", nCores);
 
-        //Initialize hash sets once at run time
-        TextFeatures.initializeHashSets();
+        BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToUnlabeledTweets)));
+        CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180); //could just replace this section with TweetParser.getTweets
+        List<CSVRecord> records = tweetCSV.getRecords();
+        for (CSVRecord tweet: records) {
+            //for each tweet in the data
+            if (tweet.size() >= 5) {
+                ArrayList<String> tweetStrings = new ArrayList<String>();
+                for (int i = 0; i < tweet.size(); i++) {
+                    tweetStrings.add(tweet.get(i));
+                }
 
-        //random tweet texts for EvN dataset
-        /*
-        ArrayList<String[]> randomTweets = TweetParser.getTweets("data/tweets/random_tweets_100k.csv");
-        TweetParser.writeTweetEntitiesToFile(randomTweets, "data/tweets/tweet_event_advanced_plus_50k_random.csv", true);
-        */
+                String[] labels = new String[3];
 
-        String pathToHvN = args[1];
-        String pathToEvN = args[3];
-        String pathToSvO = args[5];
+                //put it through the human-nonhuman classifier (confidence level: 0.8)
+                labels[0] = classify(tweetStrings, readTweetsGetFeatures.humanNonHumanClassifierName, humanNonHuman, 0.8);
 
-        String pathToTestResults = args[6];
-        String pathToTweetsToBeClassified = args[7];
-        String pathToPrintClassifiedTweets = args[8];
+                //If it's human,
+                //put it through the event classifier (confidence level: ?)
+                if (labels[0].equals("person")) {
+                    labels[1] = classify(tweetStrings, readTweetsGetFeatures.eventClassifierName, event, 0.0);
 
-        //get the training tweets
-        String pathToHvNTweets = args[0];
-        String pathToEvNTweets = args[2];
-        String pathToSvOTweets = args[4];
-        //ArrayList<String[]> HvNTweets = TweetParser.getTweets(args[0]);
-        //ArrayList<String[]> EvNTweets = TweetParser.getTweets(args[2]);
-        //ArrayList<String[]> SvOTweets = TweetParser.getTweets(args[4]);
+                    //If it receives an event label,
+                    if (!labels[1].equals("null_class") && !labels[1].equals("none_of_the_above")) {
+                        //Put it through the self-other classifier (confidence level: ?)
+                        labels[2] = classify(tweetStrings, readTweetsGetFeatures.selfOtherClassifierName, selfOther, 0.9);
 
-        //get vectors from the training tweets and add them to the classifier's instance list
-        MaxEntClassification classifier = new MaxEntClassification(pathToEvN, nCores);
-        TweetVector[] trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToEvNTweets, "EventVsNonEvent", nCores);
-        classifier.addToInstanceList(trainingTweetVectors);
+                        //if it receives a self or other label,
+                        if (labels[2].equals("self") || labels[2].equals("other")) {
+                            //append it to a file based on self-other label and event (initialize this file if it
+                            //does not yet exist)
+                            File putativeFile = new File("classifiedTweets/"+labels[1]+"-"+labels[2]+".csv");
+                            BufferedWriter writer = new BufferedWriter(new FileWriter(putativeFile, true));
+                            CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
 
-        //free up space?
-        trainingTweetVectors = null;
+                            if (!putativeFile.exists()) {
+                                printer.print("link to profile pic");
+                                printer.print("username");
+                                printer.print("name");
+                                printer.print("profile description");
+                                printer.print("tweet");
+                                printer.print("human or organization");
+                                printer.print("event");
+                                printer.print("event happened to self or other");
+                            }
 
-        //VARIOUS OPTIONS FOR RUNNING THE CLASSIFIER
+                            //new line
+                            printer.println();
+                            //write out all tweet fields
+                            for (String field: tweetStrings) {
+                                printer.print(field);
+                            }
+                            //write out all labels
+                            for (String label: labels) {
+                                printer.print(label);
+                            }
+                        }
+                    }
+                }
 
-        //train + test
-         //cross-validation test
-        //classifier.crossValidate(5, pathToTestResults); //cross-validation must have at least 2 folds
-        //classifier.crossValidate(5, pathToTestResults, "null_class", 0.5);
-        classifier.crossValidate(5, pathToTestResults, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
-         //split multiple times test
-        //classifier.runNSplits(1, pathToTestResults, "null_class", 0.9);
-         //non-cross-validation test for "person" class of HvN with varying confidence intervals
-        //classifier.runNSplits(5, pathToTestResults, "person", 0.8, "organization");
-
-        //just train
-        //classifier.trainClassifier(classifier.instances);
-
-        //save
-        //classifier.saveClassifier(new File(pathToEvN));
-
-        //obtain tweets to be classified
-        //ArrayList<String[]> toBeClassified = TweetParser.getTweets(pathToTweetsToBeClassified);
-
-        //run the tweets to be classified
-        //ArrayList<String[]> outputtedTweets =
-                //runClassifierAndGetTweetsByLabel(toBeClassified, pathToHvN, "HumanVsNonHuman", "person", 0.8, "organization");
-        //print out the classified tweets
-        //util.printAllFieldsOneLinePerEntry(outputtedTweets, pathToPrintClassifiedTweets);
-
+            }
+        }
     }
 }

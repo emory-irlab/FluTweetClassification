@@ -21,12 +21,24 @@ import java.io.File;
     used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
-    private static TweetVector[] tweetVectors;
+
+    //classifier names
+    static final String humanNonHumanClassifierName = "humanNonHuman";
+    static final String eventClassifierName = "event";
+    static final String selfOtherClassifierName = "selfOther";
+
+    private static String dataSource = "";
     private static int idfUpdateCounter = 0;
-    private static NGramModel tweetTextUnigramModel = null;
-    private static NGramModel tweetTextBigramModel = null;
-    private static NGramModel tweetTextTrigramModel = null;
+    private static NGramModel tweetTextUnigramModelEvent = null;
+    private static NGramModel tweetTextBigramModelEvent = null;
+    private static NGramModel tweetTextTrigramModelEvent = null;
+
+    private static NGramModel tweetTextUnigramModelSvO = null;
+    private static NGramModel tweetTextBigramModelSvO = null;
+    private static NGramModel tweetTextTrigramModelSvO = null;
+
     private static TopicFeatureModel topicFeatureModel = null;
+    private static StanfordCoreNLP pipeline = null;
 
     /*
         Get tweets from a path to a file
@@ -68,10 +80,12 @@ public class readTweetsGetFeatures {
      */
     public static TweetVector[] getVectorModelsFromTweets(String pathToTweetFile, String classifierType, int nCores) throws IOException, InterruptedException {
         ArrayList<String> labelSet = new ArrayList<String>(0);
-        //set up Stanford CoreNLP object for annotation
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        //set up Stanford CoreNLP object for annotation, if it hasn't been set up yet
+        if (pipeline == null) {
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
+            pipeline = new StanfordCoreNLP(props);
+        }
 
         //get the number of tweets for the sake of initializing tweet vectors (may remove later for speed's sake)
         int counter = 0;
@@ -86,7 +100,7 @@ public class readTweetsGetFeatures {
 
         //get tweet vector model
         TweetVector[] tweetVectors = new TweetVector[counter];
-        readTweetsGetFeatures.tweetVectors = tweetVectors;
+        readTweetsGetFeatures.dataSource = pathToTweetFile;
 
         //initialize tweet vectors
         //String label = toBinaryLabels(tweet[5], classifierType);
@@ -104,12 +118,9 @@ public class readTweetsGetFeatures {
         //get features for each tweet vector
         for (int i = 0; i < records.size(); i++) {
             long tweetBeginTime = System.currentTimeMillis();
-            getVectorModelForTweet(tweetVectors[i], pipeline, classifierType, nCores);
+            getVectorModelForTweet(tweetVectors[i], classifierType, nCores);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
-
-        //free up space?
-        readTweetsGetFeatures.tweetVectors = null;
 
         return tweetVectors;
     }
@@ -118,7 +129,14 @@ public class readTweetsGetFeatures {
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
      */
-    public static void getVectorModelForTweet(TweetVector tweetVector, StanfordCoreNLP pipeline, String classifierType, int nCores) throws IOException, InterruptedException {
+    public static TweetVector getVectorModelForTweet(TweetVector tweetVector, String classifierType, int nCores) throws IOException, InterruptedException {
+        //create the Stanford CoreNLP pipeline if it doesn't exist yet
+        if (pipeline == null) {
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
+            pipeline = new StanfordCoreNLP(props);
+        }
+
         //annotate fields with Stanford CoreNLP
         String processedTweet = process(tweetVector.getTweetText());
 
@@ -135,16 +153,17 @@ public class readTweetsGetFeatures {
 
         //collect features
         switch (classifierType) {
-            case "HumanVsNonHuman":
+            case humanNonHumanClassifierName:
                 collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
                 break;
-            case "EventVsNonEvent":
+            case eventClassifierName:
                 collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences, nCores);
                 break;
-            case "SelfVsOther":
+            case selfOtherClassifierName:
                 collectFeaturesSelfVsOther(tweetVector, tweetPhrases);
                 break;
         }
+        return tweetVector;
     }
 
     public static CoreLabel[][] getPhrases(Annotation document) {
@@ -203,7 +222,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the human vs. non-human classifier
     */
-    public static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
+    private static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
 
         //features based on the user's profile pic
 
@@ -257,30 +276,27 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    public static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
+    private static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
         String text = process(tweetVector.getTweetText());
 
         //unigram features (tf-idf value of each word)
-        if (tweetTextUnigramModel == null) {
-            tweetTextUnigramModel = new NGramModel(1, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
+        if (tweetTextUnigramModelEvent == null) {
+            tweetTextUnigramModelEvent = new NGramModel(1, dataSource, NGramModel.textName, "data/stopwords.txt", 1);
         }
-        //tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        tweetVector.addFeatures(tweetTextUnigramModel.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextUnigramModelEvent.getFeaturesForTweetTF(phrases));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
-        if (tweetTextBigramModel == null) {
-            tweetTextBigramModel = new NGramModel(2, tweetVectors, NGramModel.textName, "data/stopwords.txt", 7, nCores);
+        if (tweetTextBigramModelEvent == null) {
+            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, "data/stopwords.txt", 7);
         }
-        //tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTFIDF(phrases));
         //tf-only test
-        tweetVector.addFeatures(tweetTextBigramModel.getFeaturesForTweetTF(phrases)); 
+        tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(phrases));
 /*
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
-        if (tweetTextTrigramModel == null) {
-            tweetTextTrigramModel = new NGramModel(3, tweetVectors, NGramModel.textName, "data/stopwords.txt", 1, nCores);
+        if (tweetTextTrigramModelEvent == null) {
+            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, "data/stopwords.txt", 1);
         }
-        //tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTFIDF(phrases));
 	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
 */
         //phrase templates
@@ -329,7 +345,7 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the self vs. other classifier
      */
-    public static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
+    private static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases) throws IOException {
         //the number of words/strings in each of the given word classes
         tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Past Tense"));
         tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Present Tense"));
@@ -369,7 +385,16 @@ public class readTweetsGetFeatures {
             tweetVector.addFeature("fPro|NounVerb in Other", AnnotationFeatures.isInWordClassOthers(firstNounPronounLastVerb));
         }
 
-        //trigrams
+        //unigrams
+        if (tweetTextUnigramModelSvO == null) {
+            tweetTextUnigramModelSvO = new NGramModel(1, dataSource, NGramModel.textName, "data/stopwords.txt", 1);
+        }
+        tweetVector.addFeatures(tweetTextUnigramModelSvO.getFeaturesForTweetTF(phrases));
+
+        if (tweetTextBigramModelSvO == null) {
+            tweetTextBigramModelSvO = new NGramModel(2, dataSource, NGramModel.textName, "data/stopwords.txt", 1);
+        }
+        tweetVector.addFeatures(tweetTextBigramModelSvO.getFeaturesForTweetTF(phrases));
     }
 
     /*
@@ -417,19 +442,5 @@ public class readTweetsGetFeatures {
     public static String[] getPOSTemplates(CoreLabel[] phrase) {
         return new String[0];
     }
-
-    /*
-    public static String toBinaryLabels(String input, String classifierType) {
-        switch (classifierType) {
-            case "HumanVsNonHuman":
-                if (input.equals("person")) return "0";
-                if (input.equals("organization")) return "1";
-            case "SelfVsOther":
-                if (input.equals("self")) return "1";
-                if (input.equals("other")) return "0";
-        }
-        return input;
-    }
-    */
 
 }

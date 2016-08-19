@@ -164,12 +164,20 @@ public class TweetParser {
      */
     public static void writeTweetEntitiesToFile(ArrayList<String[]> tweetEntities, String pathToCSVFile, boolean append) throws IOException, FileNotFoundException {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToCSVFile), append));
+        int counter = 0;
         for (String[] tweetEntity: tweetEntities) {
-            for (int i = 0; i < tweetEntity.length; i++) {
-                bufferedWriter.write(tweetEntity[i]);
-                if (i < tweetEntity.length - 1) bufferedWriter.write(",");
+            if (tweetEntity[4].length() > 1) {
+                counter++;
+                for (int i = 0; i < tweetEntity.length; i++) {
+                    bufferedWriter.write(tweetEntity[i]);
+                    if (i < tweetEntity.length - 1) bufferedWriter.write(",");
+                }
+
+                if (counter >= 28000) {
+                    break;
+                }
+                bufferedWriter.newLine();
             }
-            bufferedWriter.newLine();
         }
         bufferedWriter.close();
     }

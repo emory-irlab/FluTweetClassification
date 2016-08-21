@@ -162,6 +162,7 @@ public class NGramModel {
             //stopWords.add(currentLine);
         }
 
+        reader.close();
         stopWordList = stopWords;
     }
 
@@ -222,6 +223,7 @@ public class NGramModel {
                 acceptedNGrams.put(currentLemma, totalDocs/currentDF);
             }
         }
+        bufferedReader.close();
     }
     */
 
@@ -559,6 +561,8 @@ public class NGramModel {
         while ((currentLine = bufferedReader.readLine()) != null) {
             acceptedNGrams.put(currentLine, 1.0);
         }
+
+        bufferedReader.close();
     }
 
     /*

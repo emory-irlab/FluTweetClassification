@@ -21,18 +21,35 @@ public class TrainAndSaveClassifiers {
         //clean everything up for the new training run
          //delete all of the n-gram model "accepted n-grams" files
         MaxEntClassification classifier;
+        File classifierFile;
 
         //human-non-human classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
-        classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt"));
+        classifierFile = new File("classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt");
+        if (classifierFile.exists()) {
+            classifierFile.delete();
+            classifierFile.createNewFile();
+        }
+        classifier.saveClassifier(classifierFile);
 
         //event classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.eventClassifierName, args[1]);
-        classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt"));
+        classifierFile = new File("classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt");
+        if (classifierFile.exists()) {
+            classifierFile.delete();
+            classifierFile.createNewFile();
+        }
+        classifier.saveClassifier(classifierFile);
 
         //self-other classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.selfOtherClassifierName, args[2]);
-        classifier.saveClassifier(new File("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt"));
+        classifierFile = new File("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt");
+        if (classifierFile.exists()) {
+            classifierFile.delete();
+            classifierFile.createNewFile();
+        }
+        classifier.saveClassifier(classifierFile);
+
     }
 
 }

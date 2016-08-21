@@ -97,12 +97,14 @@ public class TextFeatures {
 				names.add(currentName);
 			}
 
+			b.close();
+
 		}
 		catch(FileNotFoundException f) {
-			System.out.println("ERROR: " + f.getMessage());
+			f.printStackTrace();
 		}
 		catch(IOException e) {
-			System.out.println("ERROR: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

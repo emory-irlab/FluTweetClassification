@@ -222,7 +222,9 @@ public class MaxEntClassification {
 			System.out.println();
 			System.out.println("NEW TEST:");
 
+			long timeForEvaluation = System.currentTimeMillis();
 			Hashtable<String, Hashtable<String, Double>> resultsOneTrial = evaluateWithConfThreshold(testing, nullClass, confidenceThreshold);
+			System.out.println("Time to classify "+testing.size()+" tweets: "+((double)(System.currentTimeMillis() - timeForEvaluation))/1000+" seconds.");
 			resultsOverTrials.add(resultsOneTrial);
 
 			//print results for this trial

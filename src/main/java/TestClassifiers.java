@@ -40,20 +40,20 @@ public class TestClassifiers {
         //classifier.runNSplits(1, pathToTestResultsHuman, "null_class", 0.9);
 */
         //event classifier
-        /*
         classifier = new MaxEntClassification("", runClassifierOnTweets.nCores);
         trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToEventTweets, readTweetsGetFeatures.eventClassifierName, runClassifierOnTweets.nCores);
         classifier.addToInstanceList(trainingTweetVectors);
         trainingTweetVectors = null;
          //cross-validation tests
-        classifier.crossValidate(5, pathToTestResultsEvent); //cross-validation must have at least 2 folds
-        //classifier.crossValidate(5, pathToTestResultsEvent, "null_class", 0.5);
-        //classifier.crossValidate(5, pathToTestResultsEvent, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
+        //classifier.crossValidate(5, pathToTestResultsEvent); //cross-validation must have at least 2 folds
+        classifier.crossValidate(5, pathToTestResultsEvent, "null_class", 0.0);
+        //classifier.crossValidate(5, pathToTestResultsEvent, "null_class", new double[] {0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
+                //0.6, 0.7, 0.8, 0.9});
         //split multiple times test
         //classifier.runNSplits(1, pathToTestResultsEvent, "null_class", 0.9);
 
-*/
 
+/*
         //self-other classifier
         classifier = new MaxEntClassification("", runClassifierOnTweets.nCores);
         trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToSelfOtherTweets, readTweetsGetFeatures.selfOtherClassifierName, runClassifierOnTweets.nCores);
@@ -65,5 +65,6 @@ public class TestClassifiers {
         classifier.crossValidate(5, pathToTestResultsSelfOther, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
         //split multiple times test
         //classifier.runNSplits(1, pathToTestResultsSelfOther, "null_class", 0.9);
+*/
     }
 }

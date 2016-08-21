@@ -85,6 +85,10 @@ public class FormatOutputTemporary {
                 }
             }
         }
+
+        labeledCSV.close();
+        missingCSV.close();
+        printer.close();
     }
 
 
@@ -144,7 +148,8 @@ public class FormatOutputTemporary {
                 }
             }
         }
-
+        originalCSV.close();
+        allUserCSV.close();
         writer.close();
 */
     }

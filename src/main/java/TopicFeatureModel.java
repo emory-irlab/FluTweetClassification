@@ -139,6 +139,7 @@ public class TopicFeatureModel {
         if (currentFileOut != null) {
             currentFileOut.close();
         }
+        bufferedReader.close();
     }
 
     /*
@@ -185,6 +186,7 @@ public class TopicFeatureModel {
                     break;
                 }
             }
+            bufferedReader.close();
         }
         //multithreaded version
         else {
@@ -322,6 +324,8 @@ public class TopicFeatureModel {
             }
         }
         basicTopicProb = smallest;
+
+        bufferedReader.close();
     }
 
     /*
@@ -383,8 +387,8 @@ public class TopicFeatureModel {
             mostCommonWords.put(entry.first().first(), entry.second());
         }
 
-
         totalNumWords = instancesOfAllWords;
+        bufferedReader.close();
     }
 
     /*
@@ -456,6 +460,7 @@ public class TopicFeatureModel {
         }
 
         stopWordList = stopWords;
+        reader.close();
     }
 
 }

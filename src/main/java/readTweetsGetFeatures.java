@@ -60,6 +60,7 @@ public class readTweetsGetFeatures {
             String[] tweet = {split[0], split[1], text};
             tweets.add(tweet);
         }
+        reader.close();
         return tweets;
     }
     */
@@ -297,13 +298,13 @@ public class readTweetsGetFeatures {
         }
         //tf-only test
         tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(phrases));
-/*
+
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModelEvent == null) {
-            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
+            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 10);
         }
-	    tweetVector.addFeatures(tweetTextTrigramModel.getFeaturesForTweetTF(phrases));
-*/
+	    tweetVector.addFeatures(tweetTextTrigramModelEvent.getFeaturesForTweetTF(phrases));
+
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
         for (String template: phraseTemplates) {

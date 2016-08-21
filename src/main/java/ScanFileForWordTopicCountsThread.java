@@ -49,6 +49,7 @@ public class ScanFileForWordTopicCountsThread implements Runnable {
                 }
             }
 
+            bufferedReader.close();
             //obligatory
             Thread.sleep(1);
 
@@ -56,6 +57,7 @@ public class ScanFileForWordTopicCountsThread implements Runnable {
             System.out.println("Thread interrupted");
         } catch(IOException e) {
             System.out.println("IOException");
+            e.printStackTrace();
         }
         //System.out.println("Thread exiting");
     }

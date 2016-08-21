@@ -23,31 +23,43 @@ public class TrainAndSaveClassifiers {
         MaxEntClassification classifier;
         File classifierFile;
 
+        //get rid of the old classifiers
+        //get rid of the old n-gram model "accepted n-grams" files
+        util.emptyDirectory(new File("classifiers"));
+        util.emptyDirectory(new File("nGramModels"));
+
+
         //human-non-human classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
         classifierFile = new File("classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt");
+        /*
         if (classifierFile.exists()) {
             classifierFile.delete();
             classifierFile.createNewFile();
         }
+        */
         classifier.saveClassifier(classifierFile);
 
         //event classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.eventClassifierName, args[1]);
         classifierFile = new File("classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt");
+        /*
         if (classifierFile.exists()) {
             classifierFile.delete();
             classifierFile.createNewFile();
         }
+        */
         classifier.saveClassifier(classifierFile);
 
         //self-other classifier
         classifier = MaxEntClassification.trainAndReturnClassifier(readTweetsGetFeatures.selfOtherClassifierName, args[2]);
         classifierFile = new File("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt");
+        /*
         if (classifierFile.exists()) {
             classifierFile.delete();
             classifierFile.createNewFile();
         }
+        */
         classifier.saveClassifier(classifierFile);
 
     }

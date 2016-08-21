@@ -10,14 +10,29 @@ import edu.stanford.nlp.ling.CoreAnnotations.*;
  */
 public class util {
 
-    public static void printStringFeaturesIntValuesFromHashtable(Hashtable<String, Integer> table) {
-        System.out.println("FEATURES FOR ONE ITEM:");
-        Enumeration<String> features = table.keys();
-        while (features.hasMoreElements()) {
-            String feature = features.nextElement();
-            int value = table.get(feature);
-            System.out.println(feature+": "+value);
+    public static int containsAlphabeticCharacters(String text) {
+        for (int i = 0; i < text.length(); i++)
+            if (Character.isAlphabetic(text.charAt(i))) return 1;
+        return 0;
+    }
+
+    public static void emptyDirectory(File directory) {
+        for (File fileEntry : directory.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                emptyDirectory(fileEntry);
+            } else {
+                fileEntry.delete();
+            }
         }
+    }
+
+    public static boolean isAllNumeric(String text) {
+        for (int i = 0; i < text.length(); i++) {
+            if (!Character.isDigit(text.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /*
@@ -56,21 +71,6 @@ public class util {
         }
     }
 
-    public static int containsAlphabeticCharacters(String text) {
-        for (int i = 0; i < text.length(); i++)
-            if (Character.isAlphabetic(text.charAt(i))) return 1;
-        return 0;
-    }
-
-    public static boolean isAllNumeric(String text) {
-        for (int i = 0; i < text.length(); i++) {
-            if (!Character.isDigit(text.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static void printAllFieldsOneLinePerEntry(ArrayList<String[]> input, String pathToOutputFile) throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(pathToOutputFile)));
         for (String[] entry: input) {
@@ -82,5 +82,15 @@ public class util {
         }
 
         bufferedWriter.close();
+    }
+
+    public static void printStringFeaturesIntValuesFromHashtable(Hashtable<String, Integer> table) {
+        System.out.println("FEATURES FOR ONE ITEM:");
+        Enumeration<String> features = table.keys();
+        while (features.hasMoreElements()) {
+            String feature = features.nextElement();
+            int value = table.get(feature);
+            System.out.println(feature+": "+value);
+        }
     }
 }

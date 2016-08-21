@@ -44,11 +44,14 @@ public class TweetParser {
         BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));
         Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
         for (CSVRecord record : records) {
-            String[] tweetFields = new String[6];
-            for (int i = 0; i < 6; i++) {
-                tweetFields[i] = record.get(i);
+            //makes sure that smaller records are not used
+            if (record.size() >= 6) {
+                String[] tweetFields = new String[6];
+                for (int i = 0; i < 6; i++) {
+                    tweetFields[i] = record.get(i);
+                }
+                tweets.add(tweetFields);
             }
-            tweets.add(tweetFields);
         }
         return tweets;
     }

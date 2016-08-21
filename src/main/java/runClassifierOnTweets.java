@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+
+import cc.mallet.types.ArrayListSequence;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Labeling;
@@ -23,7 +25,7 @@ public class runClassifierOnTweets {
     //vectorizes and classifies a tweet using the given classifier, and returns its label
     public static String classify (ArrayList<String> tweet, String classifierType, MaxEntClassification classifier, double confThreshold) throws InterruptedException, IOException, ClassNotFoundException {
         //initialize the vector with the profile pic link, username, name, description, and tweet parameters set
-        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), "", null);
+        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), "", new ArrayList<String>());
         //get features
         tweetVector = readTweetsGetFeatures.getVectorModelForTweet(tweetVector, classifierType, nCores);
 
@@ -63,6 +65,7 @@ public class runClassifierOnTweets {
         MaxEntClassification event = new MaxEntClassification("classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt", nCores);
         MaxEntClassification selfOther = new MaxEntClassification("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt", nCores);
 
+        //get tweets
         BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToUnlabeledTweets)));
         CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180); //could just replace this section with TweetParser.getTweets
         List<CSVRecord> records = tweetCSV.getRecords();

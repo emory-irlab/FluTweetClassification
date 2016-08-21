@@ -42,29 +42,6 @@ public class readTweetsGetFeatures {
     private static TopicFeatureModel topicFeatureModel = null;
     private static StanfordCoreNLP pipeline = null;
 
-    /*
-        Get tweets from a path to a file
-    */
-    /*
-    public static ArrayList<String[]> getTweets(String pathToTweetFile) throws FileNotFoundException, IOException {
-        ArrayList<String[]> tweets = new ArrayList<String[]>();
-        BufferedReader reader = new BufferedReader(new FileReader(pathToTweetFile));
-        String currentLine;
-        while ((currentLine = reader.readLine()) != null) {
-            String[] split = currentLine.split("\t");
-            if (split.length < 3) break;
-            String text = "";
-            for (int i = 2; i < split.length; i++) {
-                text += split[i];
-            }
-            String[] tweet = {split[0], split[1], text};
-            tweets.add(tweet);
-        }
-        reader.close();
-        return tweets;
-    }
-    */
-
     public static String process(String input) {
         input = TextFeatures.removeRetweets(input);
         input = TextFeatures.removeHashtagCharInHashtags(input);
@@ -294,14 +271,14 @@ public class readTweetsGetFeatures {
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModelEvent == null) {
-            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 7);
+            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
         }
         //tf-only test
         tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(phrases));
 
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModelEvent == null) {
-            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 10);
+            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
         }
 	    tweetVector.addFeatures(tweetTextTrigramModelEvent.getFeaturesForTweetTF(phrases));
 

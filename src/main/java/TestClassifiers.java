@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,6 +17,12 @@ public class TestClassifiers {
         5 - name of the test results file for the self-other classifier
      */
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        //get rid of the old classifiers
+        //get rid of the old n-gram model "accepted n-grams" files
+        util.emptyDirectory(new File("classifiers"));
+        util.emptyDirectory(new File("nGramModels"));
+
+
         String pathToHumanTweets = args[0];
         String pathToEventTweets = args[1];
         String pathToSelfOtherTweets = args[2];

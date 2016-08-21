@@ -16,25 +16,7 @@ public class test {
 
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
-    public static void main (String[] args) throws IOException, InterruptedException {
-
-        ArrayList<BufferedReader> bufferedReaders = new ArrayList<BufferedReader>();
-        for (int i = 0; i < 20000; i++) {
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(new File("README.txt")));
-                bufferedReaders.add(bufferedReader);
-                String currentLine;
-                while ((currentLine = bufferedReader.readLine()) != null) {
-                    System.out.print("");
-                }
-                System.out.println(i);
-                bufferedReader.close();
-            }
-            catch (IOException e) {
-                System.out.println("IOException");
-            }
-        }
-
+    public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 
         //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));
         /*

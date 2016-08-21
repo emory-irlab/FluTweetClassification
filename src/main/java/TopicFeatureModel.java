@@ -115,7 +115,7 @@ public class TopicFeatureModel {
                     linesForThisFile = unit;
                 }
                 lines -= linesForThisFile; //update the number of lines left
-                String name = "data/topics/countFile"+filesMade+".txt";
+                String name = countFilePath.replace(".txt", "")+filesMade+".txt";
                 countFileSplitPaths.add(name);
                 currentFileOut = new BufferedWriter(new FileWriter(new File(name)));
             }

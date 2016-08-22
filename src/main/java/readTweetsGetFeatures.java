@@ -271,14 +271,14 @@ public class readTweetsGetFeatures {
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModelEvent == null) {
-            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
+            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 7);
         }
         //tf-only test
         tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(phrases));
 
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModelEvent == null) {
-            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
+            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 10);
         }
 	    tweetVector.addFeatures(tweetTextTrigramModelEvent.getFeaturesForTweetTF(phrases));
 

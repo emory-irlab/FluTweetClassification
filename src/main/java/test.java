@@ -17,6 +17,21 @@ public class test {
     // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
 
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+	long startTime = System.currentTimeMillis();
+
+        MaxEntClassification classifier = new MaxEntClassification("classifiers/event.txt", runClassifierOnTweets.nCores);
+        ArrayList<String[]> tweets = TweetParser.getTweets(args[0]);
+        int personCounter = 0;
+        for (String[] tweet: tweets) {
+            ArrayList<String> tweetArray = new ArrayList<String>();
+            for (String field: tweet) {
+                tweetArray.add(field);
+            }
+
+            String expLabel = runClassifierOnTweets.classify(tweetArray, readTweetsGetFeatures.eventClassifierName, classifier, 0.0);
+            System.out.println(tweet[4]+": "+expLabel);
+        }
+        System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
 
         //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));
         /*

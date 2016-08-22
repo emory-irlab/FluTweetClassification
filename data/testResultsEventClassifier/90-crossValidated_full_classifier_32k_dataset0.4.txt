@@ -1,0 +1,273 @@
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9764085053546484
+--------------------
+
+Metrics for class graduation
+Precision: 0.9666666666666667
+F1: 0.9206349206349207
+Recall: 0.8787878787878788
+
+Metrics for class recovery_from_illness
+Precision: 0.9545454545454546
+F1: 0.9230769230769231
+Recall: 0.8936170212765957
+
+Metrics for class major_illness
+Precision: 0.9428571428571428
+F1: 0.7096774193548387
+Recall: 0.5689655172413793
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class new_job
+Precision: 0.9
+F1: 0.9278350515463918
+Recall: 0.9574468085106383
+
+Metrics for class none_of_the_above
+Precision: 0.9832220510186612
+F1: 0.9877880976952185
+Recall: 0.9923967513392086
+
+Metrics for class major_trip
+Precision: 0.9119170984455959
+F1: 0.8461538461538461
+Recall: 0.7892376681614349
+
+Metrics for class Accuracy
+Accuracy: 0.9764085053546484
+
+Metrics for class job_loss
+Precision: 0.8975903614457831
+F1: 0.8922155688622753
+Recall: 0.8869047619047619
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.979978270991774
+--------------------
+
+Metrics for class major_trip
+Precision: 0.9033816425120773
+F1: 0.8677494199535963
+Recall: 0.8348214285714286
+
+Metrics for class recovery_from_illness
+Precision: 0.9512195121951219
+F1: 0.9285714285714286
+Recall: 0.9069767441860465
+
+Metrics for class job_loss
+Precision: 0.9027777777777778
+F1: 0.9059233449477352
+Recall: 0.9090909090909091
+
+Metrics for class none_of_the_above
+Precision: 0.986810551558753
+F1: 0.9894375268355518
+Recall: 0.9920785259169967
+
+Metrics for class graduation
+Precision: 0.8939393939393939
+F1: 0.887218045112782
+Recall: 0.8805970149253731
+
+Metrics for class Accuracy
+Accuracy: 0.979978270991774
+
+Metrics for class new_job
+Precision: 0.9369369369369369
+F1: 0.9369369369369369
+Recall: 0.9369369369369369
+
+Metrics for class major_illness
+Precision: 0.9444444444444444
+F1: 0.8095238095238096
+Recall: 0.7083333333333334
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9823091247672253
+--------------------
+
+Metrics for class major_trip
+Precision: 0.9014084507042254
+F1: 0.8767123287671234
+Recall: 0.8533333333333334
+
+Metrics for class recovery_from_illness
+Precision: 0.9523809523809523
+F1: 0.9411764705882352
+Recall: 0.9302325581395349
+
+Metrics for class job_loss
+Precision: 0.9515151515151515
+F1: 0.9602446483180428
+Recall: 0.9691358024691358
+
+Metrics for class none_of_the_above
+Precision: 0.9884800550206327
+F1: 0.9908652188900379
+Recall: 0.9932619212163096
+
+Metrics for class graduation
+Precision: 0.9545454545454546
+F1: 0.9197080291970803
+Recall: 0.8873239436619719
+
+Metrics for class Accuracy
+Accuracy: 0.9823091247672253
+
+Metrics for class new_job
+Precision: 0.9428571428571428
+F1: 0.9252336448598131
+Recall: 0.908256880733945
+
+Metrics for class major_illness
+Precision: 0.8108108108108109
+F1: 0.7228915662650603
+Recall: 0.6521739130434783
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9771845413627193
+--------------------
+
+Metrics for class major_trip
+Precision: 0.9064039408866995
+F1: 0.8618266978922717
+Recall: 0.8214285714285714
+
+Metrics for class recovery_from_illness
+Precision: 0.9142857142857143
+F1: 0.8767123287671234
+Recall: 0.8421052631578947
+
+Metrics for class job_loss
+Precision: 0.9246575342465754
+F1: 0.9121621621621622
+Recall: 0.9
+
+Metrics for class none_of_the_above
+Precision: 0.9820727334813044
+F1: 0.9879766403297836
+Recall: 0.9939519612925523
+
+Metrics for class graduation
+Precision: 0.95
+F1: 0.890625
+Recall: 0.8382352941176471
+
+Metrics for class Accuracy
+Accuracy: 0.9771845413627193
+
+Metrics for class new_job
+Precision: 0.963302752293578
+F1: 0.9051724137931033
+Recall: 0.8536585365853658
+
+Metrics for class major_illness
+Precision: 0.9393939393939394
+F1: 0.7209302325581395
+Recall: 0.5849056603773585
+
+Average results for 1 trials:
+--------------------
+ACCURACY: 0.9785814061772466
+--------------------
+
+Metrics for class graduation
+Precision: 0.9857142857142858
+F1: 0.9019607843137254
+Recall: 0.8313253012048193
+
+Metrics for class recovery_from_illness
+Precision: 0.8529411764705882
+F1: 0.8787878787878787
+Recall: 0.90625
+
+Metrics for class major_illness
+Precision: 1.0
+F1: 0.6666666666666666
+Recall: 0.5
+
+Metrics for class null_class
+Precision: 0.0
+F1: 0.0
+Recall: 0.0
+
+Metrics for class new_job
+Precision: 0.9459459459459459
+F1: 0.9589041095890412
+Recall: 0.9722222222222222
+
+Metrics for class none_of_the_above
+Precision: 0.9830798154161682
+F1: 0.9884859941570717
+Recall: 0.9939519612925523
+
+Metrics for class major_trip
+Precision: 0.9368421052631579
+F1: 0.8682926829268293
+Recall: 0.8090909090909091
+
+Metrics for class Accuracy
+Accuracy: 0.9785814061772466
+
+Metrics for class job_loss
+Precision: 0.910828025477707
+F1: 0.9166666666666666
+Recall: 0.9225806451612903
+
+Average results for 5 trials:
+--------------------
+ACCURACY: 0.9788923697307228
+--------------------
+
+Metrics for class graduation
+Recall: 0.863253886539538
+Precision: 0.9501731601731602
+F1: 0.9040293558517017
+
+Metrics for class recovery_from_illness
+Recall: 0.8958363173520144
+Precision: 0.9250745619755663
+F1: 0.9096650059583178
+
+Metrics for class major_illness
+Recall: 0.6028756847991099
+Precision: 0.9275012675012675
+F1: 0.725937938873703
+
+Metrics for class null_class
+Recall: 0.0
+Precision: 0.0
+F1: 0.0
+
+Metrics for class new_job
+Recall: 0.9257042769978217
+Precision: 0.9378085556067207
+F1: 0.9308164313450572
+
+Metrics for class none_of_the_above
+Recall: 0.9931282242115239
+Precision: 0.984733041299104
+F1: 0.9889106955815328
+
+Metrics for class major_trip
+Recall: 0.8215823821171355
+Precision: 0.9119906475623513
+F1: 0.8641469951387334
+
+Metrics for class job_loss
+Recall: 0.9175424237252194
+Precision: 0.917473770092599
+F1: 0.9174424781913764
+
+Metrics for class Accuracy
+Accuracy: 0.9788923697307228

@@ -25,7 +25,7 @@ public class runClassifierOnTweets {
     //vectorizes and classifies a tweet using the given classifier, and returns its label
     public static String classify (ArrayList<String> tweet, String classifierType, MaxEntClassification classifier, double confThreshold) throws InterruptedException, IOException, ClassNotFoundException {
         //initialize the vector with the profile pic link, username, name, description, and tweet parameters set
-        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), "", new ArrayList<String>());
+        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), "");
         //get features
         tweetVector = readTweetsGetFeatures.getVectorModelForTweet(tweetVector, classifierType, nCores);
 
@@ -72,25 +72,25 @@ public class runClassifierOnTweets {
         for (CSVRecord tweet: records) {
             //for each tweet in the data
             if (tweet.size() >= 5) {
-                ArrayList<String> tweetStrings = new ArrayList<String>();
+                ArrayList<String> tweetParts = new ArrayList<String>();
                 for (int i = 0; i < tweet.size(); i++) {
-                    tweetStrings.add(tweet.get(i));
+                    tweetParts.add(tweet.get(i));
                 }
 
                 String[] labels = new String[3];
 
                 //put it through the human-nonhuman classifier (confidence level: 0.8)
-                labels[0] = classify(tweetStrings, readTweetsGetFeatures.humanNonHumanClassifierName, humanNonHuman, 0.8);
+                labels[0] = classify(tweetParts, readTweetsGetFeatures.humanNonHumanClassifierName, humanNonHuman, 0.8);
 
                 //If it's human,
                 //put it through the event classifier (confidence level: ?)
                 if (labels[0].equals("person")) {
-                    labels[1] = classify(tweetStrings, readTweetsGetFeatures.eventClassifierName, event, 0.0);
+                    labels[1] = classify(tweetParts, readTweetsGetFeatures.eventClassifierName, event, 0.0);
 
                     //If it receives an event label,
                     if (!labels[1].equals("null_class") && !labels[1].equals("none_of_the_above")) {
                         //Put it through the self-other classifier (confidence level: ?)
-                        labels[2] = classify(tweetStrings, readTweetsGetFeatures.selfOtherClassifierName, selfOther, 0.9);
+                        labels[2] = classify(tweetParts, readTweetsGetFeatures.selfOtherClassifierName, selfOther, 0.9);
 
                         //if it receives a self or other label,
                         if (labels[2].equals("self") || labels[2].equals("other")) {
@@ -114,7 +114,7 @@ public class runClassifierOnTweets {
                             //new line
                             printer.println();
                             //write out all tweet fields
-                            for (String field: tweetStrings) {
+                            for (String field: tweetParts) {
                                 printer.print(field);
                             }
                             //write out all labels

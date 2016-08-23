@@ -12,16 +12,17 @@ import java.util.*;
  */
 public class test {
 
-    // [ { Accuracy: {Accuracy: 0}, Eggman: {Precision: 0, Recall: 0}, Sonic: {Precision: 0, Recall: 0} }, { Accuracy: {Accuracy: 1}, Eggman: {Precision: 1, Recall: 1}, Sonic: {Precision: 1, Recall: 1} }, {Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 3, Recall: 3}, Sonic: {Precision: 3, Recall: 3} } ]
-
-    // { Accuracy: {Accuracy: 0.5}, Eggman: {Precision: 4/3, Recall: 4/3}, Sonic: {Precision: 4/3, Recall: 4/3} }
-
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
 	long startTime = System.currentTimeMillis();
 
-        MaxEntClassification classifier = new MaxEntClassification("classifiers/event.txt", runClassifierOnTweets.nCores);
+        MaxEntClassification classifier = new MaxEntClassification("classifiers/selfOther.txt", runClassifierOnTweets.nCores);
+
+        TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(args[0], readTweetsGetFeatures.selfOtherClassifierName, runClassifierOnTweets.nCores);
+        classifier.addToInstanceList(tweetVectors);
+        classifier.writeTestResultsToFile(classifier.evaluate(classifier.instances), 1, "data/testResultsSvO/NOWHERE_FOR_THEM_TO_RUN.txt", false);
+
+        /*
         ArrayList<String[]> tweets = TweetParser.getTweets(args[0]);
-        int personCounter = 0;
         for (String[] tweet: tweets) {
             ArrayList<String> tweetArray = new ArrayList<String>();
             for (String field: tweet) {
@@ -31,7 +32,8 @@ public class test {
             String expLabel = runClassifierOnTweets.classify(tweetArray, readTweetsGetFeatures.eventClassifierName, classifier, 0.0);
             System.out.println(tweet[4]+": "+expLabel);
         }
-        System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
+*/
+        //System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
 
         //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));
         /*

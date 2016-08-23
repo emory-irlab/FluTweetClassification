@@ -516,6 +516,7 @@ public class MaxEntClassification {
 			//(in which case the label is the specified class)
 			//String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
 			String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, nullClass, confThreshold);
+			System.out.println("Got: "+experimentalLabel+". Should have: "+correctLabel);
 
 			//initialize fields if necessary, set all figures to 0
 			if (!results.containsKey(correctLabel)) {
@@ -1021,113 +1022,6 @@ public class MaxEntClassification {
 	}
 	*/
 
-	/*
-		Returns a hashtable containing accuracy and performance metrics for the given test instances. For a given
-		desiredClass, instances are only classified as that class if they are classified with at least <threshold> confidence
-		for that class. Instances classified as desiredClass with a confidence level below the threshold are instead
-		classified as altClass.
-
-		Multithreads to improve speed
-
-		CURRENTLY ONLY WORKS WITH BINARY CLASS DISTINCTIONS
-	 */
-	public Hashtable<String, Hashtable<String, Double>> testRun(InstanceList testInstances, String desiredClass, double confidenceThreshold, String altClass) throws IOException, InterruptedException {
-		Hashtable<String, Hashtable<String, Double>> results = new Hashtable<String, Hashtable<String, Double>>();
-
-		int desiredInstances = 0;
-		int altInstances = 0;
-		int classifiedAsDesired = 0;
-		int classifiedAsAlt = 0;
-		int correctlyClassifiedAsDesired = 0;
-		int correctlyClassifiedAsAlt = 0;
-
-		//split the task into several threads, each classifying a sub-section of the test instances
-		ArrayList<MaxEntTestRunThread> threads = new ArrayList<MaxEntTestRunThread>();
-
-		//split the InstanceList
-		double coreProportion = 1.0 / nCores;
-		double[] proportions = new double[nCores];
-		for (int i = 0; i < nCores; i++) {
-			proportions[i] = coreProportion;
-		}
-		InstanceList[] sections = testInstances.split(new Randoms(), proportions);
-
-		//create and run threads
-		for (InstanceList list: sections) {
-			MaxEntTestRunThread thread = new MaxEntTestRunThread("thread", list, this, desiredClass, confidenceThreshold, altClass);
-			threads.add(thread);
-			thread.start();
-		}
-
-		/*
-		int unit = testInstances.size() / nCores;
-		int lastStart = 0;
-		int lastEnd = unit;
-		for (int i = 0; i < nCores; i++) {
-			//since the instances may not be exactly divisible into nCores sections, put all remainders into the last thread
-			if (i == nCores - 1) {
-				lastEnd = testInstances.size();
-			}
-
-			//create the next thread
-			InstanceList thisThread = new InstanceList()
-
-			//set the pointers for the next thread
-			lastStart = lastEnd;
-			lastEnd += unit;
-		}
-
-		for (int i = unit; i < testInstances.size(); i += unit) {
-
-			lastStart = i;
-		}
-		*/
-
-		//run the various threads, wait for them to finish, and collect their data
-		for (MaxEntTestRunThread thread: threads) {
-			thread.thread.join();
-
-			desiredInstances += thread.desiredInstances;
-			altInstances += thread.altInstances;
-			classifiedAsDesired += thread.classifiedAsDesired;
-			classifiedAsAlt += thread.classifiedAsAlt;
-			correctlyClassifiedAsDesired += thread.correctlyClassifiedAsDesired;
-			correctlyClassifiedAsAlt += thread.correctlyClassifiedAsAlt;
-		}
-
-		//calculate the actual figures
-		Hashtable<String, Double> accuracy = new Hashtable<String, Double>();
-		accuracy.put("Accuracy", (((double)correctlyClassifiedAsDesired) + correctlyClassifiedAsAlt)/testInstances.size());
-		results.put("Accuracy", accuracy);
-
-		Hashtable<String, Double> desired = new Hashtable<String, Double>();
-		double desPrecision = ((double)correctlyClassifiedAsDesired)/classifiedAsDesired;
-		double desRecall = ((double)correctlyClassifiedAsDesired)/desiredInstances;
-		double desF1 = (2 * desPrecision * desRecall)/(desPrecision + desRecall);
-		desired.put("Precision", desPrecision);
-		desired.put("Recall", desRecall);
-		desired.put("F1", desF1);
-		results.put(desiredClass, desired);
-
-		Hashtable<String, Double> alt = new Hashtable<String, Double>();
-		double altPrecision = ((double)correctlyClassifiedAsAlt)/classifiedAsAlt;
-		double altRecall = ((double)correctlyClassifiedAsAlt)/altInstances;
-		double altF1 = (2 * altPrecision * altRecall)/(altPrecision + altRecall);
-		alt.put("Precision", altPrecision);
-		alt.put("Recall", altRecall);
-		alt.put("F1", altF1);
-		results.put(altClass, alt);
-
-			/*
-			System.out.println("ORIGINAL: "+testInstances.size()+ " TRIMMED: "+trimmedTestInstances.size());
-
-			//test run using the trimmed instance list
-			Hashtable<String, Hashtable<String, Double>> resultsOfTrial = testRun(trimmedTestInstances);
-			testRun(trimmedTestInstances);
-			*/
-		return results;
-	}
-
 	//trains a single classifier of the specified type on the specified training data
 	public static MaxEntClassification trainAndReturnClassifier(String classifierType, String pathToTrainingTweets) throws IOException, ClassNotFoundException, InterruptedException {
 		//initialize a classifier, add the vectors to the training data, train
@@ -1154,7 +1048,8 @@ public class MaxEntClassification {
 	}
 
 	public void writeTestResultsToFile(Hashtable<String, Hashtable<String, Double>> input, int nTrials, String path, boolean append) throws IOException {
-		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(path), append));
+		File testResultFile = new File(path);
+		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(testResultFile, append));
 
 		bufferedWriter.newLine();
 		bufferedWriter.write("Average results for "+nTrials+" trials:");

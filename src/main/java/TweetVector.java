@@ -37,6 +37,16 @@ public class TweetVector {
         }
         if (!found) labelSet.add(label);
     }
+
+    public TweetVector(String pro, String us, String na, String des, String text, String lab) {
+        profilePicLink = pro;
+        username = us;
+        name = na;
+        description = des;
+        tweetText = text;
+        label = lab;
+        features = new Hashtable<String, Double>();
+    }
     /*
     public TweetVector(String pro, String us, String na, String des, String text, String lab, Hashtable feats) {
         profilePicLink = pro;
@@ -70,7 +80,7 @@ public class TweetVector {
 
     public String getLabel() { return label; }
 
-    public String[] getLabelSet() { return labelSet.toArray(new String[labelSet.size()]); }
+    //public String[] getLabelSet() { return labelSet.toArray(new String[labelSet.size()]); }
 
     public Hashtable<String, Double> getFeatures() { return features; } //enables modification
 

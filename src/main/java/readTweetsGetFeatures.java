@@ -59,6 +59,7 @@ public class readTweetsGetFeatures {
         {profile pic, username, name, description, tweet, label}
      */
     public static TweetVector[] getVectorModelsFromTweets(String pathToTweetFile, String classifierType, int nCores) throws IOException, InterruptedException {
+        long startTime = System.currentTimeMillis();
         ArrayList<String> labelSet = new ArrayList<String>(0);
         //set up Stanford CoreNLP object for annotation, if it hasn't been set up yet
         if (pipeline == null) {
@@ -105,6 +106,7 @@ public class readTweetsGetFeatures {
 
         tweetCSV.close();
 
+        System.out.println("Total time to get "+tweetVectors.length+" tweets: "+(((double)System.currentTimeMillis()) - startTime )/1000+" seconds.");
         return tweetVectors;
     }
 

@@ -42,6 +42,8 @@ public class MaxEntClassification {
 		*/
 		if (classifierFile.exists()) {
 			maxEntClassifier = loadClassifier(classifierFile);
+			dataAlphabet = maxEntClassifier.getAlphabet();
+			//targetAlphabet = maxEntClassifier.getLabelAlphabet();
 		}
 
 		targetAlphabet.startGrowth();
@@ -643,6 +645,7 @@ public class MaxEntClassification {
 					new ObjectInputStream(new FileInputStream(serializedFile));
 			classifier = (Classifier) ois.readObject();
 			ois.close();
+
 		}
 		catch(EOFException e) {
 

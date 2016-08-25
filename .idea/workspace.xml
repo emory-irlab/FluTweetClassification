@@ -1,26 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="fixed running error">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/TextFeatures.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiers/event.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiers/humanNonHuman.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiers/selfOther.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/nGramModels/acceptedNGrams/event-1-gram_1-frequency.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/nGramModels/acceptedNGrams/event-2-gram_7-frequency.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/nGramModels/acceptedNGrams/event-3-gram_10-frequency.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/nGramModels/acceptedNGrams/selfOther-1-gram_1-frequency.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/nGramModels/acceptedNGrams/selfOther-2-gram_1-frequency.txt" afterPath="" />
+    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/0-TF_crossValidated.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/1-TF_IDF.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/10-TF_IDF_threshold_2_no_templates.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/100-crossValidated_unithr1_bithr3_trithr3_templates_3topics_event_advanced_NaiveBayes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/101-crossValidated_unithr1_3topics_event_20k_NaiveBayes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/11-TFIDF_20k_threhsold_2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/12-TF_IDF_threshold_100.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/13-TF_IDF_threshold_10_no_templates.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/14-TF_IDF_threshold_10.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/15-TF_IDF_threshold_25.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/16-TF_IDF_threshold_5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/17-TF_IDF_not_20k_threshold_2_bigrams_threshold_2_stopwords.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/18-TF_IDF_not_20k_threshold_2_bigrams_threshold_2_no_templates.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/19-TF_IDF_not_20k_threshold_2_bigrams_threshold_2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/2-TF_IDF_crossValidated.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/20-TF_IDF_not_20k_threshold_2_bigrams_threshold_3_trigrams_thr_3_no_templates.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/21-TF_IDF_not_20k_threshold_2_bigrams_threshold_3_trigrams_thr_3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/22-TF_IDF_not_20k_threshold_2_trigrams_thr_3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/23-TF_IDF_20k_5050_split.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/24-TF_TFbigramsthr2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/25-TF_TFIDFbigrams_thr2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/26-TF_TFtrigramsthr2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/27-TF_TFIDFtrigrams_threshold_2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/28-TF_TFIDFbigrams_thr5_TFIDFtrigrams_thr5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/29-TF_TFIDFbigrams_thr3_TFIDFtrigrams_thr3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/30-TF_TFbigramsthr3_TFtrigramsthr3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/31-TF_TFbigramsthr5_TFtrigramsthr5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/35-TF_TFbigramsthr2_TFtrigramsthr2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/36-TF_TFbigramsthr10_TFtrigramsthr10.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/49-TFbithr3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/5-TF_IDF_crossValidatedUnigramThresholdOf2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/50-TFtrithr3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/51-TFbithr5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/52-TFbithr10.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/53-TFtrithr5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/54-TFtrithr10.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/55-TF20k_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/56-TFbithr3_TFIDFtrithr5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/57-TFbithr3_TFtrithr5_TFIDFtrithr10.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/58-TFbithr3_TFtrithr5_TFIDFtrithr25.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/59-TFbithr3_TFtrithr5_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/6-TF_crossValidated_TF_bigrams.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/60-TFbithr3_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/61-TFtrithr3_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/64-TF_stopwords_excPersonalPronouns.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/65-TF_TFbithr5stopwords.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/66-TF_TFbithr10stopwords.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/67-TFbithr5_smallerStopwordsPossibly.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/68-TF_TFbithr4incPerProns.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/69-TF_TFbithr5_5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/7-TF_IDF_20k.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/70-TF_TFbithr10_5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/71-TF_TFtrithr5_5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/72-TF_TFtrithr5stopwords_5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/73-TF_TFbithr5stopwords_5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/74-TF_TFbithr5stopwords_TFtrithr10stopwords_5" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/75-TF_1topic-smallData_countFileMinusOnes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/76-TF_3topic-smallData_countFileMinusOnes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/77-TF_1topic-smallData_countFileMinusTwos.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/78-TF_3topic-smallData_countFileMinusTwos.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/79-TF_1topic-event_advanced_countFileMinusOnes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/8-TF_IDF_threshold_10_stopwords.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/80-TF_3topic-event_advanced_countFileMinusOnes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/81-TF_1topic-event_advanced_countFileMinusTwos.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/82-TF_3topic-event_advanced_countFileMinusTwos.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/83-TF_1topic-smallData_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/84-TF_3topic-smallData_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/85-TF_1topic-smallData.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/86-TF_3topic-smallData.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/87-TF_1topic-smallData.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/88-TF_3topic-smallData.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/89-TF_event-advanced_5trials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/9-TF_20k.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.1.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.4.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.6.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.7.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.8.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.9.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.0.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.1.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.4.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.6.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.7.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.8.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.9.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/98-crossValidated_unithr1_bithr3_trithr3_templates_3topics_event_advanced_Winnow.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/99-crossValidated_unithr1_3topics_event_20k_Winnow.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/TF_20k.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/TF_IDF.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/XXX-feature_suite_event_advanced_alltrials.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsIDF.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsPruned.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsTF.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.1.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.2.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.3.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.4.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.5.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.6.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.7.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.8.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.9.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/TweetVector.class" afterPath="$PROJECT_DIR$/target/classes/TweetVector.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/test.class" afterPath="$PROJECT_DIR$/target/classes/test.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/event.txt" afterPath="$PROJECT_DIR$/classifiers/event.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/humanNonHuman.txt" afterPath="$PROJECT_DIR$/classifiers/humanNonHuman.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TestClassifiers.java" afterPath="$PROJECT_DIR$/src/main/java/TestClassifiers.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" afterPath="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TweetVector.java" afterPath="$PROJECT_DIR$/src/main/java/TweetVector.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/test.java" afterPath="$PROJECT_DIR$/src/main/java/test.java" />
@@ -53,33 +153,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MaxEntClassification.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1032" column="0" selection-start-line="1032" selection-start-column="0" selection-end-line="1033" selection-end-column="57" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TrainAndSaveClassifiers.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TrainAndSaveClassifiers.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="43" column="26" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="NGramModel.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334">
-              <caret line="60" column="44" selection-start-line="60" selection-start-column="33" selection-end-line="60" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.596519">
+              <caret line="68" column="63" selection-start-line="68" selection-start-column="63" selection-end-line="68" selection-end-column="63" />
               <folding />
             </state>
           </provider>
@@ -89,20 +167,17 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="233" column="55" selection-start-line="233" selection-start-column="55" selection-end-line="233" selection-end-column="55" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2712#2720#0" expanded="true" />
-              </folding>
+              <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/test.java">
+      <file leaf-file-name="runClassifierOnTweets.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="38" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
+              <caret line="93" column="35" selection-start-line="93" selection-start-column="35" selection-end-line="93" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -181,16 +256,16 @@
         <option value="$PROJECT_DIR$/src/main/java/util.java" />
         <option value="$PROJECT_DIR$/src/main/java/TweetParser.java" />
         <option value="$PROJECT_DIR$/src/main/java/featureTestCases.java" />
-        <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/TweetVector.java" />
         <option value="$PROJECT_DIR$/data/tweets/tweet_event_mini.csv" />
-        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TestClassifiers.java" />
-        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
         <option value="$PROJECT_DIR$/classifiers/event.txt" />
         <option value="$PROJECT_DIR$/classifiers/humanNonHuman.txt" />
-        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
+        <option value="$PROJECT_DIR$/src/main/java/TestClassifiers.java" />
+        <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
         <option value="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" />
+        <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
+        <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
         <option value="$PROJECT_DIR$/src/main/java/test.java" />
       </list>
     </option>
@@ -213,8 +288,8 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-12" />
-    <option name="y" value="38" />
+    <option name="x" value="-3" />
+    <option name="y" value="41" />
     <option name="width" value="1280" />
     <option name="height" value="729" />
   </component>
@@ -243,8 +318,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope">
         <subPane subId="Project Files" />
+      </pane>
+      <pane id="PackagesPane">
+        <subPane />
       </pane>
       <pane id="ProjectPane">
         <subPane>
@@ -296,15 +375,29 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="nGramModels" />
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tweets" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
-      </pane>
-      <pane id="Scratches" />
-      <pane id="PackagesPane">
-        <subPane />
       </pane>
     </panes>
   </component>
@@ -318,7 +411,7 @@
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/tehredwun/IdeaProjects/FluTweetsFeatureExtraction/data/cleaned/new_job.tsv" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/tehredwun/IdeaProjects/FluTweetsFeatureExtraction/data/testResultsSvO/NOWHERE_FOR_THEM_TO_RUN.txt" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -329,141 +422,12 @@
       <recent name="$PROJECT_DIR$/data/experimental_tweets/works_in_progress" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/nGramModels/acceptedNGrams" />
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/data/testResultsHvNClassifier" />
       <recent name="$PROJECT_DIR$/data/experimental_tweets/works_in_progress" />
       <recent name="$PROJECT_DIR$/data/experimental_tweets" />
-      <recent name="l]o" />
-      <recent name="$PROJECT_DIR$/data/cleaned" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/test.java</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classifiers/event.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classifiers/humanNonHuman.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/classifiers/selfOther.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.1.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.2.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.3.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.4.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.5.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.6.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.7.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.8.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.9.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/data/testResultsEventClassifier/testResultsPruned.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/nGramModels/acceptedNGrams/event-1-gram_1-frequency.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/nGramModels/acceptedNGrams/event-2-gram_7-frequency.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/nGramModels/acceptedNGrams/event-3-gram_10-frequency.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/nGramModels/acceptedNGrams/selfOther-1-gram_1-frequency.txt</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/nGramModels/acceptedNGrams/selfOther-2-gram_1-frequency.txt</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Application.test">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -866,7 +830,22 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="TrainAndSaveClassifiers" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv data/tweets/tweet_event_pruned.csv data/tweets/tweet_self_vs_other.csv" />
+      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv data/tweets/tweet_event_pruned.csv data/tweets/tweet_self_vs_other.csv data/tweets/tweet_event_pruned.csv" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="FluTweetsFeatureExtraction" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="runOnTweets" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="runClassifierOnTweets" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_self_vs_other.csv" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -896,7 +875,7 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="test" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_self_vs_other.csv" />
+      <option name="PROGRAM_PARAMETERS" value="data/tweets/tweet_person_vs_organization.csv" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -937,14 +916,15 @@
       <envs />
       <method />
     </configuration>
-    <list size="7">
+    <list size="8">
       <item index="0" class="java.lang.String" itemvalue="Application.testGettingTweets" />
       <item index="1" class="java.lang.String" itemvalue="Application.testClassifier" />
       <item index="2" class="java.lang.String" itemvalue="Application.trainClassifiers" />
-      <item index="3" class="java.lang.String" itemvalue="Application.test suite" />
-      <item index="4" class="java.lang.String" itemvalue="Application.test" />
-      <item index="5" class="java.lang.String" itemvalue="Application.format" />
-      <item index="6" class="java.lang.String" itemvalue="Application.GetAllTweetsFromUser" />
+      <item index="3" class="java.lang.String" itemvalue="Application.runOnTweets" />
+      <item index="4" class="java.lang.String" itemvalue="Application.test suite" />
+      <item index="5" class="java.lang.String" itemvalue="Application.test" />
+      <item index="6" class="java.lang.String" itemvalue="Application.format" />
+      <item index="7" class="java.lang.String" itemvalue="Application.GetAllTweetsFromUser" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
@@ -957,12 +937,6 @@
       <created>1460606859814</created>
       <option name="number" value="Default" />
       <updated>1460606859814</updated>
-    </task>
-    <task id="LOCAL-00016" summary="unigram model is final">
-      <created>1467064555918</created>
-      <option name="number" value="00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1467064555918</updated>
     </task>
     <task id="LOCAL-00017" summary="quick fix">
       <created>1467221214542</created>
@@ -1252,7 +1226,13 @@
       <option name="project" value="LOCAL" />
       <updated>1471764950853</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="likely fixed classifier training bug, about to test">
+      <created>1471913040733</created>
+      <option name="number" value="00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1471913040738</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1265,32 +1245,32 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-12" y="38" width="1280" height="729" extended-state="0" />
+    <frame x="-3" y="41" width="1280" height="729" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290735" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3197492" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31230283" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31868133" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30612245" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3181818" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32580644" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22859451" sideWeight="0.4604966" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3155416" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22109374" sideWeight="0.4604966" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3151515" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23045602" sideWeight="0.5395034" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38932496" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3197492" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3060606" sideWeight="0.49676898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38636363" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1330,7 +1310,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implemented multithreading for standard run, ready to test 2" />
     <MESSAGE value="Implemented multithreading for standard run, ready to test 3" />
     <MESSAGE value="Implemented multithreading for standard run, ready to test 4" />
     <MESSAGE value="Ready for more multithreading tests" />
@@ -1355,52 +1334,65 @@
     <MESSAGE value="consolidated version, classifiers up to date, training framework works" />
     <MESSAGE value="reconfigured to close BufferedReaders when not in use" />
     <MESSAGE value="fixed running error" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed running error" />
+    <MESSAGE value="likely fixed classifier training bug, about to test" />
+    <option name="LAST_COMMIT_MESSAGE" value="likely fixed classifier training bug, about to test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>966</line>
+          <line>969</line>
           <properties />
           <option name="timeStamp" value="172" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>1004</line>
+          <line>1007</line>
           <properties />
           <option name="timeStamp" value="175" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>968</line>
+          <line>971</line>
           <properties />
           <option name="timeStamp" value="180" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>812</line>
+          <line>815</line>
           <properties />
           <option name="timeStamp" value="229" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>217</line>
+          <line>219</line>
           <properties />
           <option name="timeStamp" value="281" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
-          <line>599</line>
+          <line>601</line>
           <properties />
           <option name="timeStamp" value="293" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java</url>
+          <line>22</line>
+          <properties />
+          <option name="timeStamp" value="302" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java</url>
+          <line>118</line>
+          <properties />
+          <option name="timeStamp" value="304" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="301" />
+      <option name="time" value="305" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1409,86 +1401,10 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event_advanced.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event_pruned_plus_28k_random.csv">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1233.4459">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsSvO/confidenceOf80BothClasses.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.62650603">
-          <caret line="99" column="11" selection-start-line="99" selection-start-column="11" selection-end-line="99" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/stopwords.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.0775623">
-          <caret line="50" column="20" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsSvO/testResultsWithUnigramsAndBigrams.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsSvO/confidenceOf90BothClasses.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.62650603">
-          <caret line="99" column="11" selection-start-line="99" selection-start-column="11" selection-end-line="99" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/StdOutput.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/term_webcounts.txt">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/defunctCode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10817308">
-          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/FormatOutputTemporary.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33161953">
           <caret line="99" column="72" selection-start-line="99" selection-start-column="62" selection-end-line="99" selection-end-column="72" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/testResultsWithoutTopics.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1501,14 +1417,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.196676">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="75" column="51" selection-start-line="75" selection-start-column="47" selection-end-line="75" selection-end-column="51" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1564,27 +1472,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/XXX-feature_suite_event_advanced_alltrials.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/testResultsWithTopics.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="227" column="21" selection-start-line="227" selection-start-column="21" selection-end-line="227" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.9.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.8795185">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TweetParser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1604,35 +1491,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TweetVector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.9565217">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/tweets/tweet_event_pruned.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.81884056">
           <caret line="3184" column="0" selection-start-line="3069" selection-start-column="0" selection-end-line="3184" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1640,7 +1502,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="8.565891">
           <caret line="221" column="106" selection-start-line="221" selection-start-column="100" selection-end-line="221" selection-end-column="106" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1648,7 +1509,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="11.014493">
           <caret line="304" column="99" selection-start-line="304" selection-start-column="99" selection-end-line="304" selection-end-column="99" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1656,23 +1516,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-3.1304348">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsSvO/testResults.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.1304348">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="424" column="0" selection-start-line="424" selection-start-column="0" selection-end-line="424" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1684,28 +1527,135 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TestClassifiers.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/TweetVector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0397878">
+          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/selfOther.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/event.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="3" column="49" selection-start-line="3" selection-start-column="49" selection-end-line="3" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/classifiers/humanNonHuman.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsSvO/testResults.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.7056962">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/AnnotationFeatures.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="75" column="51" selection-start-line="75" selection-start-column="47" selection-end-line="75" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/TopicFeatureModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="51" column="45" selection-start-line="51" selection-start-column="45" selection-end-line="51" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/TestClassifiers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26744187">
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.2796209">
+          <caret line="80" column="44" selection-start-line="80" selection-start-column="44" selection-end-line="80" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nGramModels/acceptedNGrams/selfOther-2-gram_1-frequency.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nGramModels/acceptedNGrams/selfOther-1-gram_1-frequency.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nGramModels/acceptedNGrams/event-3-gram_10-frequency.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nGramModels/acceptedNGrams/event-2-gram_7-frequency.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nGramModels/acceptedNGrams/event-1-gram_1-frequency.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/cc/mallet/mallet/2.0.7/mallet-2.0.7.jar!/cc/mallet/classify/MaxEnt.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3548387">
+          <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/testResultsSvO/NOWHERE_FOR_THEM_TO_RUN.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/MaxEntClassification.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1032" column="0" selection-start-line="1032" selection-start-column="0" selection-end-line="1033" selection-end-column="57" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="98" column="41" selection-start-line="98" selection-start-column="41" selection-end-line="98" selection-end-column="41" />
+        <state vertical-scroll-proportion="0.3322314">
+          <caret line="266" column="30" selection-start-line="266" selection-start-column="23" selection-end-line="266" selection-end-column="30" />
           <folding />
         </state>
       </provider>
@@ -1713,42 +1663,23 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="233" column="55" selection-start-line="233" selection-start-column="55" selection-end-line="233" selection-end-column="55" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2712#2720#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/testResultsEventClassifier/testResults.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.2826085">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/test.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="38" selection-start-line="25" selection-start-column="38" selection-end-line="25" selection-end-column="38" />
+          <caret line="93" column="35" selection-start-line="93" selection-start-column="35" selection-end-line="93" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="26" selection-start-line="43" selection-start-column="26" selection-end-line="43" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/NGramModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="60" column="44" selection-start-line="60" selection-start-column="33" selection-end-line="60" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.596519">
+          <caret line="68" column="63" selection-start-line="68" selection-start-column="63" selection-end-line="68" selection-end-column="63" />
           <folding />
         </state>
       </provider>

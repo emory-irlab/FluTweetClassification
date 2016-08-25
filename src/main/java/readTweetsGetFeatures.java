@@ -118,7 +118,7 @@ public class readTweetsGetFeatures {
         //create the Stanford CoreNLP pipeline if it doesn't exist yet
         if (pipeline == null) {
             Properties props = new Properties();
-            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, depparse, natlog, openie");
             pipeline = new StanfordCoreNLP(props);
         }
 

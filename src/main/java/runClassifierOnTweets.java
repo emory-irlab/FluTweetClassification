@@ -25,7 +25,7 @@ public class runClassifierOnTweets {
     //vectorizes and classifies a tweet using the given classifier, and returns its label
     public static String classify (ArrayList<String> tweet, String classifierType, MaxEntClassification classifier, double confThreshold) throws InterruptedException, IOException, ClassNotFoundException {
         //initialize the vector with the profile pic link, username, name, description, and tweet parameters set
-        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), "");
+        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), tweet.get(5));
         //get features
         tweetVector = readTweetsGetFeatures.getVectorModelForTweet(tweetVector, classifierType, nCores);
 
@@ -69,9 +69,12 @@ public class runClassifierOnTweets {
         BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToUnlabeledTweets)));
         CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180); //could just replace this section with TweetParser.getTweets
         List<CSVRecord> records = tweetCSV.getRecords();
+        /*TEMP*/int counter = 0;
+        /*TEMP*/long startTime = System.currentTimeMillis();
         for (CSVRecord tweet: records) {
             //for each tweet in the data
             if (tweet.size() >= 5) {
+        /*TEMP*/counter++;
                 ArrayList<String> tweetParts = new ArrayList<String>();
                 for (int i = 0; i < tweet.size(); i++) {
                     tweetParts.add(tweet.get(i));
@@ -127,5 +130,6 @@ public class runClassifierOnTweets {
 
             }
         }
+        System.out.println("Total time to get "+counter+" tweets: "+((double)System.currentTimeMillis() - startTime)/1000+" seconds");
     }
 }

@@ -2,128 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/0-TF_crossValidated.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/1-TF_IDF.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/10-TF_IDF_threshold_2_no_templates.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/100-crossValidated_unithr1_bithr3_trithr3_templates_3topics_event_advanced_NaiveBayes.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/101-crossValidated_unithr1_3topics_event_20k_NaiveBayes.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/11-TFIDF_20k_threhsold_2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/12-TF_IDF_threshold_100.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/13-TF_IDF_threshold_10_no_templates.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/14-TF_IDF_threshold_10.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/15-TF_IDF_threshold_25.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/16-TF_IDF_threshold_5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/17-TF_IDF_not_20k_threshold_2_bigrams_threshold_2_stopwords.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/18-TF_IDF_not_20k_threshold_2_bigrams_threshold_2_no_templates.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/19-TF_IDF_not_20k_threshold_2_bigrams_threshold_2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/2-TF_IDF_crossValidated.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/20-TF_IDF_not_20k_threshold_2_bigrams_threshold_3_trigrams_thr_3_no_templates.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/21-TF_IDF_not_20k_threshold_2_bigrams_threshold_3_trigrams_thr_3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/22-TF_IDF_not_20k_threshold_2_trigrams_thr_3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/23-TF_IDF_20k_5050_split.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/24-TF_TFbigramsthr2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/25-TF_TFIDFbigrams_thr2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/26-TF_TFtrigramsthr2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/27-TF_TFIDFtrigrams_threshold_2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/28-TF_TFIDFbigrams_thr5_TFIDFtrigrams_thr5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/29-TF_TFIDFbigrams_thr3_TFIDFtrigrams_thr3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/30-TF_TFbigramsthr3_TFtrigramsthr3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/31-TF_TFbigramsthr5_TFtrigramsthr5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/35-TF_TFbigramsthr2_TFtrigramsthr2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/36-TF_TFbigramsthr10_TFtrigramsthr10.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/49-TFbithr3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/5-TF_IDF_crossValidatedUnigramThresholdOf2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/50-TFtrithr3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/51-TFbithr5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/52-TFbithr10.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/53-TFtrithr5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/54-TFtrithr10.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/55-TF20k_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/56-TFbithr3_TFIDFtrithr5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/57-TFbithr3_TFtrithr5_TFIDFtrithr10.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/58-TFbithr3_TFtrithr5_TFIDFtrithr25.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/59-TFbithr3_TFtrithr5_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/6-TF_crossValidated_TF_bigrams.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/60-TFbithr3_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/61-TFtrithr3_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/64-TF_stopwords_excPersonalPronouns.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/65-TF_TFbithr5stopwords.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/66-TF_TFbithr10stopwords.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/67-TFbithr5_smallerStopwordsPossibly.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/68-TF_TFbithr4incPerProns.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/69-TF_TFbithr5_5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/7-TF_IDF_20k.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/70-TF_TFbithr10_5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/71-TF_TFtrithr5_5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/72-TF_TFtrithr5stopwords_5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/73-TF_TFbithr5stopwords_5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/74-TF_TFbithr5stopwords_TFtrithr10stopwords_5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/75-TF_1topic-smallData_countFileMinusOnes.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/76-TF_3topic-smallData_countFileMinusOnes.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/77-TF_1topic-smallData_countFileMinusTwos.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/78-TF_3topic-smallData_countFileMinusTwos.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/79-TF_1topic-event_advanced_countFileMinusOnes.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/8-TF_IDF_threshold_10_stopwords.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/80-TF_3topic-event_advanced_countFileMinusOnes.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/81-TF_1topic-event_advanced_countFileMinusTwos.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/82-TF_3topic-event_advanced_countFileMinusTwos.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/83-TF_1topic-smallData_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/84-TF_3topic-smallData_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/85-TF_1topic-smallData.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/86-TF_3topic-smallData.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/87-TF_1topic-smallData.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/88-TF_3topic-smallData.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/89-TF_event-advanced_5trials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/9-TF_20k.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.4.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.6.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.7.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.8.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_32k_dataset0.9.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.0.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.4.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.6.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.7.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.8.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/90-crossValidated_full_classifier_45k_dataset0.9.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/98-crossValidated_unithr1_bithr3_trithr3_templates_3topics_event_advanced_Winnow.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/99-crossValidated_unithr1_3topics_event_20k_Winnow.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/TF_20k.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/TF_IDF.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/XXX-feature_suite_event_advanced_alltrials.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsIDF.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsPruned.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/testResultsTF.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.4.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.6.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.7.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.8.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/testResultsEventClassifier/thing/0.9.txt" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" afterPath="$PROJECT_DIR$/target/classes/MaxEntClassification.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" afterPath="$PROJECT_DIR$/target/classes/readTweetsGetFeatures.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/test.class" afterPath="$PROJECT_DIR$/target/classes/test.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/event.txt" afterPath="$PROJECT_DIR$/classifiers/event.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classifiers/humanNonHuman.txt" afterPath="$PROJECT_DIR$/classifiers/humanNonHuman.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" afterPath="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TestClassifiers.java" afterPath="$PROJECT_DIR$/src/main/java/TestClassifiers.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" afterPath="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" afterPath="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/test.java" afterPath="$PROJECT_DIR$/src/main/java/test.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -156,8 +36,8 @@
       <file leaf-file-name="TrainAndSaveClassifiers.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.596519">
-              <caret line="68" column="63" selection-start-line="68" selection-start-column="63" selection-end-line="68" selection-end-column="63" />
+            <state vertical-scroll-proportion="0.7863924">
+              <caret line="75" column="10" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -262,11 +142,11 @@
         <option value="$PROJECT_DIR$/classifiers/humanNonHuman.txt" />
         <option value="$PROJECT_DIR$/src/main/java/TestClassifiers.java" />
         <option value="$PROJECT_DIR$/src/main/java/readTweetsGetFeatures.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" />
         <option value="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
         <option value="$PROJECT_DIR$/src/main/java/NGramModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/MaxEntClassification.java" />
         <option value="$PROJECT_DIR$/src/main/java/test.java" />
+        <option value="$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java" />
       </list>
     </option>
   </component>
@@ -394,6 +274,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tweets" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FluTweetsFeatureExtraction" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="classifiers" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -938,12 +832,6 @@
       <option name="number" value="Default" />
       <updated>1460606859814</updated>
     </task>
-    <task id="LOCAL-00017" summary="quick fix">
-      <created>1467221214542</created>
-      <option name="number" value="00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1467221214542</updated>
-    </task>
     <task id="LOCAL-00018" summary="Work on phrase templates">
       <created>1467771187246</created>
       <option name="number" value="00018" />
@@ -1232,7 +1120,13 @@
       <option name="project" value="LOCAL" />
       <updated>1471913040738</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="fixed classifier training bug, train classifiers ONE AT A TIME">
+      <created>1472091894721</created>
+      <option name="number" value="00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1472091894721</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1250,6 +1144,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290735" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3197492" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3" sideWeight="0.503231" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1263,7 +1158,6 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23045602" sideWeight="0.5395034" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3197492" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1310,7 +1204,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implemented multithreading for standard run, ready to test 3" />
     <MESSAGE value="Implemented multithreading for standard run, ready to test 4" />
     <MESSAGE value="Ready for more multithreading tests" />
     <MESSAGE value="Topic modeling framework ready for testing" />
@@ -1335,7 +1228,8 @@
     <MESSAGE value="reconfigured to close BufferedReaders when not in use" />
     <MESSAGE value="fixed running error" />
     <MESSAGE value="likely fixed classifier training bug, about to test" />
-    <option name="LAST_COMMIT_MESSAGE" value="likely fixed classifier training bug, about to test" />
+    <MESSAGE value="fixed classifier training bug, train classifiers ONE AT A TIME" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed classifier training bug, train classifiers ONE AT A TIME" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1678,8 +1572,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/TrainAndSaveClassifiers.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.596519">
-          <caret line="68" column="63" selection-start-line="68" selection-start-column="63" selection-end-line="68" selection-end-column="63" />
+        <state vertical-scroll-proportion="0.7863924">
+          <caret line="75" column="10" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="10" />
           <folding />
         </state>
       </provider>

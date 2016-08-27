@@ -51,7 +51,7 @@ public class MaxEntTestRunThread implements Runnable {
                 String correctLabel = instance.getLabeling().toString();
 
                 //get the label given by the classifier
-                String experimentalLabel = classifier.getLabelConfThresholdForDesiredClass(instance, desiredClass, confidenceThreshold);
+                String experimentalLabel = classifier.getLabelForInstanceIfThresholdMet(instance, desiredClass, confidenceThreshold);
 
                 //get inferences from this data
                 if (correctLabel.equals(desiredClass)) {

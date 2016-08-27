@@ -13,26 +13,24 @@ import java.util.*;
 public class test {
 
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-	long startTime = System.currentTimeMillis();
+        TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0]);
+/*
+	    long startTime = System.currentTimeMillis();
 
-        MaxEntClassification classifier = new MaxEntClassification("classifiers/event.txt", runClassifierOnTweets.nCores);
+        MaxEntClassification classifier = new MaxEntClassification("classifiers/selfOther.txt", runClassifierOnTweets.nCores);
 /*
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(args[0], readTweetsGetFeatures.selfOtherClassifierName, runClassifierOnTweets.nCores);
         classifier.addToInstanceList(tweetVectors);
         classifier.writeTestResultsToFile(classifier.evaluate(classifier.instances), 1, "data/testResultsSvO/NOWHERE_FOR_THEM_TO_RUN.txt", false);
-*/
+*
 
         ArrayList<String[]> tweets = TweetParser.getTweets(args[0]);
         for (String[] tweet: tweets) {
-            ArrayList<String> tweetArray = new ArrayList<String>();
-            for (String field: tweet) {
-                tweetArray.add(field);
-            }
-
-            String expLabel = runClassifierOnTweets.classify(tweetArray, readTweetsGetFeatures.eventClassifierName, classifier, 0.0);
-            System.out.println(tweet[4]+": "+expLabel);
+            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, readTweetsGetFeatures.selfOtherClassifierName, classifier);
+            String expLabel = expLabelAndConf.first();
+            System.out.println(tweet[4]+": "+expLabelAndConf.second()+" "+expLabel+"");
         }
-
+*/
         //System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
 
         //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));

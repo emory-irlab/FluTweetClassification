@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 
+import edu.stanford.nlp.util.Pair;
+
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.MaxEnt;
@@ -517,7 +519,7 @@ public class MaxEntClassification {
 			//the label is not the specified class, but the confidence for the specified class is above the threshold
 			//(in which case the label is the specified class)
 			//String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
-			String experimentalLabel = getLabelConfThresholdForDesiredClass(instance, nullClass, confThreshold);
+			String experimentalLabel = getLabelForInstanceIfThresholdMet(instance, nullClass, confThreshold);
 			System.out.println("Got: "+experimentalLabel+". Should have: "+correctLabel);
 
 			//initialize fields if necessary, set all figures to 0
@@ -597,7 +599,7 @@ public class MaxEntClassification {
 		Labels a given Instance. If the classifier's suggested labeling is made with a confidence
 		level below the threshold (conf), instead label the Instance as the nullClass
 	*/
-	public String getLabelConfThresholdForDesiredClass(Instance instance, String nullClass, double conf) {
+	public String getLabelForInstanceIfThresholdMet(Instance instance, String nullClass, double conf) {
 		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
 		if (labeling.getValueAtRank(0) >= conf) {
 			return labeling.getLabelAtRank(0).toString();
@@ -605,6 +607,13 @@ public class MaxEntClassification {
 		else {
 			return nullClass;
 		}
+	}
+
+	public Pair<String, Double> getLabelAndConfidence(Instance instance, String nullClass) {
+		Labeling labeling = maxEntClassifier.classify(instance).getLabeling();
+		String label = labeling.getLabelAtRank(0).toString();
+		double conf = labeling.getValueAtRank(0);
+		return new Pair<String, Double>(label, conf);
 	}
 
 	/*

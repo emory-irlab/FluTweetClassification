@@ -68,43 +68,21 @@ public class readTweetsGetFeatures {
             pipeline = new StanfordCoreNLP(props);
         }
 
-        //get the number of tweets for the sake of initializing tweet vectors (may remove later for speed's sake)
-        int counter = 0;
-        BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToTweetFile)));
-        CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180);
-        List<CSVRecord> records = tweetCSV.getRecords();
-
-        for (CSVRecord record: records) {
-            if (record.size() >= 1) {
-                counter++;
-            }
-        }
-
-        //get tweet vector model
-        TweetVector[] tweetVectors = new TweetVector[counter];
+        //get tweets, initialize tweet vectors
+        ArrayList<String[]> tweets = TweetParser.getTweets(pathToTweetFile);
+        TweetVector[] tweetVectors = new TweetVector[tweets.size()];
         readTweetsGetFeatures.dataSource = pathToTweetFile;
-
-        //initialize tweet vectors
-        //String label = toBinaryLabels(tweet[5], classifierType);
-        for (int i = 0; i < records.size(); i++) {
-            CSVRecord record = records.get(i);
-            String[] tweetFields = new String[6];
-
-            for (int j = 0; j < 6; j++) {
-                tweetFields[j] = record.get(j);
-            }
-
-            tweetVectors[i] = new TweetVector(tweetFields[0], tweetFields[1], tweetFields[2], tweetFields[3], tweetFields[4], tweetFields[5], labelSet);
+        for (int i = 0; i < tweets.size(); i++) {
+            String[] tweet = tweets.get(i);
+            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
         }
 
         //get features for each tweet vector
-        for (int i = 0; i < records.size(); i++) {
+        for (int i = 0; i < tweets.size(); i++) {
             long tweetBeginTime = System.currentTimeMillis();
             getVectorModelForTweet(tweetVectors[i], classifierType, nCores);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
         }
-
-        tweetCSV.close();
 
         System.out.println("Total time to get "+tweetVectors.length+" tweets: "+(((double)System.currentTimeMillis()) - startTime )/1000+" seconds.");
         return tweetVectors;

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.Buffer;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.CSVPrinter;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -37,17 +40,26 @@ public class TweetParser {
 
     /*
     Get csv-formatted tweets from a path to a file
-    Fields should be as follows: profile picture, handle, name, description, tweet, label
- */
+    Fields should be as follows: profile picture, handle, name, description, tweet, label, date, id, id, id
+    */
     public static ArrayList<String[]> getTweets(String pathToTweetFile) throws FileNotFoundException, IOException {
         ArrayList<String[]> tweets = new ArrayList<String[]>();
         BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));
         Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
         for (CSVRecord record : records) {
-            //makes sure that smaller records are not used
-            if (record.size() >= 6) {
-                String[] tweetFields = new String[6];
-                for (int i = 0; i < 6; i++) {
+            if (record.size() >= 1) {
+                //set the size, a maximum of 9
+                int entrySize;
+                if (record.size() < 10) {
+                    entrySize = record.size();
+                }
+                else {
+                    entrySize = 9;
+                }
+
+                //collect the fields
+                String[] tweetFields = new String[entrySize];
+                for (int i = 0; i < entrySize - 1; i++) {
                     tweetFields[i] = record.get(i);
                 }
                 tweets.add(tweetFields);
@@ -301,5 +313,36 @@ public class TweetParser {
                 ex.printStackTrace();
             }
         }
+    }
+
+    /*
+        Remove later
+     */
+    public static void addExtraFieldToTweetsWithoutLabelField(String pathToTweets) throws FileNotFoundException, IOException {
+        File inputFile = new File(pathToTweets);
+        File outputFile = new File(pathToTweets.substring(0, pathToTweets.length() - 4)+"-p.csv");
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(bufferedReader);
+        CSVPrinter printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
+
+        //go through each tweet, collect and print out fields 0-4, print out an extra field, and then print out the
+        //remaining fields
+        inputFile.delete();
+        for (CSVRecord tweet: records) {
+            if (tweet.size() > 5) {
+                for (int i = 0; i < 5; i++) {
+                    printer.print(tweet.get(i));
+                }
+                printer.print("");
+                for (int i = 5; i < tweet.size(); i++) {
+                    printer.print(tweet.get(i));
+                }
+                printer.println();
+            }
+        }
+        printer.close();
     }
 }

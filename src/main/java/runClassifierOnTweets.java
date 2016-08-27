@@ -1,5 +1,8 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
+
+import edu.stanford.nlp.util.Pair;
 
 import cc.mallet.types.ArrayListSequence;
 import cc.mallet.types.InstanceList;
@@ -23,9 +26,9 @@ public class runClassifierOnTweets {
     //private static int nCores = 1;
 
     //vectorizes and classifies a tweet using the given classifier, and returns its label
-    public static String classify (ArrayList<String> tweet, String classifierType, MaxEntClassification classifier, double confThreshold) throws InterruptedException, IOException, ClassNotFoundException {
+    public static Pair<String, Double> classify (String[] tweet, String classifierType, MaxEntClassification classifier) throws InterruptedException, IOException, ClassNotFoundException {
         //initialize the vector with the profile pic link, username, name, description, and tweet parameters set
-        TweetVector tweetVector = new TweetVector(tweet.get(0), tweet.get(1), tweet.get(2), tweet.get(3), tweet.get(4), tweet.get(5));
+        TweetVector tweetVector = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4]);
         //get features
         tweetVector = readTweetsGetFeatures.getVectorModelForTweet(tweetVector, classifierType, nCores);
 
@@ -34,9 +37,8 @@ public class runClassifierOnTweets {
         Instance tweetInstance = classifier.instances.get(0);
         classifier.clearInstances();
 
-        //classify and get the label
-        String label = classifier.getLabelConfThresholdForDesiredClass(tweetInstance, "null_class", confThreshold);
-        return label;
+        //classify, get the label and confidence
+        return classifier.getLabelAndConfidence(tweetInstance, "null_class");
     }
 
     /*
@@ -66,68 +68,76 @@ public class runClassifierOnTweets {
         MaxEntClassification selfOther = new MaxEntClassification("classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt", nCores);
 
         //get tweets
-        BufferedReader tweetReader = new BufferedReader(new FileReader(new File(pathToUnlabeledTweets)));
-        CSVParser tweetCSV = new CSVParser(tweetReader, CSVFormat.RFC4180); //could just replace this section with TweetParser.getTweets
-        List<CSVRecord> records = tweetCSV.getRecords();
+        ArrayList<String[]> tweetsToRun = TweetParser.getTweets(pathToUnlabeledTweets);
+
         /*TEMP*/int counter = 0;
         /*TEMP*/long startTime = System.currentTimeMillis();
-        for (CSVRecord tweet: records) {
-            //for each tweet in the data
-            if (tweet.size() >= 5) {
+        //classify each tweet and collect if it is labeled with an event
+        for (String[] tweet: tweetsToRun) {
         /*TEMP*/counter++;
-                ArrayList<String> tweetParts = new ArrayList<String>();
-                for (int i = 0; i < tweet.size(); i++) {
-                    tweetParts.add(tweet.get(i));
-                }
 
-                String[] labels = new String[3];
+            String[] labels = new String[3];
+            double[] confidences = new double[3];
 
-                //put it through the human-nonhuman classifier (confidence level: 0.8)
-                labels[0] = classify(tweetParts, readTweetsGetFeatures.humanNonHumanClassifierName, humanNonHuman, 0.8);
+            //put it through the human-nonhuman classifier (confidence level: 0.8)
+            Pair<String, Double> humanResults = classify(tweet, readTweetsGetFeatures.humanNonHumanClassifierName, humanNonHuman);
+            labels[0] = humanResults.first();
+            confidences[0] = humanResults.second();
 
-                //If it's human,
-                //put it through the event classifier (confidence level: ?)
-                if (labels[0].equals("person")) {
-                    labels[1] = classify(tweetParts, readTweetsGetFeatures.eventClassifierName, event, 0.0);
+            //If it's human,
+            //put it through the event classifier (confidence level: ?)
+            if (labels[0].equals("person")) {
+                Pair<String, Double> eventResults = classify(tweet, readTweetsGetFeatures.eventClassifierName, event);
+                labels[1] = eventResults.first();
+                confidences[1] = eventResults.second();
 
-                    //If it receives an event label,
-                    if (!labels[1].equals("null_class") && !labels[1].equals("none_of_the_above")) {
-                        //Put it through the self-other classifier (confidence level: ?)
-                        labels[2] = classify(tweetParts, readTweetsGetFeatures.selfOtherClassifierName, selfOther, 0.9);
+                //If it receives an event label,
+                if (!labels[1].equals("null_class") && !labels[1].equals("none_of_the_above")) {
+                    //Put it through the self-other classifier (confidence level: ?)
+                    Pair<String, Double> selfResults = classify(tweet, readTweetsGetFeatures.selfOtherClassifierName, selfOther);
+                    labels[2] = selfResults.first();
+                    confidences[2] = selfResults.second();
 
-                        //if it receives a self or other label,
-                        if (labels[2].equals("self") || labels[2].equals("other")) {
-                            //append it to a file based on self-other label and event (initialize this file if it
-                            //does not yet exist)
-                            File putativeFile = new File("classifiedTweets/"+labels[1]+"-"+labels[2]+".csv");
-                            BufferedWriter writer = new BufferedWriter(new FileWriter(putativeFile, true));
-                            CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
+                    //if it receives a self or other label,
+                    if (labels[2].equals("self") || labels[2].equals("other")) {
+                        //append it to a file based on self-other label and event (initialize this file if it
+                        //does not yet exist)
+                        File putativeFile = new File("classifiedTweets/"+labels[1]+"-"+labels[2]+".csv");
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(putativeFile, true));
+                        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
 
-                            if (!putativeFile.exists()) {
-                                printer.print("link to profile pic");
-                                printer.print("username");
-                                printer.print("name");
-                                printer.print("profile description");
-                                printer.print("tweet");
-                                printer.print("human or organization");
-                                printer.print("event");
-                                printer.print("event happened to self or other");
-                            }
+                        if (!putativeFile.exists()) {
+                            printer.print("link to profile pic");
+                            printer.print("username");
+                            printer.print("name");
+                            printer.print("profile description");
+                            printer.print("tweet");
+                            printer.print("human or organization");
+                            printer.print("confidence");
+                            printer.print("event");
+                            printer.print("confidence");
+                            printer.print("event happened to self or other");
+                            printer.print("confidence");
+                        }
 
-                            //new line
-                            printer.println();
-                            //write out all tweet fields
-                            for (String field: tweetParts) {
+                        //new line
+                        printer.println();
+                        //write out all tweet fields except for "label" (this is a feature used for training/testing only)
+                        for (int i = 0; i < tweet.length; i++) {
+                            String field = tweet[i];
+                            //"label" is at index 5
+                            if (i != 5) {
                                 printer.print(field);
                             }
-                            //write out all labels
-                            for (String label: labels) {
-                                printer.print(label);
-                            }
                         }
+                        //write out all labels
+                        for (int i = 0; i < labels.length; i++) {
+                            printer.print(labels[i]);
+                            printer.print(confidences[i]);
+                        }
+                        printer.close();
                     }
                 }
-
             }
         }
         System.out.println("Total time to get "+counter+" tweets: "+((double)System.currentTimeMillis() - startTime)/1000+" seconds");

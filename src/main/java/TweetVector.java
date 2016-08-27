@@ -38,15 +38,18 @@ public class TweetVector {
         if (!found) labelSet.add(label);
     }
 
-    public TweetVector(String pro, String us, String na, String des, String text, String lab) {
+    public TweetVector(String pro, String us, String na, String des, String text) {
         profilePicLink = pro;
         username = us;
         name = na;
         description = des;
         tweetText = text;
-        label = lab;
         features = new Hashtable<String, Double>();
+
+        label = "";
+        labelSet = new ArrayList<String>();
     }
+
     /*
     public TweetVector(String pro, String us, String na, String des, String text, String lab, Hashtable feats) {
         profilePicLink = pro;

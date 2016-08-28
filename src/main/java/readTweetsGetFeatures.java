@@ -3,6 +3,7 @@ import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.naturalli.NaturalLogicAnnotations;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
+import edu.stanford.nlp.parser.common.NoSuchParseException;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import org.apache.commons.csv.CSVFormat;
@@ -105,12 +106,24 @@ public class readTweetsGetFeatures {
 
         //description
         Annotation descriptionDocument = new Annotation(tweetVector.getDescription());
-        pipeline.annotate(descriptionDocument);
+        try {
+            pipeline.annotate(descriptionDocument);
+        }
+        catch (NoSuchElementException e) {
+            System.out.println(tweetVector.getDescription()+" triggered a NoSuchElementException");
+            e.printStackTrace();
+        }
         CoreLabel[][] descriptionPhrases = getPhrases(descriptionDocument);
 
         //tweet
         Annotation tweetDocument = new Annotation(processedTweet);
-        pipeline.annotate(tweetDocument);
+        try {
+            pipeline.annotate(tweetDocument);
+        }
+        catch (NoSuchElementException e) {
+            System.out.println(processedTweet+" triggered a NoSuchElementException");
+            e.printStackTrace();
+        }
         CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
         List<CoreMap> tweetSentences = tweetDocument.get(SentencesAnnotation.class);
 

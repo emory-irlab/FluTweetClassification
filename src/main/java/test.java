@@ -1,3 +1,5 @@
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.Pair;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -13,7 +15,14 @@ import java.util.*;
 public class test {
 
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0]);
+        //TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0]);
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, depparse, natlog, openie");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+        Annotation descriptionDocument = new Annotation("I don't want there for to be any trouble");
+        pipeline.annotate(descriptionDocument);
+
 /*
 	    long startTime = System.currentTimeMillis();
 
@@ -30,9 +39,9 @@ public class test {
             String expLabel = expLabelAndConf.first();
             System.out.println(tweet[4]+": "+expLabelAndConf.second()+" "+expLabel+"");
         }
-*/
-        //System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
 
+        System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
+*/
         //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));
         /*
         System.out.println(readTweetsGetFeatures.process("@Riteishd &amp; Wishing u a beautiful day Hopes and dreams I`m sending your way May all be good On this very special day for new born baby"));

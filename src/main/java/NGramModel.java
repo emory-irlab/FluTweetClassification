@@ -14,14 +14,13 @@ import edu.stanford.nlp.pipeline.*;
  * Created by Alec Wolyniec on 6/14/16.
  */
 public class NGramModel {
-    //general helper parameters
-    public static final String textName = "text";
-    public static final String descriptionName = "description";
 
     //parameters to specify type
     private int N;
     private boolean stopWords;
     private String acceptedNGramFilePath;
+    private boolean lemmatize;
+    private String textModelName;
 
     private int freqThreshold;
     private ArrayList<String> stopWordList = new ArrayList<String>();
@@ -40,8 +39,11 @@ public class NGramModel {
         an int specifying the minimum number of documents an n-gram must appear in within the training data in order
         to be considered
      */
-    public NGramModel(int n, String pathToTweetFields, String dT, String classifierName, String stopWordPath, int freq) throws IOException {
+    public NGramModel(int n, String pathToTweetFields, String dT, String tMN, String classifierName, String stopWordPath, int freq, boolean lm) throws IOException {
+        //initialize fields
         N = n;
+        textModelName = tMN;
+        lemmatize = lm;
         //this.nCores = nCores;
         freqThreshold = freq;
         dataType = dT;
@@ -59,6 +61,7 @@ public class NGramModel {
             initialize and save a file of accepted n-grams for future reference
          */
         acceptedNGramFilePath = "nGramModels/acceptedNGrams/"+classifierName+"-"+n+"-gram_"+freq+"-frequency.txt";
+        //load up/initialize the accepted n-grams
         File nGramFile = new File(acceptedNGramFilePath);
         if (nGramFile.exists()) {
             loadAcceptedNGramsFromFile();
@@ -98,7 +101,8 @@ public class NGramModel {
                     indexCounter++;
                 }
                 else {
-                    String tokenText = util.lowerCaseLemmaUnlessProperNoun(input.get(j));
+                    //get the text from the tweet and format it
+                    String tokenText = lowerCaseTextOrLemmaUnlessProperNoun(input.get(j));
                     if ((stopWords || !isStopWord(tokenText)) && util.containsAlphabeticCharacters(tokenText) == 1) {
                         indices[indexCounter] = j;
                         indexCounter++;
@@ -118,7 +122,8 @@ public class NGramModel {
                     } else if (index > input.size() - 1) {
                         nGram.append("-post- ");
                     } else {
-                        nGram.append(util.lowerCaseLemmaUnlessProperNoun(input.get(index)));
+                        //get the text from the tweet and format it
+                        nGram.append(lowerCaseTextOrLemmaUnlessProperNoun(input.get(index)));
                         nGram.append(" ");
                     }
                 }
@@ -242,7 +247,8 @@ public class NGramModel {
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         for (int i = 0; i < tweetFields.size(); i++) {
             String[] currentTweet = tweetFields.get(i);
-            String text = readTweetsGetFeatures.process(returnAppropriateTextForm(currentTweet));
+            //process the text according to the specified model
+            String text = returnAppropriateTextFromTweet(currentTweet);
 
             //annotate to get lemma annotations
             Annotation document = new Annotation(text);
@@ -419,6 +425,30 @@ public class NGramModel {
     }
     */
 
+    /*
+    Return the lemma of the inputted token, in all lower case if it is not a proper noun, with
+    only the first letter capitalized if it is a proper noun
+    */
+    public String lowerCaseTextOrLemmaUnlessProperNoun(CoreLabel token) {
+        String text;
+        if (lemmatize) {
+            text = token.get(LemmaAnnotation.class);
+        }
+        else {
+            text = token.originalText();
+        }
+        String tag = token.tag();
+        if (tag.substring(0, Math.min(3, tag.length())).equals("NNP")) {
+            StringBuilder output = new StringBuilder();
+            output.append(Character.toUpperCase(text.charAt(0)));
+            output.append(text.toLowerCase().substring(1));
+            return output.toString();
+        }
+        else {
+            return text.toLowerCase();
+        }
+    }
+
     public Hashtable<String, Double> getAcceptedNGrams () {
         return acceptedNGrams;
     }
@@ -430,22 +460,22 @@ public class NGramModel {
     /*
         Returns the proper text field from the given TweetVector, given the data field
      */
-    public String returnAppropriateTextForm(TweetVector tweetVector) {
+    public String returnAppropriateTextFromTweet(TweetVector tweetVector) {
         String data = "";
         switch (dataType) {
-            case textName: data = tweetVector.getTweetText(); break;
-            case descriptionName: data = tweetVector.getDescription(); break;
+            case readTweetsGetFeatures.textName: data = tweetVector.getTweetText(); break;
+            case readTweetsGetFeatures.descriptionName: data = tweetVector.getDescription(); break;
         }
-        return readTweetsGetFeatures.process(data);
+        return readTweetsGetFeatures.process(data, textModelName);
     }
 
-    public String returnAppropriateTextForm(String[] tweetFields) {
+    public String returnAppropriateTextFromTweet(String[] tweetFields) {
         String data = "";
         switch (dataType) {
-            case textName: data = tweetFields[4]; break;
-            case descriptionName: data = tweetFields[3]; break;
+            case readTweetsGetFeatures.textName: data = tweetFields[4]; break;
+            case readTweetsGetFeatures.descriptionName: data = tweetFields[3]; break;
         }
-        return readTweetsGetFeatures.process(data);
+        return readTweetsGetFeatures.process(data, textModelName);
     }
 
     /*

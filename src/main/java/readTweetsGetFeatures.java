@@ -24,11 +24,19 @@ import java.io.File;
     used in Lamb, Paul, and Dredze 2013
  */
 public class readTweetsGetFeatures {
+    //text field names
+    public static final String textName = "text";
+    public static final String descriptionName = "description";
 
     //classifier names
     static final String humanNonHumanClassifierName = "humanNonHuman";
     static final String eventClassifierName = "event";
     static final String selfOtherClassifierName = "selfOther";
+
+    //text model names
+    static final String processedTextModelName = "proc";
+    static final String processedTextModelNameWHash = "procWHash";
+    static final String originalTextModelName = "orig";
 
     private static String dataSource = "";
     private static int idfUpdateCounter = 0;
@@ -43,9 +51,33 @@ public class readTweetsGetFeatures {
     private static TopicFeatureModel topicFeatureModel = null;
     private static StanfordCoreNLP pipeline = null;
 
-    public static String process(String input) {
+    public static String process(String input, String modelName) {
+        if (modelName.equals(processedTextModelName)) {
+            return processProc(input);
+        }
+        else if (modelName.equals(processedTextModelNameWHash)) {
+            return processProcWHash(input);
+        }
+        else if (modelName.equals(originalTextModelName)) {
+            return input;
+        }
+        else {
+            return null; //change into an exception?
+        }
+    }
+
+    private static String processProc(String input) {
         input = TextFeatures.removeRetweets(input);
         input = TextFeatures.removeHashtagCharInHashtags(input);
+        input = TextFeatures.removeAtCharInMentions(input);
+        input = TextFeatures.removeURL(input);
+        input = input.replaceAll(TextFeatures.spaceGroup, " ");
+        input = TextFeatures.removeCharsRepeated3PlusTimes(input);
+        return input;
+    }
+
+    private static String processProcWHash(String input) {
+        input = TextFeatures.removeRetweets(input);
         input = TextFeatures.removeAtCharInMentions(input);
         input = TextFeatures.removeURL(input);
         input = input.replaceAll(TextFeatures.spaceGroup, " ");
@@ -75,7 +107,7 @@ public class readTweetsGetFeatures {
         readTweetsGetFeatures.dataSource = pathToTweetFile;
         for (int i = 0; i < tweets.size(); i++) {
             String[] tweet = tweets.get(i);
-            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5], labelSet);
+            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5]);
         }
 
         //get features for each tweet vector
@@ -94,6 +126,38 @@ public class readTweetsGetFeatures {
         then collect phrases
      */
     public static TweetVector getVectorModelForTweet(TweetVector tweetVector, String classifierType, int nCores) throws IOException, InterruptedException {
+        //get processed text models
+        String processedTweet = process(tweetVector.getTweetText(), processedTextModelName);
+
+        //get phrase models
+        CoreLabel[][] processedDescriptionPhrases = getPhrases(tweetVector.getDescription(), processedTextModelName);
+        CoreLabel[][] processedTweetPhrases = getPhrases(tweetVector.getTweetText(), processedTextModelName);
+        CoreLabel[][] processedWHashtagsTweetPhrases = getPhrases(tweetVector.getTweetText(), processedTextModelNameWHash);
+
+        //get sentence models
+        List<CoreMap> processedTweetSentences = getSentences(tweetVector.getTweetText(), processedTextModelName);
+
+        //collect features
+        switch (classifierType) {
+            case humanNonHumanClassifierName:
+                collectFeaturesHumanVsNonHuman(tweetVector, processedDescriptionPhrases, processedTweetPhrases);
+                break;
+            case eventClassifierName:
+                collectFeaturesEventVsNotEvent(tweetVector, processedTweet, processedWHashtagsTweetPhrases, processedTweetSentences, nCores);
+                break;
+            case selfOtherClassifierName:
+                collectFeaturesSelfVsOther(tweetVector, processedTweetPhrases, processedTweetSentences);
+                break;
+        }
+        return tweetVector;
+    }
+
+    /*
+        Annotates a string of text (processed, if the model name calls for it) into Stanford CoreNLP sentences,
+        returns the phrases
+     */
+    public static List<CoreMap> getSentences(String originalInput, String modelName) {
+        String processedInput;
         //create the Stanford CoreNLP pipeline if it doesn't exist yet
         if (pipeline == null) {
             Properties props = new Properties();
@@ -101,47 +165,55 @@ public class readTweetsGetFeatures {
             pipeline = new StanfordCoreNLP(props);
         }
 
-        //annotate fields with Stanford CoreNLP
-        String processedTweet = process(tweetVector.getTweetText());
+        //process the text if the model name is not "original"
+        processedInput = process(originalInput, modelName);
 
-        //description
-        Annotation descriptionDocument = new Annotation(tweetVector.getDescription());
+        //create an annotation
+        Annotation document = new Annotation(processedInput);
         try {
-            pipeline.annotate(descriptionDocument);
+            pipeline.annotate(document);
         }
         catch (NoSuchElementException e) {
-            System.out.println(tweetVector.getDescription()+" triggered a NoSuchElementException");
+            System.out.println(processedInput+" triggered a NoSuchElementException");
             e.printStackTrace();
         }
-        CoreLabel[][] descriptionPhrases = getPhrases(descriptionDocument);
 
-        //tweet
-        Annotation tweetDocument = new Annotation(processedTweet);
-        try {
-            pipeline.annotate(tweetDocument);
-        }
-        catch (NoSuchElementException e) {
-            System.out.println(processedTweet+" triggered a NoSuchElementException");
-            e.printStackTrace();
-        }
-        CoreLabel[][] tweetPhrases = getPhrases(tweetDocument);
-        List<CoreMap> tweetSentences = tweetDocument.get(SentencesAnnotation.class);
-
-        //collect features
-        switch (classifierType) {
-            case humanNonHumanClassifierName:
-                collectFeaturesHumanVsNonHuman(tweetVector, descriptionPhrases, tweetPhrases);
-                break;
-            case eventClassifierName:
-                collectFeaturesEventVsNotEvent(tweetVector, tweetPhrases, tweetSentences, nCores);
-                break;
-            case selfOtherClassifierName:
-                collectFeaturesSelfVsOther(tweetVector, tweetPhrases, tweetSentences);
-                break;
-        }
-        return tweetVector;
+        return document.get(SentencesAnnotation.class);
     }
 
+    /*
+        Annotates a string of text (processed, if the model name calls for it) into phrases delimited by punctuation marks,
+        returns the phrases
+     */
+    public static CoreLabel[][] getPhrases(String originalInput, String modelName) {
+        String processedInput;
+        //create the Stanford CoreNLP pipeline if it doesn't exist yet
+        if (pipeline == null) {
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma, depparse, natlog, openie");
+            pipeline = new StanfordCoreNLP(props);
+        }
+
+        //process the text if the model name is not "original"
+        processedInput = process(originalInput, modelName);
+
+        //create an annotation
+        Annotation document = new Annotation(processedInput);
+        try {
+            pipeline.annotate(document);
+        }
+        catch (NoSuchElementException e) {
+            System.out.println(processedInput+" triggered a NoSuchElementException");
+            e.printStackTrace();
+        }
+
+        //get phrases from the annotation
+        return getPhrases(document);
+    }
+
+    /*
+        Divides an Annotation into phrases delimited by punctuation marks, returns the phrases
+    */
     public static CoreLabel[][] getPhrases(Annotation document) {
         CoreLabel[][] phrases = new CoreLabel[1][];
         int numPhrases = 0;
@@ -195,10 +267,12 @@ public class readTweetsGetFeatures {
         return noNullPhrases;
     }
 
+
+
     /*
         Obtain all features for the human vs. non-human classifier
     */
-    private static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] descriptionPhrases, CoreLabel[][] tweetPhrases) throws IOException {
+    private static void collectFeaturesHumanVsNonHuman(TweetVector tweetVector, CoreLabel[][] processedDescriptionPhrases, CoreLabel[][] processedTweetPhrases) throws IOException {
 
         //features based on the user's profile pic
 
@@ -217,28 +291,28 @@ public class readTweetsGetFeatures {
 
         //features based on the user's profile description
         String description = tweetVector.getDescription();
-        tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+        tweetVector.addFeature("Description-Word classes-Org. account descriptions", AnnotationFeatures.getFeatureForWordClass(processedDescriptionPhrases,
                 AnnotationFeatures.orgAccountDescriptionsWordClassName));
         tweetVector.addFeature("Description-Check x out string", TextFeatures.checkOutFeature(description));
         tweetVector.addFeature("Description-Mentions social media", TextFeatures.mentionsSocialMedia(description));
-        tweetVector.addFeature("Description-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+        tweetVector.addFeature("Description-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(processedDescriptionPhrases,
                 AnnotationFeatures.selfWordClassName));
-        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+        tweetVector.addFeature("Description-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(processedDescriptionPhrases,
                 AnnotationFeatures.plural1PPronounsWordClassName));
-        tweetVector.addFeature("Description-Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+        tweetVector.addFeature("Description-Word classes-2P pronouns", AnnotationFeatures.getFeatureForWordClass(processedDescriptionPhrases,
                 AnnotationFeatures._2PPronounsWordClassName));
-        tweetVector.addFeature("Description-Word classes-Person punctuation", AnnotationFeatures.getFeatureForWordClass(descriptionPhrases,
+        tweetVector.addFeature("Description-Word classes-Person punctuation", AnnotationFeatures.getFeatureForWordClass(processedDescriptionPhrases,
                 AnnotationFeatures.personPunctuationWordClassName));
-        tweetVector.addFeature("Description-Verb count", AnnotationFeatures.verbsCount(descriptionPhrases));
+        tweetVector.addFeature("Description-Verb count", AnnotationFeatures.verbsCount(processedDescriptionPhrases));
 
         //features based on the tweet
         String text = tweetVector.getTweetText();
-        tweetVector.addFeature("Tweet-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(tweetPhrases,
+        tweetVector.addFeature("Tweet-Word classes-Self", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases,
                 AnnotationFeatures.selfWordClassName));
-        tweetVector.addFeature("Tweet-Word classes-Others", AnnotationFeatures.getFeatureForWordClass(tweetPhrases,
+        tweetVector.addFeature("Tweet-Word classes-Others", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases,
                 AnnotationFeatures.othersWordClassName));
         //including plural 1p pronouns may decrease accuracy somewhat
-        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(tweetPhrases,
+        tweetVector.addFeature("Tweet-Word classes-Plural 1P pronouns", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases,
                 AnnotationFeatures.plural1PPronounsWordClassName));
         tweetVector.addFeature("Tweet-Phrases ending in exclamations", TextFeatures.countExclamationPhrases(text));
         tweetVector.addFeature("Tweet-Multiple exclamations, multiple question marks", TextFeatures.containsMultipleExclamationsQuestions(text));
@@ -252,28 +326,28 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the life event vs. not life event classifier
      */
-    private static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
-        String text = process(tweetVector.getTweetText());
+    private static void collectFeaturesEventVsNotEvent(TweetVector tweetVector, String processedTweet, CoreLabel[][] processedPhrasesWHash, List<CoreMap> tweetSentences, int nCores) throws IOException, InterruptedException {
+        String textModelNameNGrams = processedTextModelNameWHash;
 
         //unigram features (tf-idf value of each word)
         if (tweetTextUnigramModelEvent == null) {
-            tweetTextUnigramModelEvent = new NGramModel(1, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 1);
+            tweetTextUnigramModelEvent = new NGramModel(1, dataSource, textName, textModelNameNGrams, eventClassifierName, "data/stopwordsPronounsAllowed.txt", 1, false);
         }
         //tf-only test
-        tweetVector.addFeatures(tweetTextUnigramModelEvent.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextUnigramModelEvent.getFeaturesForTweetTF(processedPhrasesWHash));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         if (tweetTextBigramModelEvent == null) {
-            tweetTextBigramModelEvent = new NGramModel(2, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 7);
+            tweetTextBigramModelEvent = new NGramModel(2, dataSource, textName, textModelNameNGrams, eventClassifierName, "data/stopwordsPronounsAllowed.txt", 7, false);
         }
         //tf-only test
-        tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextBigramModelEvent.getFeaturesForTweetTF(processedPhrasesWHash));
 
         //trigram features (tf-idf); trigrams must appear at least 3 times across the dataset to be considered
         if (tweetTextTrigramModelEvent == null) {
-            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, NGramModel.textName, eventClassifierName, "data/stopwords.txt", 10);
+            tweetTextTrigramModelEvent = new NGramModel(3, dataSource, textName, textModelNameNGrams, eventClassifierName, "data/stopwordsPronounsAllowed.txt", 10, false);
         }
-	    tweetVector.addFeatures(tweetTextTrigramModelEvent.getFeaturesForTweetTF(phrases));
+	    tweetVector.addFeatures(tweetTextTrigramModelEvent.getFeaturesForTweetTF(processedPhrasesWHash));
 
         //phrase templates
         ArrayList<String> phraseTemplates = AnnotationFeatures.getPhraseTemplates(tweetSentences);
@@ -285,7 +359,7 @@ public class readTweetsGetFeatures {
         if (topicFeatureModel == null) {
             topicFeatureModel = new TopicFeatureModel("data/topics/countFileMinusOnes.txt", "data/topics/tweet_composition.txt", "data/stopwords.txt", nCores);
         }
-        int[] topTopics = topicFeatureModel.getNMostLikelyTopics(3, text);
+        int[] topTopics = topicFeatureModel.getNMostLikelyTopics(3, processedTweet);
         for (int topTopic: topTopics) {
             tweetVector.addFeature(Integer.toString(topTopic), 1.0);
         }
@@ -321,15 +395,17 @@ public class readTweetsGetFeatures {
     /*
         Obtain all features for the self vs. other classifier
      */
-    private static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] phrases, List<CoreMap> tweetSentences) throws IOException {
+    private static void collectFeaturesSelfVsOther (TweetVector tweetVector, CoreLabel[][] processedTweetPhrases, List<CoreMap> processedTweetSentences) throws IOException {
+        String textModelNameNGrams = processedTextModelName;
+
         //the number of words/strings in each of the given word classes
-        tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Past Tense"));
-        tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(phrases, "Present Tense"));
-        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(phrases, "Self"));
-        tweetVector.addFeature("Word classes-Others", AnnotationFeatures.getFeatureForWordClass(phrases, "Others"));
-        tweetVector.addFeature("Count Singular Plural Nouns", AnnotationFeatures.countSingularProperNouns(phrases));
-        tweetVector.addFeature("Count Plural Nouns", AnnotationFeatures.countPluralProperNouns(phrases));
-        tweetVector.addFeature("Numeric References Count", AnnotationFeatures.numericalReferencesCount(phrases));
+        tweetVector.addFeature("Word classes-Past Tense", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases, "Past Tense"));
+        tweetVector.addFeature("Word classes-Present Tense", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases, "Present Tense"));
+        tweetVector.addFeature("Word classes-Self", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases, "Self"));
+        tweetVector.addFeature("Word classes-Others", AnnotationFeatures.getFeatureForWordClass(processedTweetPhrases, "Others"));
+        tweetVector.addFeature("Count Singular Plural Nouns", AnnotationFeatures.countSingularProperNouns(processedTweetPhrases));
+        tweetVector.addFeature("Count Plural Nouns", AnnotationFeatures.countPluralProperNouns(processedTweetPhrases));
+        tweetVector.addFeature("Numeric References Count", AnnotationFeatures.numericalReferencesCount(processedTweetPhrases));
 
         String text = tweetVector.getTweetText();
 
@@ -342,16 +418,16 @@ public class readTweetsGetFeatures {
         tweetVector.addFeature("Hashtag Count", TextFeatures.countHashtags(text));
 
         //non-word class features over the tweet
-        tweetVector.addFeature("Phrases beginning with verb", AnnotationFeatures.phrasesBeginningWithVerb(phrases));
-        tweetVector.addFeature("Phrases beginning with past tense verb", AnnotationFeatures.phrasesBeginningWithPastTenseVerb(phrases));
-        tweetVector.addFeature("Count Verbs Following Proper Nouns", AnnotationFeatures.properNounsFollowedByVerb(phrases));
+        tweetVector.addFeature("Phrases beginning with verb", AnnotationFeatures.phrasesBeginningWithVerb(processedTweetPhrases));
+        tweetVector.addFeature("Phrases beginning with past tense verb", AnnotationFeatures.phrasesBeginningWithPastTenseVerb(processedTweetPhrases));
+        tweetVector.addFeature("Count Verbs Following Proper Nouns", AnnotationFeatures.properNounsFollowedByVerb(processedTweetPhrases));
 
 //        //OpenIE features
 //        int openIESelf = 0;
 //        int openIEOther = 0;
 
         // Loop over sentences in the document
-        for (CoreMap sentence : tweetSentences) {
+        for (CoreMap sentence : processedTweetSentences) {
           // Get the OpenIE triples for the sentence
           Collection<RelationTriple> triples = sentence.get(NaturalLogicAnnotations.RelationTriplesAnnotation.class);
           // Print the triples
@@ -401,7 +477,7 @@ public class readTweetsGetFeatures {
 
 
         //Dredze POS templates
-        String[] firstPronounLastNoun = AnnotationFeatures.pairFirstPronounLastNoun(phrases);
+        String[] firstPronounLastNoun = AnnotationFeatures.pairFirstPronounLastNoun(processedTweetPhrases);
         //First pronoun, last noun pair
         if (firstPronounLastNoun[0] != null && firstPronounLastNoun[1] != null) {
         	tweetVector.addFeature("(" + firstPronounLastNoun[0] + "," + " " + firstPronounLastNoun[1] + ")", 1);
@@ -409,7 +485,7 @@ public class readTweetsGetFeatures {
             tweetVector.addFeature("fProLNoun in Other", AnnotationFeatures.countWordsInClassOther(firstPronounLastNoun));
         }
 
-        String[] firstNounPronounLastVerb = AnnotationFeatures.pairFirstPronounOrNounLastVerb(phrases);
+        String[] firstNounPronounLastVerb = AnnotationFeatures.pairFirstPronounOrNounLastVerb(processedTweetPhrases);
         //First noun or pronoun (not counting proper nouns) last verb pair
         if (firstNounPronounLastVerb[0] != null && firstNounPronounLastVerb[1] != null) {
         	tweetVector.addFeature("(" + firstNounPronounLastVerb[0] + "," + " " + firstNounPronounLastVerb[1] + ")", 1);
@@ -419,14 +495,14 @@ public class readTweetsGetFeatures {
 
         //unigrams
         if (tweetTextUnigramModelSvO == null) {
-            tweetTextUnigramModelSvO = new NGramModel(1, dataSource, NGramModel.textName, selfOtherClassifierName, "data/stopwords.txt", 1);
+            tweetTextUnigramModelSvO = new NGramModel(1, dataSource, textName, processedTextModelName, selfOtherClassifierName, "data/stopwordsPronounsAllowed.txt", 1, true);
         }
-        tweetVector.addFeatures(tweetTextUnigramModelSvO.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextUnigramModelSvO.getFeaturesForTweetTF(processedTweetPhrases));
 
         if (tweetTextBigramModelSvO == null) {
-            tweetTextBigramModelSvO = new NGramModel(2, dataSource, NGramModel.textName, selfOtherClassifierName, "data/stopwords.txt", 1);
+            tweetTextBigramModelSvO = new NGramModel(2, dataSource, textName, processedTextModelName, selfOtherClassifierName, "data/stopwordsPronounsAllowed.txt", 1, true);
         }
-        tweetVector.addFeatures(tweetTextBigramModelSvO.getFeaturesForTweetTF(phrases));
+        tweetVector.addFeatures(tweetTextBigramModelSvO.getFeaturesForTweetTF(processedTweetPhrases));
     }
 
     /*

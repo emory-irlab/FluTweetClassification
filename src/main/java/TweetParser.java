@@ -59,7 +59,7 @@ public class TweetParser {
 
                 //collect the fields
                 String[] tweetFields = new String[entrySize];
-                for (int i = 0; i < entrySize - 1; i++) {
+                for (int i = 0; i < entrySize; i++) {
                     tweetFields[i] = record.get(i);
                 }
                 tweets.add(tweetFields);

@@ -15,9 +15,9 @@ public class TweetVector {
     private String tweetText;
     private String label;
     private Hashtable<String, Double> features;
-    private ArrayList<String> labelSet;
+    //private ArrayList<String> labelSet;
 
-    public TweetVector(String pro, String us, String na, String des, String text, String lab, ArrayList<String> labs) {
+    public TweetVector(String pro, String us, String na, String des, String text, String lab/*, ArrayList<String> labs*/) {
         profilePicLink = pro;
         username = us;
         name = na;
@@ -25,7 +25,7 @@ public class TweetVector {
         tweetText = text;
         label = lab;
         features = new Hashtable<String, Double>();
-        labelSet = labs;
+        /*labelSet = labs;
 
         //if this label is not in the data set yet, include it
         boolean found = false;
@@ -35,7 +35,7 @@ public class TweetVector {
                 break;
             }
         }
-        if (!found) labelSet.add(label);
+        if (!found) labelSet.add(label);*/
     }
 
     public TweetVector(String pro, String us, String na, String des, String text) {
@@ -47,7 +47,7 @@ public class TweetVector {
         features = new Hashtable<String, Double>();
 
         label = "";
-        labelSet = new ArrayList<String>();
+        //labelSet = new ArrayList<String>();
     }
 
     /*

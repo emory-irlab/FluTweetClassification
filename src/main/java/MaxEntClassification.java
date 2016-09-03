@@ -520,7 +520,7 @@ public class MaxEntClassification {
 			//(in which case the label is the specified class)
 			//String experimentalLabel = classifier.maxEntClassifier.classify(instance).getLabeling().getLabelAtRank(0).toString();
 			String experimentalLabel = getLabelForInstanceIfThresholdMet(instance, nullClass, confThreshold);
-			System.out.println("Got: "+experimentalLabel+". Should have: "+correctLabel);
+			//System.out.println("Got: "+experimentalLabel+". Should have: "+correctLabel);
 
 			//initialize fields if necessary, set all figures to 0
 			if (!results.containsKey(correctLabel)) {

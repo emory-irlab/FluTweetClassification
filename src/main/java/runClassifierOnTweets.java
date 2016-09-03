@@ -22,7 +22,8 @@ public class runClassifierOnTweets {
 
     public static long startRunTime;
     public static long endRunTime;
-    static final int nCores = Runtime.getRuntime().availableProcessors() - 1;
+    //static final int nCores = Runtime.getRuntime().availableProcessors() - 1;
+    static final int nCores = 12;
     //private static int nCores = 1;
 
     //vectorizes and classifies a tweet using the given classifier, and returns its label

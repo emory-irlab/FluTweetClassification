@@ -47,9 +47,7 @@ public class TrainAndSaveClassifiers {
     /*
         Arguments should appear as follows:
 
-        0 - training data for human-nonhuman classifier
-        1 - training data for event classifier
-        2 - training data for self-other classifier
+        0 - training data for classifier
      */
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         //get rid of any old classifiers
@@ -57,23 +55,24 @@ public class TrainAndSaveClassifiers {
         util.emptyDirectory(new File("classifiers"));
         util.emptyDirectory(new File("nGramModels"));
 
-/*
+
         //human-non-human classifier
         String pathToHvNClassifierFile = "classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt";
         File HvNClassifierFile = new File(pathToHvNClassifierFile);
         trainAndSaveClassifier(pathToHvNClassifierFile, readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
-*/
+
+/*
         //event classifier
         String pathToEventClassifierFile = "classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt";
         File eventClassifierFile = new File(pathToEventClassifierFile);
-        trainAndSaveClassifier(pathToEventClassifierFile, readTweetsGetFeatures.eventClassifierName, args[1]);
-
-        /*
+        trainAndSaveClassifier(pathToEventClassifierFile, readTweetsGetFeatures.eventClassifierName, args[0]);
+*/
+/*
         //self-other classifier
         String pathToSvOClassifierFile = "classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt";
         File SvOClassifierFile = new File(pathToSvOClassifierFile);
-        trainAndSaveClassifier(pathToSvOClassifierFile, readTweetsGetFeatures.selfOtherClassifierName, args[2]/*, args[3]*);
-        */
+        trainAndSaveClassifier(pathToSvOClassifierFile, readTweetsGetFeatures.selfOtherClassifierName, args[0]/*, args[3]*);
+*/
     }
 
 }

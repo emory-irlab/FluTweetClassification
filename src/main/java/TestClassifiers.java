@@ -36,7 +36,8 @@ public class TestClassifiers {
 
         //human-nonhuman classifier
         MaxEntClassification classifier = new MaxEntClassification("", runClassifierOnTweets.nCores);
-/*        trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToHumanTweets, readTweetsGetFeatures.humanNonHumanClassifierName, runClassifierOnTweets.nCores);
+        /*
+        trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToHumanTweets, readTweetsGetFeatures.humanNonHumanClassifierName, runClassifierOnTweets.nCores);
         classifier.addToInstanceList(trainingTweetVectors);
         //trainingTweetVectors = null;
          //cross-validation tests
@@ -45,7 +46,8 @@ public class TestClassifiers {
         //classifier.crossValidate(5, pathToTestResultsHuman, "null_class", new double[] {0.5, 0.6, 0.7, 0.8, 0.9});
          //split multiple times test
         //classifier.runNSplits(1, pathToTestResultsHuman, "null_class", 0.9);
-*/
+        */
+
         //event classifier
         classifier = new MaxEntClassification("", runClassifierOnTweets.nCores);
         trainingTweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(pathToEventTweets, readTweetsGetFeatures.eventClassifierName, runClassifierOnTweets.nCores);

@@ -29,37 +29,13 @@ public class TopicFeatureModel {
     private File compositionFile;
     private Hashtable<Integer, Double> topicProbs = new Hashtable<Integer, Double>();
     private double basicTopicProb;
-    private Hashtable<String, ArrayList<String>> mostCommonWords;
-    private int mostCommonWordsSize = 20000;
-    private RecentWordsContainer recentWords;
     private Hashtable<String, Integer> stopWordList = new Hashtable<String, Integer>();
     private String stopWordFilePath;
     private int nCores;
-
-    //size-limited container of recent words and their entries
-    private class RecentWordsContainer {
-        private Hashtable<String, ArrayList<String>> recentWords = new Hashtable<String, ArrayList<String>>();
-        private int sizeLimit = 100; //customized for the size of a tweet
-
-        public ArrayList<String> get(String key) {
-            return recentWords.get(key);
-        }
-
-        public void flush() {
-            recentWords = new Hashtable<String, ArrayList<String>>();
-        }
-
-        public void put(String key, ArrayList<String> object) {
-            if (recentWords.size() >= sizeLimit) {
-                flush();
-            }
-            recentWords.put(key, object);
-        }
-    }
+    //each key is a word, and each value is an array of pairs of <topic, number of times the word appears in the topic>
+    private Hashtable<String, ArrayList<Pair<Integer, Integer>>> wordTopicCounts;
 
     public TopicFeatureModel(String pathToCountFile, String pathToCompositionFile, String sWordFilePath, int n) throws IOException {
-        mostCommonWords = new Hashtable<String, ArrayList<String>>();
-        recentWords = new RecentWordsContainer();
         countFilePath = pathToCountFile;
         compositionFile = new File(pathToCompositionFile);
         nCores = n;
@@ -69,7 +45,7 @@ public class TopicFeatureModel {
             pipeline = new StanfordCoreNLP(props);
         }
         //get the total number of words, as well as the x most common words
-        initializeTotalWords();
+        initializeWordTopicCounts();
 
         //get topic probabilities
         initializeTopicProbs();
@@ -80,138 +56,6 @@ public class TopicFeatureModel {
             getStopWordList(sWordFilePath);
         }
 
-        if (nCores > 1) {
-            splitCountFile();
-        }
-    }
-
-    public void splitCountFile() throws FileNotFoundException, IOException {
-        //get the number of lines
-        int lines = 0;
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(countFilePath)));
-        String currentLine;
-        while ((currentLine = bufferedReader.readLine()) != null) {
-            lines++;
-        }
-
-        //split the count file into the same number of entries as the number of cores, for easier multi-threading
-        int unit = lines / nCores;
-        int currentStart = 0;
-        int linesForThisFile = 0;
-        int filesMade = 0;
-        int lineNumber = 0;
-        bufferedReader = new BufferedReader(new FileReader(new File(countFilePath)));
-        BufferedWriter currentFileOut = null;
-        while((currentLine = bufferedReader.readLine()) != null) {
-            //if we're at the beginning of a file segment, make a file segment
-            //get the number of lines in the file
-            if (linesForThisFile == 0) {
-                currentStart = lineNumber;
-                //it's equal to unit if this isn't the last file to make, otherwise it's lines
-                if (filesMade == nCores - 1) {
-                    linesForThisFile = lines;
-                }
-                else {
-                    linesForThisFile = unit;
-                }
-                lines -= linesForThisFile; //update the number of lines left
-                String name = countFilePath.replace(".txt", "")+filesMade+".txt";
-                countFileSplitPaths.add(name);
-                currentFileOut = new BufferedWriter(new FileWriter(new File(name)));
-            }
-
-            //write out this line
-            currentFileOut.write(currentLine);
-            currentFileOut.newLine();
-
-            //end the file once the current line count is equal to currentStart plus linesForThisFile, update linesForThisFile
-            //to trigger the creation of a new file
-            if (lineNumber == currentStart + linesForThisFile) {
-                linesForThisFile = 0;
-                filesMade++;
-                currentFileOut.flush();
-                currentFileOut.close();
-            }
-
-            //increment the line count
-            lineNumber++;
-        }
-        if (currentFileOut != null) {
-            currentFileOut.close();
-        }
-        bufferedReader.close();
-    }
-
-    /*
-        Gets an ArrayList of the counts of each word across all topics it's in
-     */
-    public ArrayList<String> getTopicCountsForWord(String word) throws IOException, InterruptedException {
-        ArrayList<String> result;
-        //first check to see if it's in the recent words list
-        result = recentWords.get(word);
-        if (result != null) {
-            return result;
-        }
-        //if it's not in the recent words list, check the most common words list. Return the result and place into
-        //the recent words list if it can be found
-
-        result = mostCommonWords.get(word);
-        if (result != null) {
-            recentWords.put(word, result);
-            return result;
-        }
-
-
-        //if it still hasn't been found, attempt to extract counts from the countFile. Return the result (whether
-        //counts have been found or not), and place it into the recent words list
-        result = new ArrayList<String>();
-        //non-multithreaded version
-        if (nCores == 1) {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(countFilePath)));
-            String currentLine;
-
-            while ((currentLine = bufferedReader.readLine()) != null) {
-                String[] split = currentLine.split(" ");
-                if (split.length < 3) {
-                    continue;
-                }
-
-                //check to see if this line contains the count for the provided word
-                String wordInLine = split[1];
-                if (wordInLine.equals(word)) {
-                    //if it does, append all of the counts to the ArrayList
-                    for (int i = 2; i < split.length; i++) {
-                        result.add(split[i]);
-                    }
-                    break;
-                }
-            }
-            bufferedReader.close();
-        }
-        //multithreaded version
-        else {
-            ArrayList<ScanFileForWordTopicCountsThread> threads = new ArrayList<ScanFileForWordTopicCountsThread>();
-            for (int i = 0; i < countFileSplitPaths.size(); i++) {
-                //create a thread, let it run
-                ScanFileForWordTopicCountsThread thread = new ScanFileForWordTopicCountsThread(word, countFileSplitPaths.get(i), "thread "+i);
-                thread.start();
-            }
-
-            //wait for the thread to finish
-            for (ScanFileForWordTopicCountsThread thread: threads) {
-                thread.thread.join();
-
-                //if results have been found, store them as result
-                if (thread.getResults().size() != 0) {
-                    result = thread.getResults();
-                    break;
-                }
-            }
-        }
-        //return the result from the countFile. If the word has not been found, an empty ArrayList will be returned
-        //representing 0 instances across all topics
-        recentWords.put(word, result);
-        return result;
     }
 
     /*
@@ -253,21 +97,29 @@ public class TopicFeatureModel {
         assert (topic < topicProbs.size());
 
         //get the number of instances of the word in the topic
-        int instancesInTopic = 0;
-        ArrayList<String> topicCountsForWord = getTopicCountsForWord(word);
-        //check through all the topics and counts
-        for (String topicAndCount: topicCountsForWord) {
-            String[] splitTAndC = topicAndCount.split(":");
-            //if the word has a count for the given topic, use that as the count
-            if (Integer.parseInt(splitTAndC[0]) == topic) {
-                instancesInTopic = Integer.parseInt(splitTAndC[1]);
+        int instancesOfWordInTopic = 0;
+        ArrayList<Pair<Integer, Integer>> topicCountsForWord = wordTopicCounts.get(word);
+
+        //return a probability of 0 if this word is not known
+        if (topicCountsForWord == null) {
+            return 0.0;
+        }
+
+        //otherwise, check through all the topics and counts
+        for (Pair<Integer, Integer> topicAndCount: topicCountsForWord) {
+            int topicThisCount = topicAndCount.first();
+            int countThisCount = topicAndCount.second();
+
+            if (topicThisCount == topic) {
+                instancesOfWordInTopic = countThisCount;
+                break;
             }
         }
 
         //get the number of instances of the topic
         double topicInstances = topicProbs.get(topic)/basicTopicProb;
 
-        return instancesInTopic/topicInstances;
+        return instancesOfWordInTopic/topicInstances;
     }
 
     /*
@@ -276,15 +128,24 @@ public class TopicFeatureModel {
     public double getProbabilityOfWord(String word) throws IOException, InterruptedException {
         double prob = 0.0;
 
-        ArrayList<String> topicCountsForWord = getTopicCountsForWord(word);
-        for (String topicAndCount: topicCountsForWord) {
-            prob += Integer.parseInt(topicAndCount.split(":")[1]); //split[1] is the count
+        ArrayList<Pair<Integer, Integer>> topicCountsForWord = wordTopicCounts.get(word);
+        //return a probability of 0 if the word is not known
+        if (topicCountsForWord == null) {
+            return 0.0;
+        }
+
+        //otherwise, get its probability
+        for (Pair<Integer, Integer> topicAndCount: topicCountsForWord) {
+            prob += topicAndCount.second(); //topicAndCount.second() is the count
         }
 
         prob /= totalNumWords;
         return prob;
     }
 
+    /*
+        Initialize the hashtable containing the probability of each topic
+     */
     public void initializeTopicProbs() throws FileNotFoundException, IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(compositionFile));
         String currentLine;
@@ -329,62 +190,41 @@ public class TopicFeatureModel {
     }
 
     /*
-        Gets the total number of words. Also collects all data on the N most common words
+        Gets a hashtable of all the words and their topic counts. Also collects the total number of instances of words
      */
-    public void initializeTotalWords() throws FileNotFoundException, IOException {
+    public void initializeWordTopicCounts() throws FileNotFoundException, IOException {
+        wordTopicCounts = new Hashtable<String, ArrayList<Pair<Integer, Integer>>>();
+
+        //counts the total number of word instances
         long instancesOfAllWords = 0;
         BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(countFilePath)));
         String currentLine;
-        currentLine = bufferedReader.readLine(); //skip the first line
 
-        //to contain the N most frequently occurring words
-        PriorityQueue<Pair<Pair<String, Integer>, ArrayList<String>>> pq = new PriorityQueue<Pair<Pair<String, Integer>, ArrayList<String>>>(mostCommonWordsSize + 1, new MostCommonWordsComparator());
+        currentLine = bufferedReader.readLine(); //skip the first line; it merely contains headers
 
+        //look through each word
         while ((currentLine = bufferedReader.readLine()) != null) {
             String[] split = currentLine.split(" ");
-            if (split.length < 1) {
+            if (split.length < 3) {
                 continue;
             }
 
-            //start after the word itself
-            //keep a record of the word
-            //also get the total number of instances of the word
-
-            Pair<Pair<String, Integer>, ArrayList<String>> wordRecord;
             String word = split[1];
-            int instancesOfWord = 0;
-            ArrayList<String> instancesOfWordByTopic = new ArrayList<String>();
+            ArrayList<Pair<Integer, Integer>> topicCountsThisWord = new ArrayList<Pair<Integer, Integer>>();
 
-
-            //check all topics the word appears in
+            //check all topics the word appears in, collect all topic-count pairs
             for (int i = 2; i < split.length; i++) {
-                int relevantNumber = Integer.parseInt(split[i].substring(split[i].indexOf(":") + 1));
-                instancesOfAllWords += relevantNumber;
+                String[] topicAndCount = split[i].split(":");
+                int topic = Integer.parseInt(topicAndCount[0]);
+                int count = Integer.parseInt(topicAndCount[1]);
+                instancesOfAllWords += count;
 
-                //save the instances of the word in the topic, as well as the count
-
-                instancesOfWordByTopic.add(split[i]);
-                instancesOfWord += relevantNumber;
-
+                //save the pair
+                topicCountsThisWord.add(new Pair<Integer, Integer>(topic, count));
             }
 
-            //complete the word's record and add it to the priority queue. If it is not one of the top N, remove it
-
-            wordRecord = new Pair<Pair<String, Integer>, ArrayList<String>>(new Pair<String, Integer>(word, instancesOfWord), instancesOfWordByTopic);
-            pq.add(wordRecord);
-            if (pq.size() > mostCommonWordsSize) {
-                pq.poll();
-            }
-
-        }
-
-        //convert the pq of the top N words into the mostCommonWords hashtable for easier access
-
-        while (pq.size() > 0) {
-            //get the entry
-            Pair<Pair<String, Integer>, ArrayList<String>> entry = pq.poll();
-            //put the word and its counts across topics into the hashtable
-            mostCommonWords.put(entry.first().first(), entry.second());
+            //add the data on this word to the hashtable
+            wordTopicCounts.put(word, topicCountsThisWord);
         }
 
         totalNumWords = instancesOfAllWords;
@@ -404,7 +244,6 @@ public class TopicFeatureModel {
         PriorityQueue<Pair<Integer, Double>> pq = new PriorityQueue<Pair<Integer, Double>>(N + 1, new intDoubleComparator());
         //get the probability of each individual topic and add it to the pq. If it's not in the top N, remove the lowest-probability item on the pq
         assert(topicProbs.size() >= N);
-        recentWords.flush(); //ensure that the current recentWords entry only contains the current text's words
         for (int i = 0; i < topicProbs.size(); i++) {
             pq.add(new Pair<Integer, Double>(i, getProbabilityOfTopicGivenText(i, tokens)));
 
@@ -412,7 +251,6 @@ public class TopicFeatureModel {
                 pq.poll();
             }
         }
-        recentWords.flush(); //ensure that the current recentWords entry only contains the current text's words
 
         //get an array of the top topics
         int[] top = new int[N];

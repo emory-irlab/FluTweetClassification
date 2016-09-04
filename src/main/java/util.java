@@ -39,8 +39,8 @@ public class util {
         Return the lemma of the inputted token, in all lower case if it is not a proper noun, with
         only the first letter capitalized if it is a proper noun
     */
-    public static String lowerCaseLemmaUnlessProperNoun(IndexedWord token) {
-        String text = token.get(LemmaAnnotation.class);
+    public static String lowerCaseTextUnlessProperNoun(IndexedWord token) {
+        String text = token.originalText();
         String tag = token.tag();
         if (tag.substring(0, Math.min(3, tag.length())).equals("NNP")) {
             StringBuilder output = new StringBuilder();

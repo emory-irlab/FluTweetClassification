@@ -68,6 +68,46 @@ public class TweetParser {
         return tweets;
     }
 
+    public static void randomlySampleTweetsFromOneFileAndWriteToAnother(String fileToRead, String fileToWrite, int numTweetsToCollect) throws FileNotFoundException, IOException {
+        int numTweetsInFile = 0;
+        BufferedReader in = new BufferedReader(new FileReader(fileToRead));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(fileToWrite, true));
+        CSVPrinter printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
+
+        //get the number of tweets in the read file
+        for (CSVRecord record : records) {
+            if (record.size() >= 1) {
+                numTweetsInFile++;
+            }
+        }
+
+        //get the spacing needed to get the correct number of tweets
+        int spacing = numTweetsInFile / numTweetsToCollect;
+
+        //collect the tweets
+        int counter = 0;
+        for (CSVRecord record: records) {
+            if (record.size() >= 1) {
+                //time to collect
+                if (counter == spacing) {
+                    //collect
+                    for (String field: record) {
+                        printer.print(field);
+                    }
+                    printer.println();
+
+                    //reset the counter
+                    counter = 0;
+                }
+
+                counter++;
+            }
+        }
+        in.close();
+        printer.close();
+    }
+
     public static ArrayList<String[]> getTweetsTimExamples(String pathToTweetFile) throws FileNotFoundException, IOException {
         ArrayList<String[]> tweets = new ArrayList<String[]>();
         BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));

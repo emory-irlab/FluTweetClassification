@@ -295,19 +295,19 @@ public class AnnotationFeatures {
 
         //String subject = "";
         String verb = "";
-        String object = util.lowerCaseLemmaUnlessProperNoun(vertex) + "/O";
+        String object = util.lowerCaseTextUnlessProperNoun(vertex) + "/O";
         ArrayList<String[]> phraseTemplates = new ArrayList<String[]>();
 
         for (Pair<GrammaticalRelation, IndexedWord> pair : graph.childPairs(vertex)) {
             //get the copula if it's there
             if (pair.first().getShortName().equals("cop")) {
-                verb = checkForNegs(graph, vertex) + util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/V";
+                verb = checkForNegs(graph, vertex) + util.lowerCaseTextUnlessProperNoun(pair.second()) + "/V";
             }
 
             //get the nsubj if it's there
             if (pair.first().getShortName().equals("nsubj")) {
-                subjects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S");
-                //subject = util.lowerCaseLemmaUnlessProperNoun(pair.second())+"/S";
+                subjects.add(util.lowerCaseTextUnlessProperNoun(pair.second()) + "/S");
+                //subject = util.lowerCaseTextUnlessProperNoun(pair.second())+"/S";
             }
 
         }
@@ -344,24 +344,24 @@ public class AnnotationFeatures {
         ArrayList<String> objects = new ArrayList<String>();
 
         //String subject = "";
-        String verb = checkForNegs(graph, vertex) + util.lowerCaseLemmaUnlessProperNoun(vertex) + "/V";
+        String verb = checkForNegs(graph, vertex) + util.lowerCaseTextUnlessProperNoun(vertex) + "/V";
         //String object = "";
         for (Pair<GrammaticalRelation, IndexedWord> pair : graph.childPairs(vertex)) {
             //find subject
             if (pair.first().getShortName().contains("nsubj")) { //use .contains() so it collects nsubj and nsubjpass
-                //subject = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S";
-                subjects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/S");
+                //subject = util.lowerCaseTextUnlessProperNoun(pair.second()) + "/S";
+                subjects.add(util.lowerCaseTextUnlessProperNoun(pair.second()) + "/S");
             }
             //find direct object
             else if (pair.first().getShortName().equals("dobj")) {
-                //object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
-                objects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O");
+                //object = util.lowerCaseTextUnlessProperNoun(pair.second()) + "/O";
+                objects.add(util.lowerCaseTextUnlessProperNoun(pair.second()) + "/O");
             }
             //find complementing verb/adjective object if no direct object has been found
             else if (objects.size() == 0 && pair.first().getShortName().equals("xcomp") &&
                     (pair.second().tag().charAt(0) == 'V' || pair.second().tag().charAt(0) == 'J')) {
-                //object = util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O";
-                objects.add(util.lowerCaseLemmaUnlessProperNoun(pair.second()) + "/O");
+                //object = util.lowerCaseTextUnlessProperNoun(pair.second()) + "/O";
+                objects.add(util.lowerCaseTextUnlessProperNoun(pair.second()) + "/O");
             }
         }
 

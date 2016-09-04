@@ -15,33 +15,27 @@ import java.util.*;
 public class test {
 
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        //TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0]);
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, depparse, natlog, openie");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-        Annotation descriptionDocument = new Annotation("I don't want there for to be any trouble");
-        pipeline.annotate(descriptionDocument);
+        TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0]);
 
 /*
 	    long startTime = System.currentTimeMillis();
 
-        MaxEntClassification classifier = new MaxEntClassification("classifiers/selfOther.txt", runClassifierOnTweets.nCores);
+        MaxEntClassification classifier = new MaxEntClassification("classifiers/humanNonHuman.txt", runClassifierOnTweets.nCores);
 /*
         TweetVector[] tweetVectors = readTweetsGetFeatures.getVectorModelsFromTweets(args[0], readTweetsGetFeatures.selfOtherClassifierName, runClassifierOnTweets.nCores);
         classifier.addToInstanceList(tweetVectors);
         classifier.writeTestResultsToFile(classifier.evaluate(classifier.instances), 1, "data/testResultsSvO/NOWHERE_FOR_THEM_TO_RUN.txt", false);
-*
-
+*/
+/*
         ArrayList<String[]> tweets = TweetParser.getTweets(args[0]);
         for (String[] tweet: tweets) {
-            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, readTweetsGetFeatures.selfOtherClassifierName, classifier);
+            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, readTweetsGetFeatures.humanNonHumanClassifierName, classifier);
             String expLabel = expLabelAndConf.first();
             System.out.println(tweet[4]+": "+expLabelAndConf.second()+" "+expLabel+"");
         }
 
         System.out.print("Time for "+tweets.size()+" tweets: "+((double)(System.currentTimeMillis() - startTime) /1000)+" ");
-*/
+
         //System.out.println(readTweetsGetFeatures.process("\"\"@gomezpickering: Just Back: The vibrant waterways of #Mexico's Xochimilco https://t.co/oa0XEiBLT5\"\"@TaiteilijanKuu mira :3"));
         /*
         System.out.println(readTweetsGetFeatures.process("@Riteishd &amp; Wishing u a beautiful day Hopes and dreams I`m sending your way May all be good On this very special day for new born baby"));

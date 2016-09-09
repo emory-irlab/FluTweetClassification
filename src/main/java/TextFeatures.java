@@ -17,16 +17,17 @@ import java.util.Iterator;
 
 public class TextFeatures {
 
-	static String spaceGroup = "([\\s\\-_]+)";
-	static String userMention = "(^|"+spaceGroup+")(@)(\\w+)";
+	static final String spaceGroup = "([\\s\\-_]+)";
+	static final String userMention = "(^|"+spaceGroup+")(@)(\\w+)";
 
-	static String[] verbsWithLink = {"follow", "check", "go"};
+	static final String[] verbsWithLink = {"follow", "check", "go"};
 
 	//All hashsets are loaded upon run time
 
 	//Dictionary word searches
-	public static HashSet<String> firstNames = new HashSet<String>();
-	public static HashSet<String> lastNames = new HashSet<String>();
+	public static final HashSet<String> firstNames = initializeHashSet(new HashSet<String>(), "data/hashSets/FirstNames.csv");
+	public static final HashSet<String> lastNames = initializeHashSet(new HashSet<String>(), "data/hashSets/LastNames.csv");
+/*
 	public static HashSet<String> listOfWordsDeath = new HashSet<String>();
 	public static HashSet<String> listOfWordsFamily = new HashSet<String>();
 	public static HashSet<String> listOfWordsMarriage = new HashSet<String>();
@@ -41,33 +42,31 @@ public class TextFeatures {
 	public static HashSet<String> positiveAdverbs = new HashSet<String>();
 	public static HashSet<String> negativeEmoticons = new HashSet<String>();
 	public static HashSet<String> positiveEmoticons = new HashSet<String>();
-
-	static Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
-	static Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
-	static Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
+*/
+	static final Pattern atPattern = Pattern.compile("@ ?([\\w-]+)?");
+	static final Pattern checkOutPattern = Pattern.compile("((check((ing)|(s)|(ed))?)(\\W.*?)out){1}?");
+	static final Pattern companyTermsPattern = Pattern.compile("(?i)job(s)?|news|update(s)?");
 	//Regex pattern found at "http://stackoverflow.com/questions/163360/regular-expression-to-match-urls-in-java"
-	static Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|](("+spaceGroup+")|$)");
-	static Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
-	static Pattern firstWordExcludeThe = Pattern.compile("(?![The])(?![\\s|$])?(\\w)+(\\s|$)");
-	static Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
-	static Pattern individualQuestionMarksPattern = Pattern.compile("\\?+");
-	static Pattern lastNamePattern = Pattern.compile("[^^]"+spaceGroup+"([a-zA-Z]+)$");
-	static Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
-	static Pattern multipleExclamationsOrQuestionMarksPattern = Pattern.compile("(!{2,})|(\\?{2,})");
-	static Pattern exclamationGroupPattern = Pattern.compile("!+");
-	static Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
-	static Pattern retweetPattern = Pattern.compile("RT"+userMention);
-	static Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
-	static Pattern subscriptionPhrasePattern = Pattern.compile("(?i)follow (?i)(us)?|(?i)tweet(s)?");
-	static Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
-	static Pattern userMentionPattern = Pattern.compile("(^|"+spaceGroup+")(@)(\\w+)");
-
-	static Matcher generalMatcher;
+	static final Pattern detectURL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|](("+spaceGroup+")|$)");
+	static final Pattern firstNamePattern = Pattern.compile("(^([a-zA-Z]+)("+spaceGroup+"|$))");
+	static final Pattern firstWordExcludeThe = Pattern.compile("(?![The])(?![\\s|$])?(\\w)+(\\s|$)");
+	static final Pattern hashtagPattern = Pattern.compile("(#)(\\w+)");
+	static final Pattern individualQuestionMarksPattern = Pattern.compile("\\?+");
+	static final Pattern lastNamePattern = Pattern.compile("[^^]"+spaceGroup+"([a-zA-Z]+)$");
+	static final Pattern mentionsSocMedia = Pattern.compile("(?i)Facebook|Snapchat|Instagram|Twitter|IG:");
+	static final Pattern multipleExclamationsOrQuestionMarksPattern = Pattern.compile("(!{2,})|(\\?{2,})");
+	static final Pattern exclamationGroupPattern = Pattern.compile("!+");
+	static final Pattern pluralPersonalPronounsLocator = Pattern.compile("(^|[^\\w])((we)|(us)|(ourselves)|(our)|(ours))($|[^\\w])");
+	static final Pattern retweetPattern = Pattern.compile("RT"+userMention);
+	static final Pattern spaceGroupCounterPattern = Pattern.compile("[^^]"+spaceGroup+"[^$]");
+	static final Pattern subscriptionPhrasePattern = Pattern.compile("(?i)follow (?i)(us)?|(?i)tweet(s)?");
+	static final Pattern timePattern = Pattern.compile("(\\d:\\d)|(?i)(am|pm)|(?i)(Mon|Tues|Wed|Thur|Fri)");
+	static final Pattern userMentionPattern = Pattern.compile("(^|"+spaceGroup+")(@)(\\w+)");
 
 	/*
      * For each additional dictionary hash set created, it must be added into this method.
      * */
-
+/*
 	public static void initializeHashSets() {
 
 		initializeHashSet(TextFeatures.firstNames, "data/hashSets/FirstNames.csv");
@@ -84,8 +83,9 @@ public class TextFeatures {
 		//And following, all lists of word classes.
 
 	}
+*/
 
-	public static void initializeHashSet(HashSet<String> names, String namePath) {
+	public static HashSet<String> initializeHashSet(HashSet<String> names, String namePath) {
 
 		File nameFile = new File(namePath);
 		BufferedReader b;
@@ -106,6 +106,8 @@ public class TextFeatures {
 		catch(IOException e) {
 			e.printStackTrace();
 		}
+
+		return names;
 	}
 
 	/*
@@ -120,10 +122,10 @@ public class TextFeatures {
 		//between them using white space
 
 		tweet = tweet.toLowerCase();
-		generalMatcher = checkOutPattern.matcher(tweet);
+		Matcher matcher = checkOutPattern.matcher(tweet);
 		//if a "check x out" group has been found
-		while (generalMatcher.find()) {
-			String spaceBetween = generalMatcher.group(7);
+		while (matcher.find()) {
+			String spaceBetween = matcher.group(7);
 			Pattern pattern2 = Pattern.compile("\\s");
 			Matcher matcher2 = pattern2.matcher(spaceBetween);
 			int counter = 0;
@@ -174,8 +176,8 @@ public class TextFeatures {
  	*/
 	public static int containsMultipleExclamationsQuestions(String tweet) {
 
-		generalMatcher = multipleExclamationsOrQuestionMarksPattern.matcher(tweet);
-		if (generalMatcher.find()) {
+		Matcher matcher = multipleExclamationsOrQuestionMarksPattern.matcher(tweet);
+		if (matcher.find()) {
 			return 1;
 		}
 		return 0;
@@ -199,8 +201,8 @@ public class TextFeatures {
 
 	//revised method
 	public static int containsMention(String tweet) {
-		generalMatcher = userMentionPattern.matcher(tweet);
-		if (generalMatcher.find()) return 1;
+		Matcher matcher = userMentionPattern.matcher(tweet);
+		if (matcher.find()) return 1;
 
 		return 0;
 	}
@@ -225,9 +227,9 @@ public class TextFeatures {
 
 	public static int containsTimeMark(String tweet) {
 
-		generalMatcher = timePattern.matcher(tweet);
+		Matcher matcher = timePattern.matcher(tweet);
 
-		if (generalMatcher.find()) {
+		if (matcher.find()) {
 			return 1;
 		}
 		return 0;
@@ -259,9 +261,9 @@ public class TextFeatures {
 
 	public static int containsURL(String tweet) {
 
-		generalMatcher = detectURL.matcher(tweet);
+		Matcher matcher = detectURL.matcher(tweet);
 
-		if (generalMatcher.find()) {
+		if (matcher.find()) {
 			return 1;
 		}
 		return 0;
@@ -269,10 +271,10 @@ public class TextFeatures {
 
 	public static int countCompanyTerms(String description) {
 
-		generalMatcher = companyTermsPattern.matcher(description);
+		Matcher matcher = companyTermsPattern.matcher(description);
 		int count = 0;
 
-		while (generalMatcher.find()) {
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -283,8 +285,8 @@ public class TextFeatures {
  	*/
 	public static int countExclamationPhrases(String tweet) {
 		int count = 0;
-		generalMatcher = exclamationGroupPattern.matcher(tweet);
-		while (generalMatcher.find()) {
+		Matcher matcher = exclamationGroupPattern.matcher(tweet);
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -295,8 +297,8 @@ public class TextFeatures {
 	 */
 	public static int countInstancesOf(String text, Pattern pattern) {
 		int count = 0;
-		generalMatcher = pattern.matcher(text);
-		while (generalMatcher.find()) {
+		Matcher matcher = pattern.matcher(text);
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -305,9 +307,9 @@ public class TextFeatures {
 	public static int countQuestionMarkGroups(String tweet) {
 
 		int count = 0;
-		generalMatcher = individualQuestionMarksPattern.matcher(tweet);
+		Matcher matcher = individualQuestionMarksPattern.matcher(tweet);
 
-		while (generalMatcher.find()) {
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -319,8 +321,8 @@ public class TextFeatures {
  	*/
 	public static int countSpaceGroups(String text) {
 		int counter = 0;
-		generalMatcher = spaceGroupCounterPattern.matcher(text);
-		while (generalMatcher.find()) {
+		Matcher matcher = spaceGroupCounterPattern.matcher(text);
+		while (matcher.find()) {
 			counter++;
 		}
 		return counter;
@@ -335,9 +337,9 @@ public class TextFeatures {
 	public static int countSubscriptionPhrases(String description) {
 
 		int count = 0;
-		generalMatcher = subscriptionPhrasePattern.matcher(description);
+		Matcher matcher = subscriptionPhrasePattern.matcher(description);
 
-		while (generalMatcher.find()) {
+		while (matcher.find()) {
 			count++;
 		}
 		return count + checkOutFeature(description);
@@ -348,10 +350,8 @@ public class TextFeatures {
 	 * appears in a large list of human first names.
 	 * */
 	public static int firstWordIsCommonFirstName(String name) { //possibly take out some chars
-		generalMatcher = firstNamePattern.matcher(name);
-		if (generalMatcher.find()) name = generalMatcher.group(2).toLowerCase();
-
-		if (firstNames.isEmpty()) initializeHashSet(firstNames, "data/hashSets/FirstNames.csv");
+		Matcher matcher = firstNamePattern.matcher(name);
+		if (matcher.find()) name = matcher.group(2).toLowerCase();
 
 		Iterator<String> names = firstNames.iterator();
 		while (names.hasNext()) {
@@ -370,8 +370,8 @@ public class TextFeatures {
 	public static int getFeatureForMultipleExclamationsQuestions(String tweet) {
 		int count = 0;
 
-		generalMatcher = multipleExclamationsOrQuestionMarksPattern.matcher(tweet);
-		while (generalMatcher.find()) {
+		Matcher matcher = multipleExclamationsOrQuestionMarksPattern.matcher(tweet);
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -383,8 +383,8 @@ public class TextFeatures {
 	public static int getFeatureForNumberOfExclamationPhrases(String tweet) {
 		int count = 0;
 
-		generalMatcher = exclamationGroupPattern.matcher(tweet);
-		while (generalMatcher.find()) {
+		Matcher matcher = exclamationGroupPattern.matcher(tweet);
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -392,21 +392,21 @@ public class TextFeatures {
 
 	public static ArrayList<String> getHashtags(String tweet) {
 
-		generalMatcher = hashtagPattern.matcher(tweet);
+		Matcher matcher = hashtagPattern.matcher(tweet);
 		ArrayList<String> hashtags = new ArrayList<String>();
 
-		while (generalMatcher.find()) {
-			hashtags.add(generalMatcher.group(1));
+		while (matcher.find()) {
+			hashtags.add(matcher.group(1));
 		}
 		return hashtags;
 	}
 
 	public static int getURLIndex(String tweet) {
 
-		generalMatcher = detectURL.matcher(tweet);
+		Matcher matcher = detectURL.matcher(tweet);
 
-		if (generalMatcher.find()) {
-			return generalMatcher.start();
+		if (matcher.find()) {
+			return matcher.start();
 		}
 		return -1;
 	}
@@ -436,10 +436,10 @@ public class TextFeatures {
 	 * */
 	public static int isNameInDescription(String name, String description) {
 
-		generalMatcher = firstWordExcludeThe.matcher(name);
+		Matcher matcher = firstWordExcludeThe.matcher(name);
 
-		if (generalMatcher.find()) {
-			name = generalMatcher.group().toLowerCase();
+		if (matcher.find()) {
+			name = matcher.group().toLowerCase();
 		}
 
 		if (description.toLowerCase().contains(name)) {
@@ -505,10 +505,9 @@ public class TextFeatures {
     Checks if the last name of the user appears in a list of nearly 6000 US last names
  	*/
 	public static int lastWordIsCommonLastName(String name) {
-		generalMatcher = lastNamePattern.matcher(name);
-		if (generalMatcher.find()) name = generalMatcher.group(2).toLowerCase();
+		Matcher matcher = lastNamePattern.matcher(name);
+		if (matcher.find()) name = matcher.group(2).toLowerCase();
 
-		if (lastNames.isEmpty()) initializeHashSet(lastNames, "data/hashSets/LastNames.csv");
 
 		Iterator<String> names = lastNames.iterator();
 		while (names.hasNext()) {
@@ -523,9 +522,9 @@ public class TextFeatures {
 	public static int mentionsSocialMedia(String description) {
 
 		int count = 0;
-		generalMatcher = mentionsSocMedia.matcher(description);
+		Matcher matcher = mentionsSocMedia.matcher(description);
 
-		while (generalMatcher.find()) {
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
@@ -596,13 +595,13 @@ public class TextFeatures {
 	public static String removePattern(String tweet, Pattern pattern) {
 		if (tweet.equals("")) return "";
 
-		generalMatcher = pattern.matcher(tweet);
+		Matcher matcher = pattern.matcher(tweet);
 		String newTweet = "";
 
 		int lastEnd = 0;
-		while (generalMatcher.find()) {
-			newTweet += tweet.substring(lastEnd, generalMatcher.start());
-			lastEnd = generalMatcher.end();
+		while (matcher.find()) {
+			newTweet += tweet.substring(lastEnd, matcher.start());
+			lastEnd = matcher.end();
 		}
 		newTweet += tweet.substring(lastEnd);
 		return newTweet;
@@ -611,13 +610,13 @@ public class TextFeatures {
 	public static String removePatternKeepGroupNumber(String tweet, Pattern pattern, int groupNum) {
 		if (tweet.equals("")) return "";
 
-		generalMatcher = pattern.matcher(tweet);
+		Matcher matcher = pattern.matcher(tweet);
 		String newTweet = "";
 
 		int lastEnd = 0;
-		while (generalMatcher.find()) {
-			newTweet += tweet.substring(lastEnd, generalMatcher.start()) + generalMatcher.group(groupNum);
-			lastEnd = generalMatcher.end();
+		while (matcher.find()) {
+			newTweet += tweet.substring(lastEnd, matcher.start()) + matcher.group(groupNum);
+			lastEnd = matcher.end();
 		}
 		newTweet += tweet.substring(lastEnd);
 		return newTweet;
@@ -657,14 +656,14 @@ public class TextFeatures {
 	public static int countHashtags(String tweet) {
 
 		int count = 0;
-		generalMatcher = hashtagPattern.matcher(tweet);
+		Matcher matcher = hashtagPattern.matcher(tweet);
 
-		while (generalMatcher.find()) {
+		while (matcher.find()) {
 			count++;
 		}
 		return count;
 	}
-
+/*
 	public static int countNegativeEmoticons(String tweet) {
 
 		if (negativeEmoticons.isEmpty()) {
@@ -682,8 +681,8 @@ public class TextFeatures {
 		}
 		return count;
 	}
-
-
+*/
+/*
 	public static int countPositiveEmoticons(String tweet) {
 
 		if (positiveEmoticons.isEmpty()) {
@@ -701,7 +700,7 @@ public class TextFeatures {
 		}
 		return count;
 	}
-
+*/
 	public static int countUpperCaseWords(String tweet) {
 
 		int count = 0;
@@ -781,7 +780,7 @@ public class TextFeatures {
 		}
 		return count;
 	}*/
-
+/*
 	public static int mentionsFamily(String tweet) throws IOException {
 
 		if (listOfWordsFamily.isEmpty()) {
@@ -798,4 +797,5 @@ public class TextFeatures {
 		}
 		return 0;
 	}
+	*/
 }

@@ -1,5 +1,3 @@
-import cc.mallet.classify.MaxEnt;
-import org.apache.commons.math.stat.descriptive.rank.Max;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
@@ -11,34 +9,16 @@ import java.util.ArrayList;
  */
 public class TrainAndSaveClassifiers {
 
-    public static void trainAndSaveClassifier(String pathToClassifierFile, String classifierType, String pathToTrainingData/*, String pathToTestData*/) throws ClassNotFoundException, IOException, InterruptedException {
+    public static void trainAndSaveClassifier(String pathToClassifierFile, String classifierType, String pathToData, TweetFeatureExtractor tweetFeatureExtractor/*, String pathToTestData*/) throws ClassNotFoundException, IOException, InterruptedException {
         MaxEntClassification classifier = new MaxEntClassification(pathToClassifierFile, runClassifierOnTweets.nCores);
 
-        //vectorize the training data
-        TweetVector[] vectorizedTrainingData = readTweetsGetFeatures.getVectorModelsFromTweets(pathToTrainingData, classifierType, runClassifierOnTweets.nCores);
-        classifier.addToInstanceList(vectorizedTrainingData);
+        //get vectors using multithreaded method
+        TweetVector[] tweetVectors = tweetFeatureExtractor.getVectorModelsFromTweetsMultithreaded(pathToData, classifierType);
+
+        //add vectors to instance list and train
+        classifier.addToInstanceList(tweetVectors);
         classifier.trainClassifier(classifier.instances);
         classifier.clearInstances();
-/* // temporary test
-        ArrayList<String[]> tweets = TweetParser.getTweets(pathToTestData);
-        for (String[] tweet: tweets) {
-            ArrayList<String> tweetArray = new ArrayList<String>();
-            int i = 0;
-            for (String field: tweet) {
-                if (i != 5) {
-                    tweetArray.add(field);
-                }
-                else {
-                    tweetArray.add("self");
-                }
-                i++;
-            }
-
-            String expLabel = runClassifierOnTweets.classify(tweetArray, readTweetsGetFeatures.selfOtherClassifierName, classifier, 0.0);
-            System.out.println(tweet[4]+": "+expLabel);
-
-        }
-*/
 
         File classifierFile = new File(pathToClassifierFile);
         classifier.saveClassifier(classifierFile);
@@ -47,7 +27,9 @@ public class TrainAndSaveClassifiers {
     /*
         Arguments should appear as follows:
 
-        0 - training data for classifier
+        0 - training data for human vs non-human
+        1 - training data for event
+        2 - training data for self-other
      */
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         //get rid of any old classifiers
@@ -55,23 +37,27 @@ public class TrainAndSaveClassifiers {
         util.emptyDirectory(new File("classifiers"));
         util.emptyDirectory(new File("nGramModels"));
 
-
-        //human-non-human classifier
-        String pathToHvNClassifierFile = "classifiers/"+readTweetsGetFeatures.humanNonHumanClassifierName+".txt";
-        File HvNClassifierFile = new File(pathToHvNClassifierFile);
-        trainAndSaveClassifier(pathToHvNClassifierFile, readTweetsGetFeatures.humanNonHumanClassifierName, args[0]);
-
+        //get the number of cores needed to run
+        int nCores = runClassifierOnTweets.nCores;
+        //initialize a feature extractor
+        TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor(args[1], args[2], nCores);
 /*
-        //event classifier
-        String pathToEventClassifierFile = "classifiers/"+readTweetsGetFeatures.eventClassifierName+".txt";
-        File eventClassifierFile = new File(pathToEventClassifierFile);
-        trainAndSaveClassifier(pathToEventClassifierFile, readTweetsGetFeatures.eventClassifierName, args[0]);
+        //human-non-human classifier
+        String pathToHvNClassifierFile = "classifiers/"+ TweetFeatureExtractor.humanNonHumanClassifierName+".txt";
+        File HvNClassifierFile = new File(pathToHvNClassifierFile);
+        trainAndSaveClassifier(pathToHvNClassifierFile, TweetFeatureExtractor.humanNonHumanClassifierName, args[0], tweetFeatureExtractor);
 */
+
+        //event classifier
+        String pathToEventClassifierFile = "classifiers/"+TweetFeatureExtractor.eventClassifierName+".txt";
+        File eventClassifierFile = new File(pathToEventClassifierFile);
+        trainAndSaveClassifier(pathToEventClassifierFile, TweetFeatureExtractor.eventClassifierName, args[1], tweetFeatureExtractor);
+
 /*
         //self-other classifier
-        String pathToSvOClassifierFile = "classifiers/"+readTweetsGetFeatures.selfOtherClassifierName+".txt";
+        String pathToSvOClassifierFile = "classifiers/"+TweetFeatureExtractor.selfOtherClassifierName+".txt";
         File SvOClassifierFile = new File(pathToSvOClassifierFile);
-        trainAndSaveClassifier(pathToSvOClassifierFile, readTweetsGetFeatures.selfOtherClassifierName, args[0]/*, args[3]*);
+        trainAndSaveClassifier(pathToSvOClassifierFile, TweetFeatureExtractor.selfOtherClassifierName, args[2], tweetFeatureExtractor/*, args[3]*);
 */
     }
 

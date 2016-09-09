@@ -1034,20 +1034,6 @@ public class MaxEntClassification {
 	}
 	*/
 
-	//trains a single classifier of the specified type on the specified training data
-	public static MaxEntClassification trainAndReturnClassifier(String classifierType, String pathToTrainingTweets) throws IOException, ClassNotFoundException, InterruptedException {
-		//initialize a classifier, add the vectors to the training data, train
-		MaxEntClassification classifier = new MaxEntClassification("classifiers/"+classifierType+".txt", runClassifierOnTweets.nCores);
-
-		//vectorize the training data
-		TweetVector[] vectorizedTrainingData = readTweetsGetFeatures.getVectorModelsFromTweets(pathToTrainingTweets, classifierType, runClassifierOnTweets.nCores);
-
-		classifier.addToInstanceList(vectorizedTrainingData);
-		classifier.trainClassifier(classifier.instances);
-
-		return classifier;
-	}
-
 	public Classifier trainClassifier(InstanceList trainingInstances) {
 
 		// Here we use a maximum entropy (ie polytomous logistic regression)

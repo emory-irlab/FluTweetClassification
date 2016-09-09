@@ -42,7 +42,6 @@ public class AnnotationFeatures {
     public static ArrayList<String> topicWordClassNames = new ArrayList<String>();
     public static String topicWordClassFilePath = "data/topics/tweet_key_500.txt";
 
-    private static Hashtable<String, String[]> wordClasses = new Hashtable<String, String[]>();
     //Note: Multi-word words need to go before single-word words
     private static String[] pastTenseWordClass = {"was", "did", "had", "got", "were", "V-ed"};
     private static String[] presentTenseWordClass = {"2it 's", "is", "am", "are", "have", "has", "V-ing"}; //'s as in "is"?
@@ -59,27 +58,21 @@ public class AnnotationFeatures {
             "lots", "none", "much", "few"};
     private static String[] orgAccountDescriptionsWordClass = {"official", "twitter", "account", "follow", "tweet", "us"};
     private static String[] personPuncuationWordClass = {",", "|", "&"};
+    private static Hashtable<String, String[]> wordClasses = initializeWordClasses(new Hashtable<String, String[]>());
 
-    public static void initializeWordClasses(String pathToTopicFile) throws IOException {
-        wordClasses.put(pastTenseWordClassName, pastTenseWordClass);
-        wordClasses.put(presentTenseWordClassName, presentTenseWordClass);
-        wordClasses.put(selfWordClassName, selfWordClass);
-        wordClasses.put(othersWordClassName, othersWordClass);
-        wordClasses.put(plural1PPronounsWordClassName, plural1PPronounsWordClass);
-        wordClasses.put(_2PPronounsWordClassName, _2PPronounsWordClass);
-        wordClasses.put(followMeWordClassName, followMeWordClass);
-        wordClasses.put(numericalReferencesWordClassName, numericalReferencesWordClass);
-        wordClasses.put(orgAccountDescriptionsWordClassName, orgAccountDescriptionsWordClass);
-        wordClasses.put(personPunctuationWordClassName, personPuncuationWordClass);
+    public static Hashtable<String, String[]> initializeWordClasses(Hashtable<String, String[]> emptyHash) {
+        emptyHash.put(pastTenseWordClassName, pastTenseWordClass);
+        emptyHash.put(presentTenseWordClassName, presentTenseWordClass);
+        emptyHash.put(selfWordClassName, selfWordClass);
+        emptyHash.put(othersWordClassName, othersWordClass);
+        emptyHash.put(plural1PPronounsWordClassName, plural1PPronounsWordClass);
+        emptyHash.put(_2PPronounsWordClassName, _2PPronounsWordClass);
+        emptyHash.put(followMeWordClassName, followMeWordClass);
+        emptyHash.put(numericalReferencesWordClassName, numericalReferencesWordClass);
+        emptyHash.put(orgAccountDescriptionsWordClassName, orgAccountDescriptionsWordClass);
+        emptyHash.put(personPunctuationWordClassName, personPuncuationWordClass);
 
-//        //get topic word classes
-//        Hashtable<String, String[]> topics = getTopics(pathToTopicFile);
-//        Enumeration<String> topicNames = topics.keys();
-//        while (topicNames.hasMoreElements()) {
-//            String currentName = topicNames.nextElement();
-//            topicWordClassNames.add(currentName);
-//            wordClasses.put(currentName, topics.get(currentName));
-//        }
+        return emptyHash;
     }
     
     
@@ -155,8 +148,6 @@ public class AnnotationFeatures {
     Count the number of words/strings in the given word class
 	*/
 	public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) throws IOException {
-	    //initialize word classes
-	    if (wordClasses.size() == 0) initializeWordClasses(topicWordClassFilePath);
 	
 	    //initialize
 	    int counter = 0;

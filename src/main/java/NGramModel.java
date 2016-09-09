@@ -6,14 +6,79 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.PriorityQueue;
+import java.util.Comparator;
+
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
 import edu.stanford.nlp.pipeline.*;
+import edu.stanford.nlp.util.Pair;
 
 /*
  * Created by Alec Wolyniec on 6/14/16.
  */
 public class NGramModel {
+
+    public static class MinOrientedStringDoublePairComparator implements Comparator<Pair<String, Double>>{
+        public int compare(Pair<String, Double> o1, Pair<String, Double> o2) {
+            double double1 = o1.second();
+            double double2 = o2.second();
+
+            if (double1 < double2) {
+                return -1;
+            }
+            else if (double1 == double2) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
+        }
+    }
+
+    /*
+        Thread that calls the method to get n-gram counts from tweets
+     */
+/*
+    public class GetNGramCountsFromTweetsThread implements Runnable {
+        public Thread thread;
+        public String threadName;
+
+        //data
+        private ArrayList<String[]> tweets;
+        private StanfordCoreNLP pipeline;
+        //results
+        public Hashtable<String, Double> nGramCounts;
+
+        GetNGramCountsFromTweetsThread(ArrayList<String[]> twts, String name) {
+            Properties props = new Properties();
+            props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+            pipeline = new StanfordCoreNLP(props);
+
+            tweets = twts;
+
+            threadName = name;
+        }
+
+        public void run() {
+            System.out.println("Thread"+threadName+"running");
+            try {
+                nGramCounts = getNGramCountsFromTweets(tweets, pipeline);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("Thread"+threadName+"exiting");
+        }
+
+        public void start() {
+            if (thread == null) {
+                thread = new Thread(this, threadName);
+                thread.start();
+            }
+        }
+
+    }
+*/
 
     //parameters to specify type
     private int N;
@@ -22,30 +87,29 @@ public class NGramModel {
     private boolean lemmatize;
     private String textModelName;
 
-    private int freqThreshold;
+    private int nGramLimit; //the maximum number of n-grams to have in the model
     private ArrayList<String> stopWordList = new ArrayList<String>();
     //private static Hashtable<String, Long> idfStarts = new Hashtable<String, Long>();
     private Hashtable<String, Double> acceptedNGrams = new Hashtable<String, Double>();
     //private String idfFilePath = "data/term_webcounts.txt";
     private long totalDocs;
     private String dataType;
-    private static Pattern wordPattern = Pattern.compile("((\\w+'?\\w+)|\\w)([ !\"#$%&'()*+,-./:;<=>?@_`{|}~])");
+    //private static Pattern wordPattern = Pattern.compile("((\\w+'?\\w+)|\\w)([ !\"#$%&'()*+,-./:;<=>?@_`{|}~])");
     //private int nCores;
 
     /*
         Initializes an n-gram model from an int specifying the number of words per gram, a
         dataset to collect idfs on, a string indicating the type of data to collect, the type of classifier,
         a path to a file containing stopwords to be used (or an empty string if stopwords are to be included), and
-        an int specifying the minimum number of documents an n-gram must appear in within the training data in order
-        to be considered
+        an the maximum number of unique n-grams allowed to be stored in this model
      */
-    public NGramModel(int n, String pathToTweetFields, String dT, String tMN, String classifierName, String stopWordPath, int freq, boolean lm) throws IOException {
+    public NGramModel(int n, String pathToTweetFields, String dT, String tMN, String classifierName, String stopWordPath, int limit, boolean lm, int nCores) throws IOException, InterruptedException {
         //initialize fields
         N = n;
         textModelName = tMN;
         lemmatize = lm;
         //this.nCores = nCores;
-        freqThreshold = freq;
+        nGramLimit = limit;
         dataType = dT;
         if (stopWordPath.length() > 0) {
             getStopWordList(stopWordPath);
@@ -60,14 +124,54 @@ public class NGramModel {
             and the frequency threshold) already exists. If it does, use those n-grams as the accepted ones. If not,
             initialize and save a file of accepted n-grams for future reference
          */
-        acceptedNGramFilePath = "nGramModels/acceptedNGrams/"+classifierName+"-"+n+"-gram_"+freq+"-frequency.txt";
+        acceptedNGramFilePath = "nGramModels/acceptedNGrams/"+classifierName+"-"+n+"-gram_"+nGramLimit+"-limit.txt";
         //load up/initialize the accepted n-grams
         File nGramFile = new File(acceptedNGramFilePath);
         if (nGramFile.exists()) {
             loadAcceptedNGramsFromFile();
         }
         else {
-            initializeAcceptedNGramsFromTweetFields(pathToTweetFields);
+            initializeAcceptedNGramsFromTweetFields(pathToTweetFields/*, nCores*/);
+            saveAcceptedNGramsToFile();
+        }
+    }
+
+    /*
+    Initializes an n-gram model from an int specifying the number of words per gram, a
+    dataset to collect idfs on, a string indicating the type of data to collect, the type of classifier,
+    and a path to a file containing stopwords to be used (or an empty string if stopwords are to be included)
+
+    This constructor is used when all n-grams found in the training data are to be used
+    */
+    public NGramModel(int n, String pathToTweetFields, String dT, String tMN, String classifierName, String stopWordPath, boolean lm, int nCores) throws IOException, InterruptedException {
+        //initialize fields
+        N = n;
+        textModelName = tMN;
+        lemmatize = lm;
+        //this.nCores = nCores;
+        nGramLimit = -1;
+        dataType = dT;
+        if (stopWordPath.length() > 0) {
+            getStopWordList(stopWordPath);
+            stopWords = false;
+        }
+        else {
+            stopWords = true;
+        }
+
+        /*
+            First check to see if a file of appropriate n-grams for this type of n-gram model (type is determined by n
+            and the frequency threshold) already exists. If it does, use those n-grams as the accepted ones. If not,
+            initialize and save a file of accepted n-grams for future reference
+         */
+        acceptedNGramFilePath = "nGramModels/acceptedNGrams/"+classifierName+"-"+n+"-gram_"+nGramLimit+"-limit.txt";
+        //load up/initialize the accepted n-grams
+        File nGramFile = new File(acceptedNGramFilePath);
+        if (nGramFile.exists()) {
+            loadAcceptedNGramsFromFile();
+        }
+        else {
+            initializeAcceptedNGramsFromTweetFields(pathToTweetFields/*, nCores*/);
             saveAcceptedNGramsToFile();
         }
     }
@@ -148,6 +252,58 @@ public class NGramModel {
         return getNGrams(convertedInput, stopWords);
     }
 
+/*
+    public Hashtable<String, Double> getNGramCountsFromTweets(ArrayList<String[]> tweets, StanfordCoreNLP pipeline)
+            throws IOException {
+        Hashtable<String, Double> nGramCounts = new Hashtable<String, Double>();
+
+        //go through each tweet
+        for (int i = 0; i < tweets.size(); i++) {
+            String[] currentTweet = tweets.get(i);
+            //process the text according to the specified model
+            String text = returnAppropriateTextFromTweet(currentTweet);
+
+            //annotate to get lemma annotations
+            Annotation document = new Annotation(text);
+            pipeline.annotate(document);
+            List<CoreLabel> tokens = document.get(TokensAnnotation.class);
+
+            //go through all words in the tweet
+            /*
+            Matcher matchmaker = wordPattern.matcher(text);
+            while (matchmaker.find()) {
+                String word = matchmaker.group(1).toLowerCase();
+            *
+            ArrayList<String> nGrams = getNGrams(tokens, stopWords);
+            Hashtable<String, Integer> nGramsThisTweet = new Hashtable<String, Integer>();
+
+            //increment the document counts of all nGrams in the tweet
+            for (String nGram: nGrams) {
+
+                //if this n-gram has not yet been seen in this tweet (ensures that each n-gram is only counted once
+                //per tweet)
+                if (nGramsThisTweet.get(nGram) == null) {
+                    //Increment the count of the number of documents the n-gram appears in,
+                    //or initialize such a count if the n-gram has not yet been seen
+                    boolean seenBefore = false;
+
+                    //check to see if the n-gram has been seen yet
+                    if (nGramCounts.get(nGram) != null) {
+                        seenBefore = true;
+                    }
+
+                    if (seenBefore) nGramCounts.put(nGram, nGramCounts.get(nGram) + 1.0);
+                    else nGramCounts.put(nGram, 1.0);
+                }
+
+                nGramsThisTweet.put(nGram, 1);
+            }
+        }
+
+        return nGramCounts;
+    }
+*/
+
     /*
         generates a list of stop words from a file
     */
@@ -171,6 +327,9 @@ public class NGramModel {
         stopWordList = stopWords;
     }
 
+    /*
+        This method takes idfs from a file
+     */
     /*
     public static void initializeIDFS() throws FileNotFoundException, IOException {
         File idfFile = new File(idfFilePath);
@@ -236,7 +395,76 @@ public class NGramModel {
         Initializes a list of accepted ngrams from tweet data fields. Only maintains a list of n-grams that appear at
         least as many times as specified by the frequency threshold, and excludes stop words if this model is set
         to do so
+
+        Splits the task of initialization into <nCores> threads
      */
+/*
+    private void initializeAcceptedNGramsFromTweetFields(String pathToTweetDataFile, int nCores) throws IOException, InterruptedException {
+        ArrayList<String[]> tweets = TweetParser.getTweets(pathToTweetDataFile);
+
+        //split the data into nCores portions
+        int unit = tweets.size() / nCores;
+        int lastStart = 0;
+        ArrayList<ArrayList<String[]>> tweetSegments = new ArrayList<ArrayList<String[]>>(nCores);
+        for (int i = 0; i < nCores; i++) {
+            ArrayList<String[]> nextSegment = new ArrayList<String[]>();
+            for (int j = lastStart; j < lastStart + unit; j++) {
+                nextSegment.add(tweets.get(j));
+            }
+            tweetSegments.add(nextSegment);
+
+            lastStart += unit; //advance the index
+        }
+
+        //put each portion into a thread, and run each thread to get its partial hashtables
+        ArrayList<GetNGramCountsFromTweetsThread> threads = new ArrayList<GetNGramCountsFromTweetsThread>();
+        for (int i = 0; i < nCores; i++) {
+            GetNGramCountsFromTweetsThread thread = new GetNGramCountsFromTweetsThread(tweetSegments.get(i), "thread"+i);
+            threads.add(thread);
+
+            thread.start();
+        }
+
+        //wait for all of the threads to finish
+        for (GetNGramCountsFromTweetsThread thread: threads) {
+            thread.thread.join();
+        }
+
+        //put the partial hashtables together and combine them into one larger hashtable, not including the n-grams
+        //that don't appear at least <threshold> times across all threads
+        for (GetNGramCountsFromTweetsThread thread: threads) {
+
+            Hashtable<String, Double> partialHash = thread.nGramCounts;
+            //look through each n-gram in this thread
+            Enumeration<String> nGramsThisThread = partialHash.keys();
+            while (nGramsThisThread.hasMoreElements()) {
+                String thisNGram = nGramsThisThread.nextElement();
+                //start the count with this thread
+                double count = partialHash.remove(thisNGram);
+
+                //count up its instances across all other threads
+                for (GetNGramCountsFromTweetsThread otherThread: threads) {
+                    if (otherThread.nGramCounts.get(thisNGram) != null) {
+                        count += otherThread.nGramCounts.remove(thisNGram);
+                    }
+                }
+
+                //if it appears enough times, add it to the full hashtable with a dummy value of 1.0
+                if (count >= (double)freqThreshold) {
+                    acceptedNGrams.put(thisNGram, 1.0);
+                }
+            }
+
+        }
+
+    }
+*/
+
+    /*
+    Initializes a list of accepted ngrams from tweet data fields. Only maintains a list of n-grams that appear at
+    least as many times as specified by the frequency threshold, and excludes stop words if this model is set
+    to do so
+ */
     private void initializeAcceptedNGramsFromTweetFields(String pathToTweetDataFile) throws IOException {
         ArrayList<String[]> tweetFields = TweetParser.getTweets(pathToTweetDataFile);
 
@@ -265,165 +493,57 @@ public class NGramModel {
             Hashtable<String, Integer> nGramsThisTweet = new Hashtable<String, Integer>();
 
             for (String nGram: nGrams) {
+
                 //Increment the count of the number of documents the word appears in
-                Enumeration<String> keys = acceptedNGrams.keys();
-                boolean seenBefore = false;
-                while (keys.hasMoreElements()) {
-                    String key = keys.nextElement();
-                    if (key.equals(nGram)) {
-                        seenBefore = true;
-                        break;
-                    }
-                }
                 if (nGramsThisTweet.get(nGram) == null) { //ensures that each n-gram is only counted once per tweet
+                    boolean seenBefore = false;
+                    if (acceptedNGrams.get(nGram) != null) {
+                        seenBefore = true;
+                    }
+
+                    //if this n-gram has been seen before, initialize a count. Otherwise, increment its count
                     if (seenBefore) acceptedNGrams.put(nGram, acceptedNGrams.get(nGram) + 1.0);
                     else acceptedNGrams.put(nGram, 1.0);
                 }
 
                 nGramsThisTweet.put(nGram, 1);
+
             }
         }
 
-        //Get the document count of each word that appears at least as many times as the frequency threshold requires
-        Enumeration<String> keys = acceptedNGrams.keys();
-        /*
-        int twoCounter = 0;
-        int threeCounter = 0;
-        int fiveCounter = 0;
-        int tenCounter = 0;
-        int twentyFiveCounter = 0;
-        int fiftyCounter = 0;
-        int hundredCounter = 0;
-        */
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-/*
-            //counter tests
-            if (acceptedNGrams.get(key) >= 2.0) {
-                twoCounter++;
-            }
-            if (acceptedNGrams.get(key) >= 3.0) {
-                threeCounter++;
-            }
-            if (acceptedNGrams.get(key) >= 5.0) {
-                fiveCounter++;
-            }
-            if (acceptedNGrams.get(key) >= 10.0) {
-                tenCounter++;
-            }
-            if (acceptedNGrams.get(key) >= 25.0) {
-                twentyFiveCounter++;
-            }
-            if (acceptedNGrams.get(key) >= 50.0) {
-                fiftyCounter++;
-            }
-            if (acceptedNGrams.get(key) >= 100.0) {
-                hundredCounter++;
-            }
-*/
-
-            //remove n-grams that do not appear enough times
-            if (acceptedNGrams.get(key) < freqThreshold) {
-                acceptedNGrams.remove(key);
-            }
-            //n-grams that do appear enough times are given a dummy value in the hashtable
-            else {
-                acceptedNGrams.put(key, 1.0);
-            }
-        }
-    }
-
-
-    /*
-    //multithreaded version
-    private void initializeIDFsFromTweetFields(TweetVector[] tweetVectors) {
-        totalDocs = tweetVectors.length;
-
-        //split up tweetVectors
-        int left = tweetVectors.length;
-        int unit = left / nCores;
-        int vectorsForThis = 0;
-        ArrayList<TweetVector[]> splitVectorsForThreads = new ArrayList<TweetVector[]>();
-        //add to split vector list
-        for (int i = 0; i < nCores; i++) {
-
+        //use all n-grams in acceptedNGrams if no n-gram limit has been set, or if
+        //the size of acceptedNGrams does not exceed the limit
+        if (nGramLimit == -1 || acceptedNGrams.size() <= nGramLimit) {
+            return;
         }
 
+        //collect the most common n-grams, if an n-gram limit has been set
+        PriorityQueue<Pair<String, Double>> mostCommonNGrams = new PriorityQueue<Pair<String, Double>>(nGramLimit+1, new MinOrientedStringDoublePairComparator());
 
-        //go through all tweets
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-        for (int i = 0; i < tweetVectors.length; i++) {
-            String text = readTweetsGetFeatures.process(returnAppropriateTextForm(tweetVectors[i]));
-
-            //annotate to get lemma annotations
-            Annotation document = new Annotation(text);
-            pipeline.annotate(document);
-            List<CoreLabel> tokens = document.get(TokensAnnotation.class);
-
-            //go through all words in the tweet
-            ArrayList<String> nGrams = getNGrams(tokens, stopWords);
-            Hashtable<String, Integer> nGramsThisTweet = new Hashtable<String, Integer>();
-
-            for (String nGram: nGrams) {
-                //Increment the count of the number of documents the word appears in
-                Enumeration<String> keys = acceptedNGrams.keys();
-                boolean seenBefore = false;
-                while (keys.hasMoreElements()) {
-                    String key = keys.nextElement();
-                    if (key.equals(nGram)) {
-                        seenBefore = true;
-                        break;
-                    }
-                }
-                if (nGramsThisTweet.get(nGram) == null) { //ensures that each n-gram is only counted once per tweet
-                    if (seenBefore) acceptedNGrams.put(nGram, acceptedNGrams.get(nGram) + 1.0);
-                    else acceptedNGrams.put(nGram, 1.0);
-                }
-
-                nGramsThisTweet.put(nGram, 1);
-            }
-        }
-
-        //get results from thread, add them to acceptedNGrams and nGramsThisTweet
-
-        //Get idfs from totalDocs and the document count of each word that appears at least as many times
-        //as the frequency threshold requires
-        Enumeration<String> keys = acceptedNGrams.keys();
-
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-
-
-            if (acceptedNGrams.get(key) >= freqThreshold) {
-                acceptedNGrams.put(key, totalDocs / acceptedNGrams.get(key));
-            }
-            else {
-                acceptedNGrams.remove(key);
-            }
-
-
-        }
-
-        System.out.println();
-    }
-    */
-
-    /*
-        Saves all idfs to a given path
-     *
-    private void saveIDFs(String idfPath) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(idfPath)));
+        //look through all the n-grams seen thus far
         Enumeration<String> keys = acceptedNGrams.keys();
         while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            bufferedWriter.write(key+","+acceptedNGrams.get(key));
+            String nGram = keys.nextElement();
+            double value = acceptedNGrams.get(nGram);
+
+            //give the n-gram a dummy value of 1 in the hashtable
+            acceptedNGrams.put(nGram, 1.0);
+
+            //check to see if it is one of the most common (if it is not, if it is rejected from the priority queue,
+            //remove it from acceptedNGrams)
+            mostCommonNGrams.add(new Pair<String, Double>(nGram, value));
+            //if mostCommonNGrams has more n-grams than the limit permits, the one at the top
+            //is not among the most common n-grams in the dataset
+            if (mostCommonNGrams.size() > nGramLimit) {
+                //remove from mostCommonNGrams and acceptedNGrams
+                String notMostCommonNGram = mostCommonNGrams.poll().first();
+                acceptedNGrams.remove(notMostCommonNGram);
+            }
+
         }
 
-        bufferedWriter.close();
+        int test = 0;
     }
-    */
 
     /*
     Return the lemma of the inputted token, in all lower case if it is not a proper noun, with
@@ -463,19 +583,19 @@ public class NGramModel {
     public String returnAppropriateTextFromTweet(TweetVector tweetVector) {
         String data = "";
         switch (dataType) {
-            case readTweetsGetFeatures.textName: data = tweetVector.getTweetText(); break;
-            case readTweetsGetFeatures.descriptionName: data = tweetVector.getDescription(); break;
+            case TweetFeatureExtractor.textName: data = tweetVector.getTweetText(); break;
+            case TweetFeatureExtractor.descriptionName: data = tweetVector.getDescription(); break;
         }
-        return readTweetsGetFeatures.process(data, textModelName);
+        return TweetFeatureExtractor.processStatic(data, textModelName);
     }
 
     public String returnAppropriateTextFromTweet(String[] tweetFields) {
         String data = "";
         switch (dataType) {
-            case readTweetsGetFeatures.textName: data = tweetFields[4]; break;
-            case readTweetsGetFeatures.descriptionName: data = tweetFields[3]; break;
+            case TweetFeatureExtractor.textName: data = tweetFields[4]; break;
+            case TweetFeatureExtractor.descriptionName: data = tweetFields[3]; break;
         }
-        return readTweetsGetFeatures.process(data, textModelName);
+        return TweetFeatureExtractor.processStatic(data, textModelName);
     }
 
     /*

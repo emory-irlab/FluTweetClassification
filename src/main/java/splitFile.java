@@ -6,6 +6,10 @@ import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 
 /**
  * Created by Alec Wolyniec on 9/9/16.
@@ -14,17 +18,17 @@ public class splitFile {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         File inputFile = new File(args[0]);
         int numFiles = Integer.parseInt(args[1]);
-        int numLinesInInputFile = 0;
+        int numRecordsInInputFile = 0;
 
         //get the number of lines in the input file
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-        String currentLine;
-        while ((currentLine = reader.readLine()) != null) {
-            numLinesInInputFile++;
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(reader);
+        for (CSVRecord record: records) {
+            numRecordsInInputFile++;
         }
 
         //create the unit
-        int outputFileLineUnit = numLinesInInputFile / numFiles;
+        int outputFileLineUnit = numRecordsInInputFile / numFiles;
         int lastStart = 0;
 
         //create the file segmentation
@@ -33,7 +37,7 @@ public class splitFile {
             Integer[] startEndForThisFile = new Integer[2];
             startEndForThisFile[0] = lastStart;
             if (i == numFiles - 1) {
-                startEndForThisFile[1] = numLinesInInputFile;
+                startEndForThisFile[1] = numRecordsInInputFile;
             }
             else {
                 startEndForThisFile[1] = lastStart + outputFileLineUnit;
@@ -45,6 +49,7 @@ public class splitFile {
         for (int i = 0; i < numFiles; i++) {
             File outputFile = new File(args[0].replace(".txt", "")+i+".txt");
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            CSVPrinter printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
 
             //add lines to the new file
             reader = new BufferedReader(new FileReader(inputFile));
@@ -52,11 +57,12 @@ public class splitFile {
 
             //get the range of indices to collect
             Integer[] startEndPairHere = startEndIndices.get(i);
+            String currentLine;
             while ((currentLine = reader.readLine()) != null) {
                 //collect the line if it's in the range
                 if (currentLineIndex < startEndPairHere[1]) {
-                    bufferedWriter.write(currentLine);
-                    bufferedWriter.newLine();
+                    printer.print(currentLine);
+                    printer.println();
                 }
                 else {
                     break;

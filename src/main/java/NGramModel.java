@@ -542,7 +542,6 @@ public class NGramModel {
 
         }
 
-        int test = 0;
     }
 
     /*

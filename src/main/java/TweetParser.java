@@ -47,7 +47,7 @@ public class TweetParser {
         BufferedReader in = new BufferedReader(new FileReader(pathToTweetFile));
         Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(in);
         for (CSVRecord record : records) {
-            if (record.size() >= 1) {
+            if (record.size() >= 5) {
                 //set the size, a maximum of 9
                 int entrySize;
                 if (record.size() < 10) {

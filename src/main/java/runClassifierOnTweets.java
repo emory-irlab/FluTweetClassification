@@ -62,18 +62,15 @@ public class runClassifierOnTweets {
         MaxEntClassification event = new MaxEntClassification("classifiers/"+ TweetFeatureExtractor.eventClassifierName+".txt", nCores);
         MaxEntClassification selfOther = new MaxEntClassification("classifiers/"+ TweetFeatureExtractor.selfOtherClassifierName+".txt", nCores);
 
-        //initialize tweet feature extractor with null fields, as everything should already be ready by this point
-        TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor("", "", 1);
+        //initialize tweet feature extractor with null training data fields, as everything should already be ready by this point
+        //throw an exception if the n-gram files corresponding to the classifier types and n-gram limits don't exist
+        TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor("", "", runClassifierOnTweets.nCores);
 
         //get tweets
         ArrayList<String[]> tweetsToRun = TweetParser.getTweets(pathToUnlabeledTweets);
 
-        /*TEMP*/int counter = 0;
-        /*TEMP*/long startTime = System.currentTimeMillis();
         //classify each tweet and collect if it is labeled with an event
         for (String[] tweet: tweetsToRun) {
-        /*TEMP*/counter++;
-
             String[] labels = new String[3];
             double[] confidences = new double[3];
 
@@ -100,7 +97,7 @@ public class runClassifierOnTweets {
                     if (labels[2].equals("self") || labels[2].equals("other")) {
                         //append it to a file based on self-other label and event (initialize this file if it
                         //does not yet exist)
-                        File putativeFile = new File("classifiedTweets/"+labels[1]+"-"+labels[2]+".csv");
+                        File putativeFile = new File("classifiedTweets/"+args[1]+"copy"+labels[1]+"-"+labels[2]+".csv");
                         BufferedWriter writer = new BufferedWriter(new FileWriter(putativeFile, true));
                         CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
 
@@ -138,6 +135,5 @@ public class runClassifierOnTweets {
                 }
             }
         }
-        System.out.println("Total time to get "+counter+" tweets: "+((double)System.currentTimeMillis() - startTime)/1000+" seconds");
     }
 }

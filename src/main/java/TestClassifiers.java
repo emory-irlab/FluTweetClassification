@@ -79,5 +79,7 @@ public class TestClassifiers {
         //classifier.runNSplits(1, pathToTestResultsSelfOther, "null_class", 0.9);
         */
 
+        //clear the n-grams created in this test
+        util.emptyDirectory(new File("nGramModels"));
     }
 }

@@ -358,7 +358,7 @@ public class TweetParser {
     /*
         Remove later
      */
-    public static void addExtraFieldToTweetsWithoutLabelField(String pathToTweets) throws FileNotFoundException, IOException {
+    public static void addExtraFieldToTweetsWithoutLabelField(String pathToTweets, int indexToAddSpace) throws FileNotFoundException, IOException {
         File inputFile = new File(pathToTweets);
         File outputFile = new File(pathToTweets.substring(0, pathToTweets.length() - 4)+"-p.csv");
 
@@ -372,17 +372,45 @@ public class TweetParser {
         //remaining fields
         inputFile.delete();
         for (CSVRecord tweet: records) {
-            if (tweet.size() > 5) {
-                for (int i = 0; i < 5; i++) {
+            if (tweet.size() > indexToAddSpace) {
+                for (int i = 0; i < indexToAddSpace; i++) {
                     printer.print(tweet.get(i));
                 }
                 printer.print("");
-                for (int i = 5; i < tweet.size(); i++) {
+                for (int i = indexToAddSpace; i < tweet.size(); i++) {
                     printer.print(tweet.get(i));
                 }
                 printer.println();
             }
         }
         printer.close();
+    }
+
+    public static void removeFieldFromTweets(String pathToTweets, int indexToRemove) throws FileNotFoundException, IOException {
+        File inputFile = new File(pathToTweets);
+        File outputFile = new File(pathToTweets.substring(0, pathToTweets.length() - 4)+"-p.csv");
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(bufferedReader);
+        CSVPrinter printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
+
+        //go through each tweet, collect and print out fields 0-4, print out an extra field, and then print out the
+        //remaining fields
+        inputFile.delete();
+        for (CSVRecord tweet: records) {
+            if (tweet.size() > indexToRemove) {
+                for (int i = 0; i < indexToRemove; i++) {
+                    printer.print(tweet.get(i));
+                }
+                for (int i = indexToRemove + 1; i < tweet.size(); i++) {
+                    printer.print(tweet.get(i));
+                }
+                printer.println();
+            }
+        }
+        printer.close();
+
     }
 }

@@ -26,6 +26,7 @@ public class splitFile {
         for (CSVRecord record: records) {
             numRecordsInInputFile++;
         }
+        reader.close();
 
         //create the unit
         int outputFileLineUnit = numRecordsInInputFile / numFiles;
@@ -43,35 +44,44 @@ public class splitFile {
                 startEndForThisFile[1] = lastStart + outputFileLineUnit;
             }
             startEndIndices.add(startEndForThisFile);
+
+            //increase the count
+            lastStart += outputFileLineUnit;
         }
 
-        //create output files and write to them
-        for (int i = 0; i < numFiles; i++) {
-            File outputFile = new File(args[0].replace(".txt", "")+i+".txt");
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-            CSVPrinter printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
+        //start collecting input lines at the first file
+        int currentOutputFileNumber = 0;
+        File currentOutputFile = new File(args[0].replace(".csv", "")+currentOutputFileNumber+".csv");
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(currentOutputFile));
+        CSVPrinter printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
+        //the range of indices to collect for the currentFile
+        Integer[] startEndIndicesCurrentFile = startEndIndices.get(0);
 
-            //add lines to the new file
-            reader = new BufferedReader(new FileReader(inputFile));
-            int currentLineIndex = 0;
-
-            //get the range of indices to collect
-            Integer[] startEndPairHere = startEndIndices.get(i);
-            String currentLine;
-            while ((currentLine = reader.readLine()) != null) {
-                //collect the line if it's in the range
-                if (currentLineIndex < startEndPairHere[1]) {
-                    printer.print(currentLine);
-                    printer.println();
-                }
-                else {
-                    break;
-                }
-
-                currentLineIndex++;
+        //print the lines in the input file to the various output files
+        reader = new BufferedReader(new FileReader(inputFile));
+        records = CSVFormat.RFC4180.parse(reader);
+        int currentLine = 0;
+        for (CSVRecord record: records) {
+            //if this line is not within the range for the current file, move to the next file
+            if (currentLine >= startEndIndicesCurrentFile[1]) {
+                currentOutputFileNumber++;
+                currentOutputFile = new File(args[0].replace(".csv", "")+currentOutputFileNumber+".csv");
+                bufferedWriter.close();
+                bufferedWriter = new BufferedWriter(new FileWriter(currentOutputFile));
+                printer = new CSVPrinter(bufferedWriter, CSVFormat.RFC4180);
+                startEndIndicesCurrentFile = startEndIndices.get(currentOutputFileNumber);
             }
 
+            //collect the line
+            for (int i = 0; i < record.size(); i++) {
+                printer.print(record.get(i));
+            }
+            printer.println();
 
+            //advance the line count
+            currentLine++;
         }
+        bufferedWriter.close();
+
     }
 }

@@ -15,7 +15,7 @@ import java.util.*;
 public class test {
 
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        //TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0]);
+        TweetParser.removeFieldFromTweets(args[0], 0);
 
 /*
 	    long startTime = System.currentTimeMillis();

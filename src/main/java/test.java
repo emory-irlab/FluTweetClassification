@@ -14,8 +14,51 @@ import java.util.*;
  */
 public class test {
 
+    public static class TestThread implements Runnable {
+        public Thread thread;
+        private String threadName;
+
+        private File inFile;
+        private File outFile;
+
+        TestThread(String inPath, String outPath, String name) {
+            inFile = new File(inPath);
+            outFile = new File(outPath);
+            threadName = name;
+        }
+
+        public void run() {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(inFile));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
+                String currentLine;
+                int i = 0;
+                while ((currentLine = reader.readLine()) != null) {
+                    writer.write(i+"-"+currentLine);
+                    writer.newLine();
+                    i++;
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void start() {
+            if (thread == null) {
+                thread = new Thread(this, threadName);
+                thread.start();
+            }
+        }
+    }
+
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        TweetParser.removeFieldFromTweets(args[0], 0);
+        for (int i = 0; i < 5; i++) {
+            TestThread thread = new TestThread("classifiers/event.txt","example"+i+".txt", "thread"+i);
+            thread.start();
+        }
+
+        //TweetParser.removeFieldFromTweets(args[0], 0);
 
 /*
 	    long startTime = System.currentTimeMillis();

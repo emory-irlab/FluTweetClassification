@@ -34,8 +34,8 @@ public class TrainAndSaveClassifiers {
     public static void main (String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         //get rid of any old classifiers
         //get rid of any old n-gram model "accepted n-grams" files
-        //util.emptyDirectory(new File("classifiers"));
-        //util.emptyDirectory(new File("nGramModels"));
+        util.emptyDirectory(new File("classifiers"));
+        util.emptyDirectory(new File("nGramModels"));
 
         //get the number of cores needed to run
         int nCores = runClassifierOnTweets.nCores;

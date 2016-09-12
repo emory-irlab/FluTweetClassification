@@ -185,17 +185,18 @@ public class NGramModel {
 
         /*
             get each possible sequence of n valid tokens in the input, including sequences that place dummy "pre" and
-             "post" tokens before and after the input so that tokens such as {pre, pre, 1st word},
-             {pre, 1st word, 2nd word}, and {2nd to last word, last word, post} are included.
+             "post" tokens before and after the input so that tokens such as {pre, 1st word, 2nd word},
+             and {2nd to last word, last word, post} are included (but not {pre, pre, 1st word}; only 1 "pre" and 1 "post"
+             are allowed per n-gram)
             A valid token must not be a stopword (if stopWords == false) and must contain at least one
             alphabetic character.
          */
-        for (int i = (1 - N); i < input.size(); i++) {
+        for (int i = -1; i < input.size(); i++) {
             int[] indices = new int[N];
             int indexCounter = 0;
 
             //starting from index i, find the next N indices that mark valid tokens
-            for (int j = i; j < (input.size() - 1 + N); j++) {
+            for (int j = i; j < input.size(); j++) {
                 if (indexCounter == N) { break; }
                 //check to see if the token at this index is valid
                 //it's automatically valid if the index is outside of the range of the input (in this case it's a

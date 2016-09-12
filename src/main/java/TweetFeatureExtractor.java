@@ -120,9 +120,9 @@ public class TweetFeatureExtractor {
          //event classifier
         long startTime = System.currentTimeMillis();
         String nameOfTextModelForEventNGrams = processedTextModelNameWHash;
-        tweetTextUnigramModelEvent = new NGramModel(1, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsPronounsAllowed.txt", 80000, false, nCores);
-        tweetTextBigramModelEvent = new NGramModel(2, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsPronounsAllowed.txt", 2000, false, nCores);
-        tweetTextTrigramModelEvent = new NGramModel(3, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsPronounsAllowed.txt", 1000, false, nCores);
+        tweetTextUnigramModelEvent = new NGramModel(1, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 80000, false, nCores);
+        tweetTextBigramModelEvent = new NGramModel(2, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 2000, false, nCores);
+        tweetTextTrigramModelEvent = new NGramModel(3, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 1000, false, nCores);
          //self vs other classifier
         String nameOfTextModelForSvONGrams = processedTextModelName;
         tweetTextUnigramModelSvO = new NGramModel(1, pathToTrainingTweetsSelfOther, textName, nameOfTextModelForSvONGrams, selfOtherClassifierName, "data/stopwordsPronounsAllowed.txt", true, nCores);

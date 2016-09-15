@@ -91,10 +91,39 @@ public class FormatOutputTemporary {
         printer.close();
     }
 
+    public static void removeDuplicateConsecutiveTweets(String pathToFile) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(new File(pathToFile)));
+        CSVParser readerCSV = new CSVParser(reader, CSVFormat.RFC4180);
+        List<CSVRecord> data = readerCSV.getRecords();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathToFile.replace(".csv", "")+"-d.csv")));
+        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
+
+        String lastTweetString = "";
+        for (CSVRecord tweet: data) {
+            //print out this whole line if it contains a tweet that is not equal to the previous tweet
+            String tweetString = tweet.get(4);
+            if (!tweetString.equals(lastTweetString)) {
+                //print out all fields in the tweet
+                for (int i = 0; i < tweet.size(); i++) {
+                    printer.print(tweet.get(i));
+                }
+                printer.println();
+            }
+
+            //update the previous tweet field
+            lastTweetString = tweetString;
+        }
+
+        printer.close();
+        readerCSV.close();
+    }
+
 
 
     public static void main(String[] args) throws IOException {
-        integrateMissingTweets();
+        removeDuplicateConsecutiveTweets(args[0]);
+        //integrateMissingTweets();
 /*
         BufferedReader originalReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/recovery_from_illness-other-output.csv")));
         BufferedReader allUserReader = new BufferedReader(new FileReader(new File("data/experimental_tweets/recovery_from_illness-other-HISTORICAL-missing.csv")));

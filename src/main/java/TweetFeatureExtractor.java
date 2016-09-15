@@ -120,9 +120,9 @@ public class TweetFeatureExtractor {
          //event classifier
         long startTime = System.currentTimeMillis();
         String nameOfTextModelForEventNGrams = processedTextModelNameWHash;
-        tweetTextUnigramModelEvent = new NGramModel(1, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 80000, false, nCores);
-        tweetTextBigramModelEvent = new NGramModel(2, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 2000, false, nCores);
-        tweetTextTrigramModelEvent = new NGramModel(3, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 1000, false, nCores);
+        //tweetTextUnigramModelEvent = new NGramModel(1, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 80000, false, nCores);
+        tweetTextBigramModelEvent = new NGramModel(2, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 62000, false, nCores);
+        tweetTextTrigramModelEvent = new NGramModel(3, pathToTrainingTweetsEvent, textName, nameOfTextModelForEventNGrams, eventClassifierName, "data/stopwordsEventWordsAllowed.txt", 21000, false, nCores);
          //self vs other classifier
         String nameOfTextModelForSvONGrams = processedTextModelName;
         tweetTextUnigramModelSvO = new NGramModel(1, pathToTrainingTweetsSelfOther, textName, nameOfTextModelForSvONGrams, selfOtherClassifierName, "data/stopwordsPronounsAllowed.txt", true, nCores);
@@ -541,7 +541,7 @@ public class TweetFeatureExtractor {
     private void collectFeaturesEventVsNotEvent(TweetVector tweetVector, String processedTweet, CoreLabel[][] processedPhrasesWHash, List<CoreMap> tweetSentences) throws IOException, InterruptedException {
         //unigram features (tf-idf value of each word)
         //tf-only test
-        tweetVector.addFeatures(tweetTextUnigramModelEvent.getFeaturesForTweetTF(processedPhrasesWHash));
+        //tweetVector.addFeatures(tweetTextUnigramModelEvent.getFeaturesForTweetTF(processedPhrasesWHash));
 
         //bigram features (tf-idf value of each word); bigrams must appear at least thrice to be considered
         //tf-only test

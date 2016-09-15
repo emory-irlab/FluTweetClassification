@@ -26,6 +26,38 @@ public class util {
         }
     }
 
+    /*
+        Takes all the non-directory files that are direct children of the current file, and
+        combine all their text together
+
+        Only combines files with the same, specified extension
+     */
+    public static void consolidateDirectory(String pathToDirectory, String fileExtension) throws IOException {
+        File directory = new File(pathToDirectory);
+
+        //set up a writer to write to the file
+        File outputFile = new File(pathToDirectory.replace("\\/[^\\/]+$", "\\/")+"consolidated"+fileExtension);
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+
+        for (File fileEntry: directory.listFiles()) {
+            //make sure the file isn't a directory and it has the correct extension
+            String path = fileEntry.getAbsolutePath();
+            if (!fileEntry.isDirectory() && path.substring(path.length() - fileExtension.length()).equals(fileExtension)) {
+                //open up the file and read each line to the output file
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(fileEntry));
+                String currentLine;
+                while ((currentLine = bufferedReader.readLine()) != null) {
+                    bufferedWriter.write(currentLine+"\n");
+                }
+
+                bufferedReader.close();
+            }
+            bufferedWriter.flush();
+
+        }
+        bufferedWriter.close();
+    }
+
     public static boolean isAllNumeric(String text) {
         for (int i = 0; i < text.length(); i++) {
             if (!Character.isDigit(text.charAt(i))) {

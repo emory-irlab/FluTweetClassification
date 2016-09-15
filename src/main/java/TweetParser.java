@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Hashtable;
+import java.util.Enumeration;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -84,9 +86,12 @@ public class TweetParser {
 
         //get the spacing needed to get the correct number of tweets
         int spacing = numTweetsInFile / numTweetsToCollect;
+        System.out.println(spacing);
 
         //collect the tweets
         int counter = 0;
+        in = new BufferedReader(new FileReader(fileToRead));
+        records = CSVFormat.RFC4180.parse(in);
         for (CSVRecord record: records) {
             if (record.size() >= 1) {
                 //time to collect
@@ -235,6 +240,75 @@ public class TweetParser {
             }
         }
         bufferedWriter.close();
+    }
+
+    /*
+        limited usage
+     */
+    public static void getMajorityLabelFromIllnessJobTweetFiles(String pathToInputFile, String pathToOutputFile) throws IOException {
+        final int POSITION_OF_USNAME = 27;
+        final int POSITION_OF_NAME = 28;
+        final int POSITION_OF_PROF = 29;
+        final int POSITION_OF_TWEET = 30;
+        final int POSITION_OF_LABEL = 35;
+
+        BufferedReader reader = new BufferedReader(new FileReader(new File(pathToInputFile)));
+        Iterable<CSVRecord> records = CSVFormat.RFC4180.parse(reader);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(pathToOutputFile), true));
+        CSVPrinter printer = new CSVPrinter(writer, CSVFormat.RFC4180);
+
+        String lastTweet = "";
+        Hashtable<String, Integer> labelVote = new Hashtable<String, Integer>();
+        for (CSVRecord record: records) {
+            String tweet = record.get(POSITION_OF_TWEET);
+
+            //if it's a new tweet, take the majority vote, write out the tweet, and start the voting process again
+            if (!tweet.equals(lastTweet)) {
+                //set the new tweet
+                lastTweet = tweet;
+
+                //take the majority vote if these is an odd number of votes
+                if (labelVote.size() % 2 != 0) {
+                    //get the label with the highest vote
+                    Enumeration<String> labels = labelVote.keys();
+                    int highestVote = 0;
+                    String highestVoteLabel = "";
+                    while (labels.hasMoreElements()) {
+                        String currLabel = labels.nextElement();
+
+                        if (labelVote.get(currLabel) > highestVote) {
+                            highestVote = labelVote.get(currLabel);
+                            highestVoteLabel = currLabel;
+                        }
+                    }
+
+                    //print out the tweet
+                    printer.print("");
+                    printer.print(record.get(POSITION_OF_USNAME));
+                    printer.print(record.get(POSITION_OF_NAME));
+                    printer.print(record.get(POSITION_OF_PROF));
+                    printer.print(record.get(POSITION_OF_TWEET));
+                    printer.print("");
+                    writer.write(highestVoteLabel);
+                    printer.println();
+
+                    labelVote = new Hashtable<String, Integer>();
+                }
+            }
+
+            //add the new tweet's label to the vote count
+            String label = record.get(POSITION_OF_LABEL);
+            if (labelVote.get(label) == null) {
+                labelVote.put(label, 1);
+            }
+            else {
+                labelVote.put(label, labelVote.get(label) + 1);
+            }
+
+        }
+
+        reader.close();
+        printer.close();
     }
 
     public static String getTweet(String tweetID) {

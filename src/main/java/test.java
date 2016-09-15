@@ -5,6 +5,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import cc.mallet.classify.MaxEnt;
 
 import java.io.*;
 import java.util.*;
@@ -53,26 +54,25 @@ public class test {
     }
 
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        for (int i = 0; i < 5; i++) {
-            TestThread thread = new TestThread("classifiers/event.txt","example"+i+".txt", "thread"+i);
-            thread.start();
-        }
+        //TweetParser.randomlySampleTweetsFromOneFileAndWriteToAnother("data/tweets/random_tweets_100k.csv", "data/tweets/tweet_event_pruned_eventnegs_plus_10k_random.csv", 10000);
 
+        util.consolidateDirectory("classifiedTweets", ".csv");
         //TweetParser.removeFieldFromTweets(args[0], 0);
 
 /*
 	    long startTime = System.currentTimeMillis();
 
-        MaxEntClassification classifier = new MaxEntClassification("classifiers/humanNonHuman.txt", runClassifierOnTweets.nCores);
+        MaxEntClassification classifier = new MaxEntClassification("classifiers/event.txt", runClassifierOnTweets.nCores);
 /*
         TweetVector[] tweetVectors = TweetFeatureExtractor.getVectorModelsFromTweets(args[0], TweetFeatureExtractor.selfOtherClassifierName, runClassifierOnTweets.nCores);
         classifier.addToInstanceList(tweetVectors);
         classifier.writeTestResultsToFile(classifier.evaluate(classifier.instances), 1, "data/testResultsSvO/NOWHERE_FOR_THEM_TO_RUN.txt", false);
 */
 /*
+        TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor("", "", runClassifierOnTweets.nCores);
         ArrayList<String[]> tweets = TweetParser.getTweets(args[0]);
         for (String[] tweet: tweets) {
-            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, TweetFeatureExtractor.humanNonHumanClassifierName, classifier);
+            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, TweetFeatureExtractor.eventClassifierName, classifier, tweetFeatureExtractor);
             String expLabel = expLabelAndConf.first();
             System.out.println(tweet[4]+": "+expLabelAndConf.second()+" "+expLabel+"");
         }

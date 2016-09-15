@@ -16,8 +16,8 @@ public class runClassifierOnTweets {
 
     public static long startRunTime;
     public static long endRunTime;
-    //static final int nCores = Runtime.getRuntime().availableProcessors() / 2;
-    static final int nCores = 3;
+    static final int nCores = Runtime.getRuntime().availableProcessors() / 2;
+    //static final int nCores = 3;
 
     //vectorizes and classifies a tweet using the given classifier, and returns its label
     public static Pair<String, Double> classify (String[] tweet, String classifierType, MaxEntClassification classifier, TweetFeatureExtractor tweetFeatureExtractor) throws InterruptedException, IOException, ClassNotFoundException {
@@ -63,7 +63,7 @@ public class runClassifierOnTweets {
 
         //initialize tweet feature extractor with null training data fields, as everything should already be ready by this point
         //throw an exception if the n-gram files corresponding to the classifier types and n-gram limits don't exist
-        TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor("", "", nCores);
+        TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor("", "", 1);
 
         //get tweets
         ArrayList<String[]> tweetsToRun = TweetParser.getTweets(pathToUnlabeledTweets);

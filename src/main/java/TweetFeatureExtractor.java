@@ -25,7 +25,6 @@ import java.io.File;
     used in Lamb, Paul, and Dredze 2013
  */
 public class TweetFeatureExtractor {
-
     /*
         Sets up a thread that extracts features from tweets
      */
@@ -36,7 +35,7 @@ public class TweetFeatureExtractor {
         private String classifierType;
         private TweetFeatureExtractor tweetFeatureExtractor;
         private ArrayList<String[]> tweets;
-        private TweetVector[] tweetVectors = null;
+        private ArrayList<TweetVector> tweetVectors = null;
 
        //constructors
         FeatureExtractionThread(TweetFeatureExtractor extractor, String pathToTweets, String type, String name)
@@ -54,7 +53,7 @@ public class TweetFeatureExtractor {
             classifierType = type;
         }
 
-        public TweetVector[] getTweetVectors() {
+        public ArrayList<TweetVector> getTweetVectors() {
             return tweetVectors;
         }
 
@@ -188,23 +187,30 @@ public class TweetFeatureExtractor {
         Each input tweet is formatted as follows:
         {profile pic, username, name, description, tweet, label}
     */
-    public TweetVector[] getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException, InterruptedException {
+    public ArrayList<TweetVector> getVectorModelsFromTweets(ArrayList<String[]> tweets, String classifierType) throws IOException, InterruptedException {
         long startTime = System.currentTimeMillis();
 
-        TweetVector[] tweetVectors = new TweetVector[tweets.size()];
+        ArrayList<TweetVector> tweetVectors = new ArrayList<TweetVector>(tweets.size());
         for (int i = 0; i < tweets.size(); i++) {
             String[] tweet = tweets.get(i);
-            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5]);
+            tweetVectors.add(new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5]));
         }
 
         //get features for each tweet vector
-        for (int i = 0; i < tweets.size(); i++) {
+        for (int i = 0; i < tweetVectors.size(); i++) {
             long tweetBeginTime = System.currentTimeMillis();
-            getVectorModelForTweet(tweetVectors[i], classifierType);
+            boolean[] abortFlag = {false};
+            getVectorModelForTweet(tweetVectors.get(i), classifierType, abortFlag);
             System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
+            //if not all features can be extracted for this tweet, discard it
+            if (abortFlag[0]) {
+                tweetVectors.remove(i);
+                i--;
+            }
         }
 
-        System.out.println("Total time to get "+tweetVectors.length+" tweets: "+(((double)System.currentTimeMillis()) - startTime )/1000+" seconds.");
+        System.out.println("Total time to vectorize tweets: "+(((double)System.currentTimeMillis()) - startTime )/1000+" seconds.");
+        System.out.println("Vectorized "+tweets.size()+"tweets, saved "+tweetVectors.size()+" tweets");
         return tweetVectors;
     }
 
@@ -214,38 +220,24 @@ public class TweetFeatureExtractor {
         Each input tweet is formatted as follows:
         {profile pic, username, name, description, tweet, label}
      */
-    public TweetVector[] getVectorModelsFromTweets(String pathToTweets, String classifierType) throws IOException, InterruptedException {
+    public ArrayList<TweetVector> getVectorModelsFromTweets(String pathToTweets, String classifierType) throws IOException, InterruptedException {
         long startTime = System.currentTimeMillis();
 
         //get tweets, initialize tweet vectors
         ArrayList<String[]> tweets = TweetParser.getTweets(pathToTweets);
-        TweetVector[] tweetVectors = new TweetVector[tweets.size()];
-        for (int i = 0; i < tweets.size(); i++) {
-            String[] tweet = tweets.get(i);
-            tweetVectors[i] = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4], tweet[5]);
-        }
-
-        //get features for each tweet vector
-        for (int i = 0; i < tweets.size(); i++) {
-            long tweetBeginTime = System.currentTimeMillis();
-            getVectorModelForTweet(tweetVectors[i], classifierType);
-            System.out.println( " total time to get tweet number "+i+" : "+(((double)System.currentTimeMillis()) - tweetBeginTime )/1000 );
-        }
-
-        System.out.println("Total time to get "+tweetVectors.length+" tweets: "+(((double)System.currentTimeMillis()) - startTime )/1000+" seconds.");
-        return tweetVectors;
+        return getVectorModelsFromTweets(tweets, classifierType);
     }
 
     /*
-    From a collection of tweets, create a vector model for each
-    tweet using the features for the relevant type of classifier
-    Each input tweet is formatted as follows:
-    {profile pic, username, name, description, tweet, label}
+        From a collection of tweets, create a vector model for each
+        tweet using the features for the relevant type of classifier
+        Each input tweet is formatted as follows:
+        {profile pic, username, name, description, tweet, label}
 
-    Uses nCores TweetFeatureExtractors (this and nCores - 1 additional extractors)
-    and runs each extractor in a different thread to speed up processing
+        Uses nCores TweetFeatureExtractors (this and nCores - 1 additional extractors)
+        and runs each extractor in a different thread to speed up processing
     */
-    public TweetVector[] getVectorModelsFromTweetsMultithreaded(ArrayList<String[]> tweets, String classifierType)
+    public ArrayList<TweetVector> getVectorModelsFromTweetsMultithreaded(ArrayList<String[]> tweets, String classifierType)
             throws IOException, InterruptedException {
         ArrayList<TweetVector> output = new ArrayList<TweetVector>();
 
@@ -285,7 +277,7 @@ public class TweetFeatureExtractor {
             }
         }
 
-        return output.toArray(new TweetVector[output.size()]);
+        return output;
     }
 
     /*
@@ -297,71 +289,33 @@ public class TweetFeatureExtractor {
     Uses nCores TweetFeatureExtractors (this and nCores - 1 additional extractors)
     and runs each extractor in a different thread to speed up processing
     */
-    public TweetVector[] getVectorModelsFromTweetsMultithreaded(String pathToTweets, String classifierType)
+    public ArrayList<TweetVector> getVectorModelsFromTweetsMultithreaded(String pathToTweets, String classifierType)
             throws IOException, InterruptedException {
-        ArrayList<TweetVector> output = new ArrayList<TweetVector>();
-
         //get the array of tweets, divide it into <nCores> segments
         ArrayList<String[]> tweets = TweetParser.getTweets(pathToTweets);
-        int unit = tweets.size() / nCores;
-        int lastStart = 0;
-        ArrayList<ArrayList<String[]>> tweetSegments = new ArrayList<ArrayList<String[]>>(nCores);
-        for (int i = 0; i < nCores; i++) {
-
-            ArrayList<String[]> nextSegment = new ArrayList<String[]>();
-            for (int j = lastStart; j < lastStart + unit; j++) {
-                nextSegment.add(tweets.get(j));
-            }
-            tweetSegments.add(nextSegment);
-
-            lastStart += unit; //advance the count
-        }
-
-        //use <nCores> tweet feature extractors, the current one and <nCores> - 1 additional ones
-        ArrayList<TweetFeatureExtractor> tweetFeatureExtractors = new ArrayList<TweetFeatureExtractor>();
-        //the first extractor is always this one
-        tweetFeatureExtractors.add(this);
-        for (int i = 1; i < nCores; i++) {
-            TweetFeatureExtractor thisTweetFeatureExtractor = new TweetFeatureExtractor(pathToTrainingTweetsEvent, pathToTrainingTweetsSelfOther, nCores);
-            tweetFeatureExtractors.add(thisTweetFeatureExtractor);
-        }
-
-        //create threads to vectorize each section of the training data
-        ArrayList<TweetFeatureExtractor.FeatureExtractionThread> threads = new ArrayList<TweetFeatureExtractor.FeatureExtractionThread>();
-        for (int i = 0; i < nCores; i++) {
-            threads.add(new TweetFeatureExtractor.FeatureExtractionThread(tweetFeatureExtractors.get(i), tweetSegments.get(i), classifierType, "thread"+i));
-            threads.get(i).start();
-        }
-
-        //wait until each thread finishes, then collect its tweet vectors
-        for (TweetFeatureExtractor.FeatureExtractionThread thread: threads) {
-            thread.thread.join();
-
-            for (TweetVector tweetVector: thread.getTweetVectors()) {
-                output.add(tweetVector);
-            }
-        }
-
-        return output.toArray(new TweetVector[output.size()]);
+        return getVectorModelsFromTweetsMultithreaded(tweets, classifierType);
     }
 
     /*
         Generate the vector model of a single tweet. Pre-process, annotate, represent the tweet in terms of phrases,
         then collect phrases
      */
-    public TweetVector getVectorModelForTweet(TweetVector tweetVector, String classifierType) throws IOException, InterruptedException {
+    public TweetVector getVectorModelForTweet(TweetVector tweetVector, String classifierType, boolean[] abortFlag) throws IOException, InterruptedException {
         //get processed text models
         String processedTweet = process(tweetVector.getTweetText(), processedTextModelName);
 
         //get phrase models
-        CoreLabel[][] processedDescriptionPhrases = getPhrases(tweetVector.getDescription(), processedTextModelName);
-        CoreLabel[][] processedTweetPhrases = getPhrases(tweetVector.getTweetText(), processedTextModelName);
-        CoreLabel[][] processedWHashtagsTweetPhrases = getPhrases(tweetVector.getTweetText(), processedTextModelNameWHash);
+        CoreLabel[][] processedDescriptionPhrases = getPhrases(tweetVector.getDescription(), processedTextModelName, abortFlag);
+        CoreLabel[][] processedTweetPhrases = getPhrases(tweetVector.getTweetText(), processedTextModelName, abortFlag);
+        CoreLabel[][] processedWHashtagsTweetPhrases = getPhrases(tweetVector.getTweetText(), processedTextModelNameWHash, abortFlag);
 
         //get sentence models
-        List<CoreMap> processedTweetSentences = getSentences(tweetVector.getTweetText(), processedTextModelName);
+        List<CoreMap> processedTweetSentences = getSentences(tweetVector.getTweetText(), processedTextModelName, abortFlag);
 
-        //collect features
+        //collect features unless the abort flag, which is triggered when not all features can be collected, is triggered
+        if (abortFlag[0]) {
+            return tweetVector;
+        }
         switch (classifierType) {
             case humanNonHumanClassifierName:
                 collectFeaturesHumanVsNonHuman(tweetVector, processedDescriptionPhrases, processedTweetPhrases);
@@ -380,7 +334,7 @@ public class TweetFeatureExtractor {
         Annotates a string of text (processed, if the model name calls for it) into Stanford CoreNLP sentences,
         returns the phrases
      */
-    public List<CoreMap> getSentences(String originalInput, String modelName) {
+    public List<CoreMap> getSentences(String originalInput, String modelName, boolean[] abortFlag) {
         String processedInput;
 
         //process the text if the model name is not "original"
@@ -391,9 +345,12 @@ public class TweetFeatureExtractor {
         try {
             pipeline.annotate(document);
         }
-        catch (NoSuchElementException e) {
-            System.out.println(processedInput+" triggered a NoSuchElementException");
+        //if an exception is thrown due to an issue with collecting the phrase model, slate this tweet to be skipped
+        catch (Exception e) {
+            System.out.println("Text \""+processedInput+"\" triggered an exception");
+            System.out.println("WARNING: One or more tweets in the data will be skipped");
             e.printStackTrace();
+            abortFlag[0] = true;
         }
 
         return document.get(SentencesAnnotation.class);
@@ -403,7 +360,7 @@ public class TweetFeatureExtractor {
         Annotates a string of text (processed, if the model name calls for it) into phrases delimited by punctuation marks,
         returns the phrases
      */
-    public CoreLabel[][] getPhrases(String originalInput, String modelName) {
+    public CoreLabel[][] getPhrases(String originalInput, String modelName, boolean[] abortFlag) {
         String processedInput;
 
         //process the text if the model name is not "original"
@@ -414,9 +371,12 @@ public class TweetFeatureExtractor {
         try {
             pipeline.annotate(document);
         }
-        catch (NoSuchElementException e) {
-            System.out.println(processedInput+" triggered a NoSuchElementException");
+        //if an exception is thrown due to an issue with collecting the phrase model, slate this tweet to be skipped
+        catch (Exception e) {
+            System.out.println("Text \""+processedInput+"\" triggered an exception");
+            System.out.println("WARNING: One or more tweets in the data will be skipped");
             e.printStackTrace();
+            abortFlag[0] = true;
         }
 
         //get phrases from the annotation

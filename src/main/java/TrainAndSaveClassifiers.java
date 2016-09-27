@@ -47,18 +47,18 @@ public class TrainAndSaveClassifiers {
         File HvNClassifierFile = new File(pathToHvNClassifierFile);
         trainAndSaveClassifier(pathToHvNClassifierFile, TweetFeatureExtractor.humanNonHumanClassifierName, args[0], tweetFeatureExtractor);
 */
-/*
+
         //event classifier
         String pathToEventClassifierFile = "classifiers/"+TweetFeatureExtractor.eventClassifierName+".txt";
         File eventClassifierFile = new File(pathToEventClassifierFile);
         trainAndSaveClassifier(pathToEventClassifierFile, TweetFeatureExtractor.eventClassifierName, args[1], tweetFeatureExtractor);
-*/
 
+/*
         //self-other classifier
         String pathToSvOClassifierFile = "classifiers/"+TweetFeatureExtractor.selfOtherClassifierName+".txt";
         File SvOClassifierFile = new File(pathToSvOClassifierFile);
-        trainAndSaveClassifier(pathToSvOClassifierFile, TweetFeatureExtractor.selfOtherClassifierName, args[2], tweetFeatureExtractor/*, args[3]*/);
-
+        trainAndSaveClassifier(pathToSvOClassifierFile, TweetFeatureExtractor.selfOtherClassifierName, args[2], tweetFeatureExtractor/*, args[3]*);
+*/
     }
 
 }

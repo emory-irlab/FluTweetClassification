@@ -56,13 +56,12 @@ public class test {
     public static void main (String[] args) throws IOException, InterruptedException, ClassNotFoundException {
         //TweetParser.randomlySampleTweetsFromOneFileAndWriteToAnother("data/tweets/random_tweets_100k.csv", "data/tweets/tweet_event_pruned_eventnegs_plus_10k_random.csv", 10000);
 
-        util.consolidateDirectory("classifiedTweets", ".csv");
-        //TweetParser.removeFieldFromTweets(args[0], 0);
 
+        TweetParser.addExtraFieldToTweetsWithoutLabelField(args[0], 5);
 /*
 	    long startTime = System.currentTimeMillis();
 
-        MaxEntClassification classifier = new MaxEntClassification("classifiers/event.txt", runClassifierOnTweets.nCores);
+        MaxEntClassification classifier = new MaxEntClassification("classifiers/selfOther.txt", runClassifierOnTweets.nCores);
 /*
         TweetVector[] tweetVectors = TweetFeatureExtractor.getVectorModelsFromTweets(args[0], TweetFeatureExtractor.selfOtherClassifierName, runClassifierOnTweets.nCores);
         classifier.addToInstanceList(tweetVectors);
@@ -72,7 +71,7 @@ public class test {
         TweetFeatureExtractor tweetFeatureExtractor = new TweetFeatureExtractor("", "", runClassifierOnTweets.nCores);
         ArrayList<String[]> tweets = TweetParser.getTweets(args[0]);
         for (String[] tweet: tweets) {
-            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, TweetFeatureExtractor.eventClassifierName, classifier, tweetFeatureExtractor);
+            Pair<String, Double> expLabelAndConf = runClassifierOnTweets.classify(tweet, TweetFeatureExtractor.selfOtherClassifierName, classifier, tweetFeatureExtractor);
             String expLabel = expLabelAndConf.first();
             System.out.println(tweet[4]+": "+expLabelAndConf.second()+" "+expLabel+"");
         }

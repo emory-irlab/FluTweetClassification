@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.ling.CoreAnnotations.*;
@@ -481,7 +482,16 @@ public class NGramModel {
 
             //annotate to get lemma annotations
             Annotation document = new Annotation(text);
-            pipeline.annotate(document);
+            try {
+                pipeline.annotate(document);
+            }
+            //if an exception is thrown due to an issue with collecting the phrase model, slate this tweet to be skipped
+            catch (Exception e) {
+                System.out.println("Text \""+text+"\" triggered an exception");
+                System.out.println("WARNING: One or more tweets in the training data will be skipped");
+                e.printStackTrace();
+                continue;
+            }
             List<CoreLabel> tokens = document.get(TokensAnnotation.class);
 
             //go through all words in the tweet

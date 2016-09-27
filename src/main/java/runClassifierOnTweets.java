@@ -24,7 +24,12 @@ public class runClassifierOnTweets {
         //initialize the vector with the profile pic link, username, name, description, and tweet parameters set
         TweetVector tweetVector = new TweetVector(tweet[0], tweet[1], tweet[2], tweet[3], tweet[4]);
         //get features
-        tweetVector = tweetFeatureExtractor.getVectorModelForTweet(tweetVector, classifierType);
+        boolean[] abortFlag = {false};
+        tweetVector = tweetFeatureExtractor.getVectorModelForTweet(tweetVector, classifierType, abortFlag);
+        //if all features cannot be generated for this tweet, label it as invalid
+        if (abortFlag[0]) {
+            return new Pair<String, Double>("INVALID_TWEET", 1.0);
+        }
 
         //make an instance out of the tweetVector
         classifier.addToInstanceList(tweetVector.getFeatures(), tweetVector.getName(), tweetVector.getLabel());

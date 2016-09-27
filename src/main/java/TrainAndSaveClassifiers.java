@@ -13,7 +13,7 @@ public class TrainAndSaveClassifiers {
         MaxEntClassification classifier = new MaxEntClassification(pathToClassifierFile, runClassifierOnTweets.nCores);
 
         //get vectors using multithreaded method
-        TweetVector[] tweetVectors = tweetFeatureExtractor.getVectorModelsFromTweetsMultithreaded(pathToData, classifierType);
+        ArrayList<TweetVector> tweetVectors = tweetFeatureExtractor.getVectorModelsFromTweetsMultithreaded(pathToData, classifierType);
 
         //add vectors to instance list and train
         classifier.addToInstanceList(tweetVectors);

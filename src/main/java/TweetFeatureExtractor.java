@@ -210,7 +210,7 @@ public class TweetFeatureExtractor {
         }
 
         System.out.println("Total time to vectorize tweets: "+(((double)System.currentTimeMillis()) - startTime )/1000+" seconds.");
-        System.out.println("Vectorized "+tweets.size()+"tweets, saved "+tweetVectors.size()+" tweets");
+        System.out.println("Vectorized "+tweets.size()+" tweets, saved "+tweetVectors.size()+" tweets");
         return tweetVectors;
     }
 
@@ -246,7 +246,17 @@ public class TweetFeatureExtractor {
         int lastStart = 0;
         ArrayList<ArrayList<String[]>> tweetSegments = new ArrayList<ArrayList<String[]>>(nCores);
         for (int i = 0; i < nCores; i++) {
-            ArrayList<String[]> nextSegment = (ArrayList<String[]>)tweets.subList(lastStart, lastStart+unit);
+            //start a new segment; find out where it ends
+            ArrayList<String[]> nextSegment = new ArrayList<String[]>();
+            int thisGroupEnd = lastStart + unit;
+            if (i == nCores - 1) {
+                thisGroupEnd = tweets.size();
+            }
+
+            //put the tweets into the segment
+            for (int j = lastStart; j < thisGroupEnd; j++) {
+                nextSegment.add(tweets.get(j));
+            }
             tweetSegments.add(nextSegment);
 
             lastStart += unit; //advance the count

@@ -86,10 +86,10 @@ public class MaxEntClassification {
 	/*
 		Adds a set of TweetVectors to the instance list
 	 */
-	public void addToInstanceList(TweetVector[] tweetVectors) {
-		for (int i = 0; i < tweetVectors.length; i++) {
+	public void addToInstanceList(ArrayList<TweetVector> tweetVectors) {
+		for (int i = 0; i < tweetVectors.size(); i++) {
 			//add the current tweet
-			TweetVector currentTweet = tweetVectors[i];
+			TweetVector currentTweet = tweetVectors.get(i);
 			addToInstanceList(currentTweet.getFeatures(), currentTweet.getName(), currentTweet.getLabel());
 		}
 	}

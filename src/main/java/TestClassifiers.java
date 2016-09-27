@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Alec Wolyniec on 8/17/16.
@@ -31,7 +32,7 @@ public class TestClassifiers {
         String pathToTestResultsEvent = "data/testResultsEventClassifier/"+args[4]+".txt";
         String pathToTestResultsSelfOther = "data/testResultsSvO/"+args[5]+".txt";
 
-        TweetVector[] trainingTweetVectors;
+        ArrayList<TweetVector> trainingTweetVectors;
 
         //initialize a feature extractor
         long startTime = System.currentTimeMillis();

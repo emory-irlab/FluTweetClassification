@@ -1,6 +1,8 @@
 /**
+ * @deprecated
  * Created by Alec Wolyniec on 8/3/16.
  */
+@Deprecated
 public class defunctCode {
         /*
         Traverse the tree, extracting all subject-verb-object phrase templates

@@ -11,26 +11,24 @@ set of pre-trained classifiers, a interface on which to run them and extract twe
 interface that allows you to train and run your own classifiers, given your own training data and our model.
 
 The current version, currently in the testing stage, aims to carry out the following functions:
-    *   Classify a random tweet as being authored by a human being writing on their own behalf or a human/bot 
+*   Classify a random tweet as being authored by a human being writing on their own behalf or a human/bot 
     writing for an organization
-    *   Identify person-written tweets that contain life events
-    *   Determine whether a life event in a tweet is being experienced by the tweet's author or by somebody
+*   Identify person-written tweets that contain life events
+*   Determine whether a life event in a tweet is being experienced by the tweet's author or by somebody
     else (other)
     
 The following life events are supported:
-    *   Major trip (vacation, business, religious, etc.)
-    *   School graduation
-    *   Job loss (whether a firing or a layoff)
-    *   New job (a recent hire or the beginning of work)
-    *   Major illness (such as a cold, the flu, and heart disease)
-    *   Recovery from major illness
+*   Major trip (vacation, business, religious, etc.)
+*   School graduation
+*   Job loss (whether a firing or a layoff)
+*   New job (a recent hire or the beginning of work)
+*   Major illness (such as a cold, the flu, and heart disease)
+*   Recovery from major illness
     
 ##Implementation
+This project is implemented in Java and Python, using Stanford CoreNLP for text annotation (POS tagging, sentence 
+structure, word lemmas, etc.) and MALLET for classifier generation
     
 ##How to Run
 
-##Libraries
-
-##Methodology and Performance
-
-##Project Structure
+##Performance and Methodology

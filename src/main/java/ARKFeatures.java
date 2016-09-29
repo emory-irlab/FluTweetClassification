@@ -9,6 +9,8 @@ import cmu.arktweetnlp.impl.Sentence;
 import cmu.arktweetnlp.impl.features.FeatureExtractor;
 
 /**
+ * @deprecated - not used in the current implementation of the project
+ *
  * Tagger object -- wraps up the entire tagger for easy usage from Java.
  *
  * To use:
@@ -23,6 +25,7 @@ import cmu.arktweetnlp.impl.features.FeatureExtractor;
  * This class is intended to be easiest to use in other applications.)
  */
 
+@Deprecated
 public class ARKFeatures {
 
     public static String MODEL_FILENAME = "/cmu/arktweetnlp/model.20120919";

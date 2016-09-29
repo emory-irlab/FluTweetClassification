@@ -10,6 +10,9 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 /**
+ * Various test cases for the features used by this project's classifiers
+ *
+ *
  * Created by Alec Wolyniec on 6/9/16.
  */
 public class featureTestCases {
@@ -41,25 +44,7 @@ public class featureTestCases {
             else if (model.getProbabilityOfWord("video") != ((double)239395)/103277747) {
                 System.out.println("FAILED due to improper values");
             }
-            else {
-                System.out.println("PASSED.");
-            }
-        }
-        catch (Exception e) {
-            System.out.println("FAILED due to exception");
-            e.printStackTrace();
-        }
-    }
-
-    public static void testGetProbabilityOfWordWith10kMostCommon() {
-        System.out.println();
-        System.out.println("Testing topic features' get probability of word using some of the 10k most common words...");
-        String pathToCountFile = "data/topics/countFile.txt";
-        String pathToCompositionFile = "data/topics/tweet_composition.txt";
-        try {
-            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
-
-            if (model.getProbabilityOfWord("flag") != ((double)20078)/103277747 ) {
+            else if (model.getProbabilityOfWord("flag") != ((double)20078)/103277747 ) {
                 System.out.println("FAILED due to improper values");
             }
             else if (model.getProbabilityOfWord("vegan") != ((double)4168)/103277747 ) {
@@ -84,7 +69,7 @@ public class featureTestCases {
 
     public static void testGetProbabilityOfWordGivenTopic() throws IOException {
         System.out.println();
-        System.out.println("Testing topic features get probability of word given topic method, 4 words and 100 topics used...");
+        System.out.println("Testing topic features get probability of word given topic method...");
         try {
             //set up the topic model with the given files
             String pathToCountFile = "data/topics/countFile.txt";
@@ -103,27 +88,7 @@ public class featureTestCases {
             else if (model.getProbabilityOfWordGivenTopic("burrito", 19) != 0.0) {
                 System.out.println("FAILED. Incorrect value for word \"burrito\" given topic 19");
             }
-            else {
-                System.out.println("PASSED.");
-            }
-        }
-        catch (Exception e) {
-            System.out.println("FAILED due to exception.");
-            e.printStackTrace();
-        }
-
-    }
-
-    public static void testGetProbabilityOfWordGivenTopicWith10kMostCommon() {
-        System.out.println();
-        System.out.println("Testing get probability of word given topic method, using some of the 10k most common words...");
-        //set up the topic model with the given files
-        String pathToCountFile = "data/topics/countFile.txt";
-        String pathToCompositionFile = "data/topics/tweet_composition.txt";
-        try {
-            TopicFeatureModel model = new TopicFeatureModel(pathToCountFile, pathToCompositionFile, "data/stopwords.txt", 1);
-
-            if (Math.abs(model.getProbabilityOfWordGivenTopic("flag", 38) - 247.360892) > 0.0001) {
+            else if (Math.abs(model.getProbabilityOfWordGivenTopic("flag", 38) - 247.360892) > 0.0001) {
                 System.out.println("FAILED. Incorrect value for word \"flag\" given topic 38");
             }
             else if (Math.abs(model.getProbabilityOfWordGivenTopic("chicago", 59) - 134.075720) > 0.0001) {
@@ -140,11 +105,12 @@ public class featureTestCases {
             System.out.println("FAILED due to exception.");
             e.printStackTrace();
         }
+
     }
 
-    public static void testGetProbabilityOfWordGivenTopicWith10kMostCommonMultithreaded() {
+    public static void testGetProbabilityOfWordGivenTopicMultithreaded() {
         System.out.println();
-        System.out.println("Testing get probability of word given topic method, using some of the 10k most common words and 4-core multithreading...");
+        System.out.println("Testing get probability of word given topic method, using 4-core multithreading...");
         //set up the topic model with the given files
         String pathToCountFile = "data/topics/countFile.txt";
         String pathToCompositionFile = "data/topics/tweet_composition.txt";
@@ -197,15 +163,9 @@ public class featureTestCases {
 
          //test topic modeling
         testGetProbabilityOfWord();
-        testGetProbabilityOfWordWith10kMostCommon();
-
         //testGetProbabilityOfTopic();
-
         testGetProbabilityOfWordGivenTopic();
-        testGetProbabilityOfWordGivenTopicWith10kMostCommon();
-
-        testGetProbabilityOfWordGivenTopicWith10kMostCommonMultithreaded();
-
+        testGetProbabilityOfWordGivenTopicMultithreaded();
         //testGetNMostLikelyTopics();
 
          //test other features

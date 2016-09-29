@@ -11,20 +11,16 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    DESCRIPTION:
+        Various methods to extract features from Stanford CoreNLP-annotated text.
+ */
 public class AnnotationFeatures {
-	
+
     /*
-    Pre-defined word classes. Some entries contain special cases, rules specifying that the string to be matched to it
-    is not a single word.
-    Special cases (checked for in the listed order, cannot be combined):
-     1. A single digit between 2-9 before words denotes multi-word features. The number indicates the number of words to search for.
-        Note: If there is a feature for an individual word or set of words in a multi-word feature, the detection
-        of a multi-word feature will not prevent detection of the sub-feature. Example: The string "the flu" will
-        trigger will count as an instance of "the", an instance of "flu", and an instance of "the flu"
-     2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
-       word being scanned, and not the word itself
+        To be moved to TextFeatures class
     */
-    //word class names
+    //Names for word classes
     public final static String infectionWordClassName = "Infection";
     public final static String possessionWordClassName = "Possession";
     public final static String concernWordClassName = "Concern";
@@ -39,10 +35,23 @@ public class AnnotationFeatures {
     public final static String numericalReferencesWordClassName = "Numerical References";
     public final static String orgAccountDescriptionsWordClassName = "Org. Account Descriptions";
     public final static String personPunctuationWordClassName = "Person Punctuation";
-    public static ArrayList<String> topicWordClassNames = new ArrayList<String>();
-    public static String topicWordClassFilePath = "data/topics/tweet_key_500.txt";
 
-    //Note: Multi-word words need to go before single-word words
+    /*
+        To be moved to TextFeatures class
+    */
+    /*
+        Pre-defined word classes. Each class has a common theme described by its name; each entry is either a single word
+        or a special case.
+
+        Special cases (checked for in the listed order, cannot be combined):
+         1. A single digit between 2-9 before words denotes multi-word features. The number indicates the number of
+            words to search for.
+            Note: If there is a feature for an individual word or set of words in a multi-word feature, the detection
+            of a multi-word feature will not prevent detection of the sub-feature. Example: The string "the flu" will
+            trigger will count as an instance of "the", an instance of "flu", and an instance of "the flu"
+         2. "V-" denotes a verb ending. The feature extraction algorithm should match this entry to the ending of a verb
+           word being scanned, and not the word itself
+    */
     private static String[] pastTenseWordClass = {"was", "did", "had", "got", "were", "V-ed"};
     private static String[] presentTenseWordClass = {"2it 's", "is", "am", "are", "have", "has", "V-ing"}; //'s as in "is"?
     private static String[] selfWordClass = {"2I 've", "2I 'd", "2I 'm", "im", "my", "me", "I"};
@@ -60,6 +69,7 @@ public class AnnotationFeatures {
     private static String[] personPuncuationWordClass = {",", "|", "&"};
     private static Hashtable<String, String[]> wordClasses = initializeWordClasses(new Hashtable<String, String[]>());
 
+    //initializes an empty hashtable containing all of the word classes defined above
     public static Hashtable<String, String[]> initializeWordClasses(Hashtable<String, String[]> emptyHash) {
         emptyHash.put(pastTenseWordClassName, pastTenseWordClass);
         emptyHash.put(presentTenseWordClassName, presentTenseWordClass);
@@ -74,8 +84,7 @@ public class AnnotationFeatures {
 
         return emptyHash;
     }
-    
-    
+
     public static String checkForNegs(SemanticGraph graph, IndexedWord vertex) {
         for (Pair<GrammaticalRelation, IndexedWord> pair : graph.childPairs(vertex)) {
             if (pair.first().getShortName().equals("neg")) {
@@ -85,25 +94,37 @@ public class AnnotationFeatures {
         return "";
     }
 
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The number of annotated words in the input that have an adjective POS tag (begins with JJ)
+     */
     public static int countAdjectives(CoreLabel[][] phrases) {
         int count = 0;
 
         for (CoreLabel[] phrase: phrases) {
-            if (phrase[0].tag().equals("JJ")) count++;
+            if (phrase[0].tag().substring(0, 2).equals("JJ")) count++;
         }
 
         return count;
     }
 
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The number of annotated words in the input that have an adverb POS tag (begins with RB)
+     */
     public static int countAdverbs(CoreLabel[][] phrases) {
         int count = 0;
 
         for (CoreLabel[] phrase: phrases) {
-            if (phrase[0].tag().equals("RB")) count++;
+            if (phrase[0].tag().substring(0, 2).equals("RB")) count++;
         }
         return count;
     }
 
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The number of annotated words in the input that have a personal pronoun POS tag (PRP)
+    */
     public static int countPersonalPronouns(CoreLabel[][] phrases) {
         int count = 0;
 
@@ -114,6 +135,10 @@ public class AnnotationFeatures {
         return count;
     }
 
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The number of annotated words in the input that have a proper noun POS tag (NNP/NNPS)
+    */
     public static int countProperNouns(CoreLabel[][] phrases) {
         int count = 0;
 
@@ -124,6 +149,10 @@ public class AnnotationFeatures {
         return count;
     }
 
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The number of annotated words in the input that have a plural proper noun POS tag (NNPS)
+    */
     public static int countPluralProperNouns(CoreLabel[][] phrases) {
         int count = 0;
 
@@ -134,6 +163,10 @@ public class AnnotationFeatures {
         return count;
     }
 
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The number of annotated words in the input that have a singular proper noun POS tag (NNP)
+    */
     public static int countSingularProperNouns(CoreLabel[][] phrases) {
         int count = 0;
 
@@ -145,7 +178,10 @@ public class AnnotationFeatures {
     }
     
     /*
-    Count the number of words/strings in the given word class
+        Input:
+            -An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+            -The name of one of the word classes defined above
+        Output: The number of annotated words in the input that are contained within the specified word class
 	*/
 	public static int getFeatureForWordClass(CoreLabel[][] phrases, String relevantClassName) throws IOException {
 	
@@ -173,7 +209,7 @@ public class AnnotationFeatures {
 	            String stringInPhrasePOS = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
 	            //System.out.println(stringInPhrase);
 	
-	            //get words to match
+	            //go through each word in the specified word class
 	            for (int k = 1; k < relevantWordClass.length; k++) {
 	                String stringInPhraseCopy = stringInPhrase; //use this when referring to the input token
 	                String stringToMatch = relevantWordClass[k];
@@ -205,7 +241,7 @@ public class AnnotationFeatures {
 	                        stringInPhraseCopy = stringInPhraseCopy.substring(stringInPhrase.length() - stringToMatch.length());
 	                    }
 	                }
-	                //match
+	                //check to see if the annotated string in the input and the entry in the word class are a match
 	                if (stringToMatch.equalsIgnoreCase(stringInPhraseCopy)) {
 	                    counter++;
 	                    //System.out.println("Matched string "+stringInPhraseCopy+" from base string "+stringInPhrase+" to string "+stringToMatch+" in word class "+relevantWordClass[0]);
@@ -216,7 +252,22 @@ public class AnnotationFeatures {
 	    }
 	    return counter;
 	}
-    
+
+    /*
+        Input: A list of sentences (sentences as defined by Stanford CoreNLP)
+        Output: A list of phrase templates for subjects, verbs, and objects present in the input
+
+        Identifies templates. The templates are subject-verb-object triples in sentences, as well as the following
+        doubles: subject-verb, verb-object, subject-object. A subject, verb, or object is a single word (or, in the case
+        of verbs, it may be the word "not" followed by a verb), and is defined as such by its dependency relations
+
+        Templates are represented as follows:
+            (i/S, like/V, pizza/O)
+            (i/S, pizza/O)
+
+        Does not guarantee collection of all triples and doubles within the sentence, but works for most cases.
+        Performance of the Stanford Relation Extractor is likely better.
+    */
     public static ArrayList<String> getPhraseTemplates(List<CoreMap> sentences) {
         //System.out.println();
         //System.out.println("New tweet: ");
@@ -280,7 +331,12 @@ public class AnnotationFeatures {
 
         return compressedPhraseTemplates;
     }
-    
+
+    /*
+        Obtains phrase templates that cannot be extracted by looking at the dependencies (children) of a verb.
+        (these are rooted at a noun, the object. The verb and the subject depend on (are children of) the object, and are
+        identified as such by the name of their semantic relation to the object)
+     */
     public static ArrayList<String[]> getTemplatesForNouns(SemanticGraph graph, IndexedWord vertex) {
         ArrayList<String> subjects = new ArrayList<String>();
 
@@ -328,15 +384,19 @@ public class AnnotationFeatures {
 
         return phraseTemplates;
     }
-    
+
+    /*
+        Obtains phrase templates that can be extracted by looking at the dependencies of a verb.
+        (these are rooted at the verb. The subject and the object depend on (are children of) the verb, and
+        are identified as such by the name of their semantic relation to the verb).
+    */
     public static ArrayList<String[]> getTemplatesForVerbs(SemanticGraph graph, IndexedWord vertex) {
         ArrayList<String[]> templates = new ArrayList<String[]>();
         ArrayList<String> subjects = new ArrayList<String>();
         ArrayList<String> objects = new ArrayList<String>();
 
-        //String subject = "";
         String verb = checkForNegs(graph, vertex) + util.lowerCaseTextUnlessProperNoun(vertex) + "/V";
-        //String object = "";
+        //look through the verb's dependencies
         for (Pair<GrammaticalRelation, IndexedWord> pair : graph.childPairs(vertex)) {
             //find subject
             if (pair.first().getShortName().contains("nsubj")) { //use .contains() so it collects nsubj and nsubjpass
@@ -407,26 +467,10 @@ public class AnnotationFeatures {
 
         return templates;
     }
-    
-    public static Hashtable<String, String[]> getTopics(String pathToTopicFile) throws IOException, FileNotFoundException {
-        Hashtable<String, String[]> topics = new Hashtable<String, String[]>();
-        String name;
-        String[] data;
 
-        File file = new File(pathToTopicFile);
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-
-        String currentLine = "";
-        while ((currentLine = bufferedReader.readLine()) != null) {
-            String[] lineSep = currentLine.split("\\t");
-            name = lineSep[0];
-            data = lineSep[2].split(" ");
-            topics.put(name, data);
-        }
-        bufferedReader.close();
-        return topics;
-    }
-    
+    /*
+        To be moved to TextFeatures class
+     */
     public static int countWordsInClassOther(String[] wordsToCheck) {
     	int count = 0;
 
@@ -439,7 +483,10 @@ public class AnnotationFeatures {
         }
         return count;
     }
-    
+
+    /*
+        To be moved to TextFeatures class
+     */
     public static boolean isInWordClassOther(String wordToCheck) {
 
         for (String wordInOthersClass: othersWordClass) {
@@ -449,9 +496,10 @@ public class AnnotationFeatures {
         }
         return false;
     }
-    
-    
-    
+
+    /*
+        To be moved to TextFeatures class
+    */
     public static int countWordsInClassSelf(String[] wordsToCheck) {
     	int count = 0;
 
@@ -464,7 +512,10 @@ public class AnnotationFeatures {
         }
         return count;
     }
-    
+
+    /*
+        To be moved to TextFeatures class
+    */
     public static boolean isInWordClassSelf(String wordToCheck) {
     	
         for (String wordInSelfClass: selfWordClass) {
@@ -474,7 +525,12 @@ public class AnnotationFeatures {
         }
         return false;
     }
-    
+
+    /*
+        Input: An array of phrases. Each phrase is a list of annotated words (CoreLabels)
+        Output: The sum of the number of annotated words in the numerical references word class and the number of
+                annotated words that are quantities (i.e. 100, 50%)
+    */
     public static int numericalReferencesCount(CoreLabel[][] phrases) throws IOException {
         int counter = 0;
         for (CoreLabel[] phrase : phrases) {
@@ -573,41 +629,4 @@ public class AnnotationFeatures {
         }
         return counter;
 	}
-    
-    public static String[] createSubjectVerbObjectTuple(CoreLabel[][] phrases) {
-    	
-    	String[] subjectVerbObject = new String[3];
-    	boolean subject = false;
-    	boolean verb = false;
-    	
-    	for (int i = 0; i < phrases.length; i++) {
-    		
-    		CoreLabel[] phrase = phrases[i];
-    		String tag = phrase[0].tag();
-    		
-    		if ((tag.equals("NN") || tag.equals("NNP") || tag.equals("NNS") || tag.equals("NNPS")) && !subject) {
-    			subjectVerbObject[0] = phrase[0].word();
-            	subject = true;
-        	}
-    		
-    		//Finds first noun (proper included) in tweet
-    		//resetForVerb is due to the circumstance that the object may come before a verb
-    		else if ((tag.equals("VB") || tag.equals("VBP") || tag.equals("VBG") || tag.equals("VBN")) && !verb) {
-        		subjectVerbObject[1] = phrase[0].word();
-        		verb = true;
-        	}
-    		
-    		//Finds following first noun or pronoun (plural included) object after first pronoun/noun has been found
-    		//Accounts for if object comes before verb by resetting i to index+1 at which the first
-    		//noun/pronoun was located
-    		else if ((tag.equals("NN") || tag.equals("NNP") || tag.equals("NNS") || tag.equals("NNPS")) && subject) {
-    			
-    			String prevTag = phrases[i-1][0].tag();
-    			if (prevTag.equals("VB") || prevTag.equals("VBP") || prevTag.equals("VBG") || prevTag.equals("VBN") || i == phrases.length-1) {
-        			subjectVerbObject[2] = phrase[0].word();
-        		}
-    		}
-    	}
-    	return subjectVerbObject;
-    }
 }

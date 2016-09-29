@@ -75,6 +75,7 @@ public class runClassifierOnTweets {
 
         //classify each tweet and collect if it is labeled with an event
         for (String[] tweet: tweetsToRun) {
+            System.out.print("tweet ");
             String[] labels = new String[3];
             double[] confidences = new double[3];
 
@@ -86,12 +87,14 @@ public class runClassifierOnTweets {
             //If it's human,
             //put it through the event classifier (confidence level: ?)
             if (labels[0].equals("person")) {
+                System.out.print("labeled as person ");
                 Pair<String, Double> eventResults = classify(tweet, TweetFeatureExtractor.eventClassifierName, event, tweetFeatureExtractor);
                 labels[1] = eventResults.first();
                 confidences[1] = eventResults.second();
 
                 //If it receives an event label,
-                if (!labels[1].equals("null_class") && !labels[1].equals("none_of_the_above")) {
+                if (!labels[1].equals("null_class") && !labels[1].equals("none_of_the_above") && !labels[1].equals("INVALID_TWEET")) {
+                    System.out.print("labeled as event ");
                     //Put it through the self-other classifier (confidence level: ?)
                     Pair<String, Double> selfResults = classify(tweet, TweetFeatureExtractor.selfOtherClassifierName, selfOther, tweetFeatureExtractor);
                     labels[2] = selfResults.first();
@@ -99,6 +102,7 @@ public class runClassifierOnTweets {
 
                     //if it receives a self or other label,
                     if (labels[2].equals("self") || labels[2].equals("other")) {
+                        System.out.print("labeled as self or other ");
                         //append it to a file based on self-other label and event (initialize this file if it
                         //does not yet exist)
                         File putativeFile = new File("classifiedTweets/"+args[1]+"copy"+labels[1]+"-"+labels[2]+".csv");
@@ -138,6 +142,7 @@ public class runClassifierOnTweets {
                     }
                 }
             }
+            System.out.println();
         }
     }
 }

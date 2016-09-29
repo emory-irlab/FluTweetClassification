@@ -1,78 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="markdown begins">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copygraduation-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copygraduation-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copyjob_loss-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copyjob_loss-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copymajor_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copymajor_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copymajor_trip-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copymajor_trip-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copynew_job-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copynew_job-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copyrecovery_from_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/0copyrecovery_from_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copygraduation-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copygraduation-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copyjob_loss-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copyjob_loss-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copymajor_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copymajor_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copymajor_trip-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copymajor_trip-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copynew_job-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copynew_job-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/1copyrecovery_from_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copygraduation-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copyjob_loss-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copymajor_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copymajor_trip-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copymajor_trip-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copynew_job-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copynew_job-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/2copyrecovery_from_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copygraduation-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copygraduation-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copyjob_loss-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copyjob_loss-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copymajor_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copymajor_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copymajor_trip-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copymajor_trip-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copynew_job-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copynew_job-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copyrecovery_from_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/3copyrecovery_from_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copygraduation-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copygraduation-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copyjob_loss-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copyjob_loss-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copymajor_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copymajor_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copymajor_trip-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copymajor_trip-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copynew_job-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copynew_job-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copyrecovery_from_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/4copyrecovery_from_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copygraduation-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copygraduation-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copyjob_loss-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copyjob_loss-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copymajor_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copymajor_illness-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copymajor_trip-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copymajor_trip-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copynew_job-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copynew_job-self.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copyrecovery_from_illness-other.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/classifiedTweets/5copyrecovery_from_illness-self.csv" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" afterPath="$PROJECT_DIR$/target/classes/runClassifierOnTweets.class" />
+    <list default="true" id="8f04d033-1696-4b3c-b9c6-038f6ad14a9b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" afterPath="$PROJECT_DIR$/src/main/java/runClassifierOnTweets.java" />
     </list>
     <list id="b5da3a9f-46bd-442f-adb7-45847f6ec7c3" name="Added more methods  Stuff for descriptions (cherry picked from commit 7c54344)" comment="Added more methods&#10;&#10;Stuff for descriptions&#10;(cherry picked from commit 7c54344)" />
     <list id="e1b98b4d-fab0-4cb1-8070-8890f7e4fc6b" name="Multi-class/AUC  Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels). Added AUC method that prints out accuracy vs coverage of the trial in graph form. (cherry picked from commit 6ba6b0f)" comment="Multi-class/AUC&#10;&#10;Added multi-class capability to MaxEnt. Constructor now takes arguments (String pathToClassifier, String[] labels).&#10;Added AUC method that prints out accuracy vs coverage of the trial in graph form.&#10;(cherry picked from commit 6ba6b0f)" />
@@ -119,8 +50,8 @@
           </provider>
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor vertical-scroll-proportion="0.7404844">
-                <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+              <first_editor vertical-scroll-proportion="0.70069206">
+                <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -897,12 +828,6 @@
       <option name="number" value="Default" />
       <updated>1460606859814</updated>
     </task>
-    <task id="LOCAL-00032" summary="Testing revised confidence threshold method 3">
-      <created>1468636027652</created>
-      <option name="number" value="00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1468636027652</updated>
-    </task>
     <task id="LOCAL-00033" summary="Ready for HvN classification test">
       <created>1468699735544</created>
       <option name="number" value="00033" />
@@ -1191,7 +1116,13 @@
       <option name="project" value="LOCAL" />
       <updated>1475018072485</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Initiated markdown file&#10;">
+      <created>1475183023235</created>
+      <option name="number" value="00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1475183023238</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1209,6 +1140,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290735" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3155416" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3155416" sideWeight="0.509693" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1221,7 +1153,6 @@
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22859451" sideWeight="0.5457413" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3155416" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1269,7 +1200,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="implemented multi-conf-threshold evaluation scheme, optimized tweet-getting" />
     <MESSAGE value="further update" />
     <MESSAGE value="fixed bug, should run smoothly now" />
     <MESSAGE value="fixed bug, should run smoothly now 2" />
@@ -1294,7 +1224,8 @@
     <MESSAGE value="created new, shorter stopword list, limited n-gram -pre- and -post- tokens" />
     <MESSAGE value="new attempt - no unigrams for event classifier" />
     <MESSAGE value="fixed compiler errors with exception issue" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed compiler errors with exception issue" />
+    <MESSAGE value="Initiated markdown file&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initiated markdown file&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1633,8 +1564,8 @@
       </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor vertical-scroll-proportion="0.7404844">
-            <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <first_editor vertical-scroll-proportion="0.70069206">
+            <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor />
